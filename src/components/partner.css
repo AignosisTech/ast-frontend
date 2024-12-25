@@ -1,0 +1,70 @@
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Marquee styling */
+.marquee {
+  display: inline-flex;
+}
+
+/* Image styling */
+.marquee-image {
+  width: 15vh;
+  height: 10vh;
+  margin: 0 1vw;
+}
+
+/* Infinite scroll animation for first marquee */
+@keyframes marquee1 {
+  from {
+      transform: translateX(0%);
+  }
+  to {
+      transform: translateX(-100%);
+  }
+}
+
+/* Infinite scroll animation for second marquee at a different speed */
+@keyframes marquee2 {
+  from {
+      transform: translateX(0%);
+  }
+  to {
+      transform: translateX(-100%);
+  }
+}
+
+/* Apply different speeds */
+.marquee-speed-1 {
+  animation: marquee1 25s linear infinite;
+}
+
+.marquee-speed-2 {
+  animation: marquee2 15s linear infinite; /* Slightly slower for smoother animation */
+}
+
+/* Mobile-Specific Adjustments */
+@media (max-width: 768px) {
+  .marquee-container {
+      padding: 1vw;
+  }
+
+  .marquee-image {
+      width: 10vh; /* Smaller image width for mobile */
+      height: 6vh;  /* Smaller image height for mobile */
+      margin: 0 0.5vw; /* Reduced margin */
+  }
+
+  /* Adjust marquee animation speed for mobile to avoid abrupt movements */
+  .marquee-speed-1 {
+      animation: marquee1 20s linear infinite;
+  }
+
+  .marquee-speed-2 {
+      animation: marquee2 25s linear infinite;
+  }
+}

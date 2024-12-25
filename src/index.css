@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('./assets/fonts/Montserrat.ttf') format('truetype');
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Raleway';
+    src: url('./assets/fonts/Raleway.ttf') format('truetype');
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'CormorantGaramond';
+    src: url('./assets/fonts/CormorantGaramond-Regular.ttf') format('truetype');
+    font-style: normal;
+  }
+
+
+  
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out translate-y-full forwards;
+  }
+  
+  .animate-slideUp {
+    animation: slideUp 0.8s ease-out translate-y-fulls forwards;
+  }
+  
+  .slide-right {
+    display: inline;
+    animation: slide-right 0.7s ease forwards alternate;
+  }
+
+  .slide-right-fast {
+    display: inline;
+    animation: slide-right 0.7s ease forwards alternate;
+  }
+
+  @keyframes slide-right {
+    0% {
+      transform: translateX(100px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-right-fast {
+    0% {
+      transform: translateX(50px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
