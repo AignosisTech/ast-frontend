@@ -24,6 +24,7 @@ import ServicePage1 from './components/servicePages/ServicePage1';
 import TAndC from './components/TAndC';
 import RefundAndReschedule from './components/RefundAndReschedule';
 import AutismTest from './components/AutismTest';
+import DownloadPage from './components/testPages/DownloadPage';
 
 const App = () => {
   return (
@@ -48,7 +49,7 @@ const App = () => {
         <Route path="/test/fillup" element={<TestMain />} />
         <Route path="/BlogPages" element={<BlogPage />} />
         <Route path="/test/fillup/tod" element={<Toddlers />} />
-
+        <Route path="/download" element={<DownloadPage/>}></Route>
         <Route path="/payment" element={<PaymentScreensMain />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
         <Route path='/terms' element={<TAndC />} />
