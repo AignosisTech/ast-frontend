@@ -58,14 +58,35 @@ const CalibrationPage = () => {
       setIsUploading(true);
       
       // Encrypt the video before uploading
-      const encryptionPassword = 'your-secure-password';
-      const encryptedBlob = await encryptVideo(blob, encryptionPassword);
+      const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, '0')).join('');
+      const encryptedBlob = await encryptVideo(blob, aesKey);
       
+      // Make sure that we are getting the JWK format return in this fetch call
+      const jwk = await fetch('/api/public-key').then(res => res.json());
+    
+      // Import the JWK key
+      const publicKey = await window.crypto.subtle.importKey(
+        'jwk',
+        jwk,
+        {
+          name: 'RSA-OAEP',
+          hash: 'SHA-256',
+        },
+        false,
+        ['encrypt']
+      );
+      
+      const encryptedKey = await window.crypto.subtle.encrypt(
+        {
+          name: 'RSA-OAEP'
+        },
+        publicKey,
+        new TextEncoder().encode(aesKey)
+      );
+
       const formData = new FormData();
       formData.append('video', encryptedBlob, 'encrypted-test.bin');
-      
-      // Add encryption flag to let server know this is encrypted
-      formData.append('isEncrypted', 'true');
+      formData.append('key', new Blob([encryptedKey]));
   
       const response = await fetch('YOUR_API_ENDPOINT', {
         method: 'POST',
