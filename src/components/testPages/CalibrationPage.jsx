@@ -16,7 +16,7 @@ const CalibrationPage = () => {
   const videoStreamRef = useRef(null);
 
   const patientIUID = 'jdifjio2u4u248tu9q8ghg98439'
-  const LOCAL_MIDDLEWARE_ENDPOINT = ''
+  const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000/rest/'
   const SERVER_MIDDLEWARE_ENDPOINT = ''
 
   const cleanupMediaStream = () => {
@@ -66,7 +66,7 @@ const CalibrationPage = () => {
       const encryptedBlob = await encryptVideo(blob, aesKey);
       
       // Make sure that we are getting the JWK format return in this fetch call
-      const jwk = await fetch('/api/public-key').then(res => res.json());
+      const jwk = await fetch(LOCAL_MIDDLEWARE_ENDPOINT + 'return_rsa_public_key/').then(res => res.json());
     
       // Import the JWK key
       const publicKey = await window.crypto.subtle.importKey(
