@@ -8,6 +8,7 @@ const CalibrationPage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [hasStartedOnce, setHasStartedOnce] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   
   const webcamRef = useRef(null);
   const calibrationVideoRef = useRef(null);
@@ -180,7 +181,17 @@ const CalibrationPage = () => {
     pauseRecording();
   };
 
+  const handleVideoLoadedData = () => {
+    setIsVideoLoaded(true);
+  };
+
   const handleVideoPlay = () => {
+    if (!isVideoLoaded) {
+      calibrationVideoRef.current?.pause();
+      alert('Please wait for the video to load completely before starting.');
+      return;
+    }
+
     if (!hasStartedOnce) {
       startWebcamRecording();
       setHasStartedOnce(true);
@@ -252,6 +263,7 @@ const CalibrationPage = () => {
             src='https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211'
             autoPlay={false}
             controls 
+            onLoadedData={handleVideoLoadedData}
             onEnded={handleVideoEnd}
             onPause={handleVideoPause}
             onPlay={handleVideoPlay}
@@ -269,7 +281,7 @@ const CalibrationPage = () => {
 
           {!hasStartedOnce && (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-black bg-opacity-75 px-6 py-4 rounded-lg text-white text-center">
-              Press play to start the calibration and recording
+              {!isVideoLoaded ? 'Loading video...' : 'Press play to start the recording'}
             </div>
           )}
 
