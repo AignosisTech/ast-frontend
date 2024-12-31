@@ -15,7 +15,9 @@ const CalibrationPage = () => {
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
-  const patientIUID= 'jdifjio2u4u248tu9q8ghg98439'
+  const patientIUID = 'jdifjio2u4u248tu9q8ghg98439'
+  const LOCAL_MIDDLEWARE_ENDPOINT = ''
+  const SERVER_MIDDLEWARE_ENDPOINT = ''
 
   const cleanupMediaStream = () => {
     console.log('Starting cleanup');
@@ -88,7 +90,8 @@ const CalibrationPage = () => {
 
       const formData = new FormData();
       formData.append('video', encryptedBlob, 'encrypted-test.bin');
-      formData.append('key', new Blob([encryptedKey]));
+      formData.append('encrypted_aes_key', new Blob([encryptedKey]));
+      formData.append('patient_uid', patientIUID)
   
       const response = await fetch('http://127.0.0.1:8000/rest/test/video_data/', {
         method: 'POST',
