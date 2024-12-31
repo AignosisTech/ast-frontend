@@ -15,6 +15,8 @@ const CalibrationPage = () => {
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
+  const patientIUID= 'jdifjio2u4u248tu9q8ghg98439'
+
   const cleanupMediaStream = () => {
     console.log('Starting cleanup');
     
@@ -66,8 +68,9 @@ const CalibrationPage = () => {
       
       // Add encryption flag to let server know this is encrypted
       formData.append('isEncrypted', 'true');
+      formData.append('patient_uid', patientIUID)
   
-      const response = await fetch('YOUR_API_ENDPOINT', {
+      const response = await fetch('http://127.0.0.1:8000/rest/test/video_data/', {
         method: 'POST',
         body: formData,
       });
@@ -97,9 +100,7 @@ const CalibrationPage = () => {
       videoStreamRef.current = stream;
       webcamRef.current.srcObject = stream;
 
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9'
-      });
+      const mediaRecorder = new MediaRecorder(stream);
 
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
@@ -253,7 +254,7 @@ const CalibrationPage = () => {
           )}
 
           {isVideoEnded && !isUploading && (
-            <button 
+            <button
               onClick={()=>{
                 window.location.replace('/download');
               }} 
