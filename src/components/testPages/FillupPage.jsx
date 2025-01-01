@@ -80,9 +80,9 @@ export const FillupPage = () => {
                 <select className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500">
                   <option className="bg-[#1A0C25]">Choose Language</option>
                   <option className="bg-[#1A0C25]" value="en">English</option>
-  <option className="bg-[#1A0C25]" value="es">Spanish</option>
-  <option className="bg-[#1A0C25]" value="fr">French</option>
-  <option className="bg-[#1A0C25]" value="de">German</option>
+                  <option className="bg-[#1A0C25]" value="es">Spanish</option>
+                  <option className="bg-[#1A0C25]" value="fr">French</option>
+                  <option className="bg-[#1A0C25]" value="de">German</option>
                 </select>
 
                 <input
@@ -131,13 +131,13 @@ export const FillupPage = () => {
                 />
 
                 <div className="flex justify-center items-center gap-2 max-sm:flex-col">
-                <Link 
-  to="/prices"
-  className="text-white border border-[#9C00AD] px-6 py-3 rounded-full font-semibold mt-4 w-[150px] flex justify-center items-center
+                  <Link
+                    to="/prices"
+                    className="text-white border border-[#9C00AD] px-6 py-3 rounded-full font-semibold mt-4 w-[150px] flex justify-center items-center
              transition-all duration-300 ease-in-out hover:bg-[#9C00AD] hover:border-transparent hover:shadow-md"
->
-  Back
-</Link>
+                  >
+                    Back
+                  </Link>
 
                   <button
                     type="button"

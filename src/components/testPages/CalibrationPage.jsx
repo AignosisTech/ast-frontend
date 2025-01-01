@@ -19,6 +19,7 @@ const CalibrationPage = () => {
   const patientIUID = 'jdifjio2u4u248tu9q8ghg98439'
   const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000/rest/'
   const SERVER_MIDDLEWARE_ENDPOINT = ''
+  const IN_USE_URL = LOCAL_MIDDLEWARE_ENDPOINT + 'test/video_data'
 
   const cleanupMediaStream = () => {
     console.log('Starting cleanup');
@@ -94,7 +95,7 @@ const CalibrationPage = () => {
       formData.append('encrypted_aes_key', new Blob([encryptedKey]));
       formData.append('patient_uid', patientIUID)
   
-      const response = await fetch('http://127.0.0.1:8000/rest/test/video_data/', {
+      const response = await fetch(IN_USE_URL, {
         method: 'POST',
         body: formData,
       });
