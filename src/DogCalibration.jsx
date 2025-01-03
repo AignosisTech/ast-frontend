@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import Circle from "./Circle"; // Import Circle component
 import "bootstrap/dist/css/bootstrap.min.css";
-import { encryptCalibrationData, encryptPassword } from "./utils/EncryptionUtils";
+import { encryptCalibrationData, encryptPassword } from "./components/utils/EncryptionUtils";
 import { v4 as uuidv4 } from 'uuid';
 
 const DogCalibration = () => {
