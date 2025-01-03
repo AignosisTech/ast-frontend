@@ -1,5 +1,5 @@
 // encryptionUtils.js
-
+import config from "./EnvVars";
 // Helper function to convert ArrayBuffer to Base64
 const arrayBufferToBase64 = (buffer) => {
     let binary = '';
@@ -82,7 +82,7 @@ const arrayBufferToBase64 = (buffer) => {
   const encryptPassword = async (password) => {
     try {
       // Get and import RSA public key
-      const jwk = await fetch('http://127.0.0.1:8000/rest/return_rsa_public_key/').then(res => res.json());
+      const jwk = await fetch(config.server_base_url + '/rest/return_rsa_public_key/').then(res => res.json());
       const publicKey = await window.crypto.subtle.importKey(
         'jwk',
         jwk,
