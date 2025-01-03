@@ -1,11 +1,18 @@
+// DogCalibration.jsx
+
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import Circle from "./Circle"; // Import Circle component
 import "bootstrap/dist/css/bootstrap.min.css";
+import { encryptCalibrationData, encryptPassword } from "./utils/EncryptionUtils";
+import { v4 as uuidv4 } from 'uuid';
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = 'http://35.207.211.80:5001/rest/calibration/data/';
+  const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
+  // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
+  const TRANSACTION_IDENTIFIER = uuidv4()
+
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
@@ -25,11 +32,11 @@ const DogCalibration = () => {
     [50, 50], // left top
     [50, window.innerHeight / 2], // left mid
     [50, window.innerHeight - 100], // left bottom
-    [window.innerWidth - 100, 50], // right top
-    [window.innerWidth - 100, window.innerHeight / 2], // right mid
-    [window.innerWidth - 100, window.innerHeight - 100], // right bottom
-    [window.innerWidth / 2, 50], // mid top
-    [window.innerWidth / 2, window.innerHeight - 100] // mid bottom
+    // [window.innerWidth - 100, 50], // right top
+    // [window.innerWidth - 100, window.innerHeight / 2], // right mid
+    // [window.innerWidth - 100, window.innerHeight - 100], // right bottom
+    // [window.innerWidth / 2, 50], // mid top
+    // [window.innerWidth / 2, window.innerHeight - 100] // mid bottom
   ];
 
   useEffect(() => {
@@ -64,6 +71,10 @@ const DogCalibration = () => {
     startWebcam();
   }, []);
 
+  const handleNextButtonClick = () => {
+    navigate("/video");  // Navigate to the video page
+  };
+
   const captureFrame = () => {
     if (canvasRef.current && videoRef.current) {
       const canvas = canvasRef.current;
@@ -96,7 +107,7 @@ const DogCalibration = () => {
         setInterval(() => {
           const frameData = captureFrame();
           setFrames((prevFrames) => [...prevFrames, frameData]);
-        }, 1)
+        }, 33) // Adjusted to 33ms for ~30 fps
       );
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else if (currentCircleIndex < circleCoordinates.length - 1) {
@@ -110,18 +121,19 @@ const DogCalibration = () => {
         ...clicktimes,
         (Date.now() - startTime) / 1000
       ]);
-      var finalClickTimes = clickTimes;
-      finalClickTimes.push((Date.now() - startTime) / 1000);
+      var finalClickTimes = [...clickTimes, (Date.now() - startTime) / 1000];
       setIsCircleVisible(false);
+
+      const USER_ID = 'frontman68' 
       const calibrationData = {
-        patient_uid: '65bbbb04-f29f-4d6b-b207-999e08bef384',
-        dob: '20240601',
-        sex: 1,
+        patient_uid: USER_ID,
+        transaction_id: TRANSACTION_IDENTIFIER,
         camera_resolution: { width: videoResolution[0], height: videoResolution[1] },
         screen_resolution: { width: window.innerWidth, height: window.innerHeight },
-        calibration_points: []
+        debug: true
       };
 
+      var calibration_points = []
       for (let i = 0; i < finalClickTimes.length; i++) {
         let currentClickFramesList = [];
         let frameRangeStartIndex = Math.floor(30 * finalClickTimes[i]);
@@ -129,29 +141,75 @@ const DogCalibration = () => {
           timestamp: finalClickTimes[i],
           frame: frames[frameRangeStartIndex],
         });
-        calibrationData.calibration_points.push({
-          point: { x: circleCoordinates[i][0], y: circleCoordinates[i][1] },
+        calibration_points.push({
+          point: {
+            x: circleCoordinates[i][0],
+            y: circleCoordinates[i][1],
+            final: i === finalClickTimes.length - 1,
+          },
           frames: currentClickFramesList,
         });
       }
 
-      axios
-        .post(SERVER_MIDDLEWARE_URL, JSON.stringify(calibrationData), {
-          headers: { "Content-Type": "application/json" },
-        })
+      // ENCRYPTION STARTS HERE
+
+      async function processAndSendData() {
+        try {
+          const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+
+          const encryptedCalibrationPoints = await encryptCalibrationData(
+            calibration_points,
+            aesKey
+          ).catch(error => {
+            console.error('Failed to encrypt calibration points:', error);
+            throw error;
+          });
+
+          const encryptedKey = await encryptPassword(aesKey)
+            .catch(error => {
+              console.error('Failed to encrypt password:', error);
+              throw error;
+            });
+
+          // Create final data object
+          const finalCalibrationData = {
+            ...calibrationData,
+            encrypted_calibration_points: encryptedCalibrationPoints,
+            encrypted_Key: encryptedKey
+          };
+
+          // Convert to string and send
+          const calibrationDataString = JSON.stringify(finalCalibrationData);
+          console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
+
+          return axios.request({
+            method: "POST",
+            url: SERVER_MIDDLEWARE_URL,
+            data: calibrationDataString,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then(response => console.log(response));
+        } catch (error) {
+          console.error('Processing error:', error);
+          throw error;
+        }
+      }
+
+      processAndSendData()
         .then((response) => {
           clearInterval(frameCaptureInterval);
+          console.log("Frame capturing stopped");
           console.log(response);
         })
-        .catch((error) => {
+        .catch((err) => {
           clearInterval(frameCaptureInterval);
-          console.error(error);
+          console.log("Frame capturing stopped");
+          console.log(err);
         });
     }
-  };
-
-  const handleNextButtonClick = () => {
-    navigate("/video");  // Navigate to the video page
   };
 
   return (
