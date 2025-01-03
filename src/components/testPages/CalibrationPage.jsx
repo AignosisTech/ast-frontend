@@ -17,9 +17,9 @@ const CalibrationPage = () => {
   const videoStreamRef = useRef(null);
 
   const patientIUID = 'jdifjio2u4u248tu9q8ghg98439'
-  const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000/rest/'
-  const SERVER_MIDDLEWARE_ENDPOINT = ''
-  const IN_USE_URL = LOCAL_MIDDLEWARE_ENDPOINT + 'test/video_data'
+  const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000/rest/test/video_data/'
+  const SERVER_MIDDLEWARE_ENDPOINT = 'http://34.93.64.198:5001/rest/test/video_data/'
+  const IN_USE_URL = SERVER_MIDDLEWARE_ENDPOINT
 
   const cleanupMediaStream = () => {
     console.log('Starting cleanup');
