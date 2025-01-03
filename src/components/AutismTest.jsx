@@ -124,12 +124,6 @@ const AutismTest = () => {
     >
       {stepsContent.map((content, index) => (
 
-        
-        
-
-
-
-
         <div
           key={index}
           className={`scroll-section flex justify-between min-h-screen snap-start p-8 
@@ -137,14 +131,6 @@ const AutismTest = () => {
           style={{ background: content.bgColor }}
           data-step={index + 1}
         >
-
-
-
-
-
-
-             
-
 
           <div className="relative md:max-w-4xl 2xl:max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2  gap-[5vw] max-sm:-gap-[10vw] ">
             {/* Left Side Content */}
@@ -179,19 +165,19 @@ const AutismTest = () => {
             {/* Right Side - Image and Indicator Wrapper */}
             <div className="relative flex justify-center md:items-center">
             <img
-  src={content.image}
-  alt={`Background for step ${content.ScreenNumber}`}
-  className="
-    md:w-[1101px] w-full h-auto 
-    transition-transform duration-700
-    transform
-    scale-145 
-    md:scale-100 
-    sm:scale-110 
-    ${currentStep === index + 1 ? 'scale-100' : 'scale-105'}
-  "
-  style={{ transform: currentStep === index + 1 ? "scale(1)" : "scale(1.1)" }} loading="lazy"
-/>
+            src={content.image}
+            alt={`Background for step ${content.ScreenNumber}`}
+            className="
+              md:w-[1101px] w-full h-auto 
+              transition-transform duration-700
+              transform
+              scale-145 
+              md:scale-100 
+              sm:scale-110 
+              ${currentStep === index + 1 ? 'scale-100' : 'scale-105'}
+            "
+            style={{ transform: currentStep === index + 1 ? "scale(1)" : "scale(1.1)" }} loading="lazy"
+          />
 
 
               {/* Circle Indicators Container */}
@@ -211,8 +197,6 @@ const AutismTest = () => {
                   </div>
                 ))}
               </div>
-
-
 
             </div>
           </div>

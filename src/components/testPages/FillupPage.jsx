@@ -151,7 +151,7 @@ export const FillupPage = () => {
             </div>
           </div>
         ) : (
-          <WebcamMicTest />
+          <CalibrationPage />
         )}
       </div>
     </>
