@@ -77,7 +77,7 @@ export const FillupPage = () => {
               </p>
 
               <form className="space-y-4">
-                <select className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <select className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500">
                   <option className="bg-[#1A0C25]">Choose Language</option>
                   <option className="bg-[#1A0C25]" value="en">English</option>
                   <option className="bg-[#1A0C25]" value="es">Spanish</option>
@@ -88,13 +88,13 @@ export const FillupPage = () => {
                 <input
                   type="text"
                   placeholder="Patient Name"
-                  className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full placeholder-gray-500 border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 
                 <input
                   type="text"
                   placeholder="Patient ID"
-                  className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full placeholder-gray-500 border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 
                 {/* Date Picker for DOB */}
@@ -102,7 +102,7 @@ export const FillupPage = () => {
                   selected={dob}
                   onChange={handleDateChange}
                   placeholderText="Patient DOB"
-                  className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full placeholder-gray-500 border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 
                 {/* Automatically populated fields for age */}
@@ -111,7 +111,7 @@ export const FillupPage = () => {
                   placeholder="Patient Age (Years)"
                   value={ageYears}
                   readOnly
-                  className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full placeholder-gray-500 border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 
                 <input
@@ -119,7 +119,7 @@ export const FillupPage = () => {
                   placeholder="Patient Age (Months)"
                   value={ageMonths}
                   readOnly
-                  className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full placeholder-gray-500 border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 
                 <input
@@ -127,7 +127,7 @@ export const FillupPage = () => {
                   placeholder="Patient Year"
                   value={ageFullYear}
                   readOnly
-                  className="bg-[#1A0C25] text-white px-4 py-3 rounded-lg w-full placeholder-gray-500 border border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 
                 <div className="flex justify-center items-center gap-2 max-sm:flex-col">
