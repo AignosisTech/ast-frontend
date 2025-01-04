@@ -7,10 +7,10 @@ import Circle from "./Circle"; // Import Circle component
 import "bootstrap/dist/css/bootstrap.min.css";
 import { encryptCalibrationData, encryptPassword } from "./components/utils/EncryptionUtils";
 import { v4 as uuidv4 } from 'uuid';
-import config from './config';
+// import config from './config';
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = config.server_base_url + '/rest/calibration/data/';
+  const SERVER_MIDDLEWARE_URL = 'http://35.200.217.63:5001/rest/calibration/data/';
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
   const TRANSACTION_IDENTIFIER = uuidv4()
 
