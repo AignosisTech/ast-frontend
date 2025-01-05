@@ -52,7 +52,7 @@ const Header = () => {
         {/* Logo Section */}
         <div className="relative inline-block">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 blur-lg opacity-60 rounded-lg"></div>
-          <Link to="/" onClick={() => handleLinkClick('/')} className="relative md:text-xl 2xl:text-3xl font-semibold tracking-wide text-white z-10">
+          <Link to="/" onClick={() => handleLinkClick('/')} className="relative md:text-xl 2xl:text-3xl ml-5 font-semibold tracking-wide text-white z-10">
             Ai.gnosis
           </Link>
         </div>
@@ -69,6 +69,7 @@ const Header = () => {
         to=""
         onClick={() => handleServiceClick('/service1')} // Updated function name
         className={`text-sm md:text-base font-raleway text-[#F6E8FB] ${selectedService === '/service1' ? 'border-b-2 border-white' : ''}`} // Updated condition
+        style={{ textDecoration: "none" }}
       >
         Services
       </Link>
@@ -87,9 +88,10 @@ const Header = () => {
     <Link 
       to="/service1" 
       onClick={() => handleServiceClick('/service1')}
-      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1]  transition duration-200 ${
+      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1] text-white transition duration-200 ${
         activeLink === '/service1' ? 'text-[#B740A1]' : ''
       }`}
+      style={{ textDecoration: "none" }}
       aria-label="Service 1"
     >
       Assessments & Evaluation
@@ -99,9 +101,10 @@ const Header = () => {
     <Link 
       to="/service2" 
       onClick={() => handleServiceClick('/service2')}
-      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1]  transition duration-200 ${
+      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1] text-white transition duration-200 ${
         activeLink === '/service2' ? 'text-[#B740A1]' : ''
       }`}
+      style={{ textDecoration: "none" }}
       aria-label="Service 2"
     >
       Speech & Language
@@ -111,9 +114,10 @@ const Header = () => {
     <Link 
       to="/service3" 
       onClick={() => handleServiceClick('/service3')}
-      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1]  transition duration-200 ${
+      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1] text-white  transition duration-200 ${
         activeLink === '/service3' ? 'text-[#B740A1]' : ''
       }`}
+      style={{ textDecoration: "none" }}
       aria-label="Service 3"
     >
       Behaviour Therapy
@@ -123,9 +127,10 @@ const Header = () => {
     <Link 
       to="/service4" 
       onClick={() => handleServiceClick('/service4')}
-      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1]  transition duration-200 ${
+      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1] text-white  transition duration-200 ${
         activeLink === '/service4' ? 'text-[#B740A1]' : ''
       }`}
+      style={{ textDecoration: "none" }}
       aria-label="Service 4"
     >
       Occupational Therapy
@@ -135,9 +140,10 @@ const Header = () => {
     <Link 
       to="/service5" 
       onClick={() => handleServiceClick('/service5')}
-      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1] transition duration-200 ${
+      className={`block p-3 border-b-2 border-[#952981] w-[18vw] hover:text-[#B740A1] text-white transition duration-200 ${
         activeLink === '/service5' ? 'text-[#B740A1]' : ''
       }`}
+      style={{ textDecoration: "none" }}
       aria-label="Service 5"
     >
       Special Education
@@ -154,6 +160,7 @@ const Header = () => {
             to="/aboutus" 
             onClick={() => handleLinkClick('/aboutus')}
             className={`text-sm md:text-base font-raleway text-[#F6E8FB] ${activeLink === '/aboutus' ? 'border-b-2 border-white' : ''}`}
+            style={{ textDecoration: "none" }}
           >
             About Us
           </Link>
@@ -161,6 +168,7 @@ const Header = () => {
             to="/prices" 
             onClick={() => handleLinkClick('/prices')}
             className={`text-sm md:text-base font-raleway text-[#F6E8FB] ${activeLink === '/prices' ? 'border-b-2 border-white' : ''}`}
+            style={{ textDecoration: "none" }}
           >
             Prices
           </Link>
@@ -168,6 +176,7 @@ const Header = () => {
             to="/BlogPages" 
             onClick={() => handleLinkClick('/prices')}
             className={`text-sm md:text-base font-raleway text-[#F6E8FB] ${activeLink === '/BlogPages' ? 'border-b-2 border-white' : ''}`}
+            style={{ textDecoration: "none" }}
           >
             Blogs
           </Link>
@@ -230,35 +239,35 @@ const Header = () => {
                   <Link
                     to="/service1"
                     
-                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1]"
+                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1] text-white"
                   >
                     Assessments & Evaluation
                   </Link>
                   <Link
                     to="/service2"
                     
-                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1]"
+                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1] text-white"
                   >
                     Speech & Language
                   </Link>
                   <Link
                     to="/service3"
                     
-                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1]"
+                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1] text-white"
                   >
                     Behaviour Therapy
                   </Link>
                   <Link
                     to="/service4"
                     
-                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1]"
+                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1] text-white"
                   >
                     Occupational Therapy
                   </Link>
                   <Link
                     to="/service5"
                     
-                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1]"
+                    className="text-sm text-[#F6E8FB] hover:text-[#B740A1] text-white"
                   >
                     Special Education
                   </Link>
@@ -305,6 +314,7 @@ const Header = () => {
               </div>
             </div>
           </div>
+          
         </div>
       )}
     </div>
