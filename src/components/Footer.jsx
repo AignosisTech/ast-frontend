@@ -36,26 +36,26 @@ function Footer() {
                         <div className="w-12 h-12 md:w-16 md:h-16 text-2xl md:text-3xl rounded-full text-[#731762] bg-[#2d153f] flex justify-center items-center">
                             <FaBlog />
                         </div>
-                        <h1 className="text-sm md:text-base mt-2">Blog</h1>
+                        <h1 className="text-sm md:text-base mt-2 text-white" style={{ textDecoration: "none" }}>Blog</h1>
                     </Link>
                     <Link to='/privacy' className="flex flex-col items-center">
                         <div className="w-12 h-12 md:w-16 md:h-16 text-2xl md:text-3xl rounded-full text-[#731762] bg-[#2d153f] flex justify-center items-center">
                             <FaLock />
                         </div>
-                        <h1 className="text-sm md:text-base mt-2">Privacy Policy</h1>
+                        <h1 className="text-sm md:text-base mt-2 text-white" style={{ textDecoration: "none" }}>Privacy Policy</h1>
                     </Link>
                     
                     <Link to='/terms' className="flex flex-col items-center">
   <div className="w-12 h-12 md:w-16 md:h-16 text-2xl md:text-3xl rounded-full text-[#731762] bg-[#2d153f] flex justify-center items-center">
     <FaFileAlt />
   </div>
-  <h1 className="text-sm md:text-base mt-2">Terms & Conditions</h1>
+  <h1 className="text-sm md:text-base mt-2 text-white" style={{ textDecoration: "none" }}>Terms & Conditions</h1>
 </Link>
 <Link to='/refundandreschedule' className="flex flex-col items-center">
   <div className="w-12 h-12 md:w-16 md:h-16 text-2xl md:text-3xl rounded-full text-[#731762] bg-[#2d153f] flex justify-center items-center">
     <FaMoneyBillAlt />
   </div>
-  <h1 className="text-sm md:text-base mt-2">Refund & Reschedule</h1>
+  <h1 className="text-sm md:text-base mt-2 text-white" style={{ textDecoration: "none" }}>Refund & Reschedule</h1>
 </Link>
 
  
