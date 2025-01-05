@@ -53,6 +53,7 @@ const App = () => {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TAndC />} />
         <Route path="/refundandreschedule" element={<RefundAndReschedule />} />
+        <Route path="/calibrationpage" element={<CalibrationPage />} />
         
         {/* Add route for DogCalibration */}
         <Route path="/dogcalibration" element={<DogCalibration />} />
