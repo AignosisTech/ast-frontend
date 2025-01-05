@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 // import config from './config';
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
+  const SERVER_MIDDLEWARE_URL = 'http://35.200.217.63:5001/rest/calibration/data/';
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
   const TRANSACTION_IDENTIFIER = uuidv4()
 
@@ -20,7 +20,10 @@ const DogCalibration = () => {
   const [isCircleVisible, setIsCircleVisible] = useState(true);
   const [currentCircleIndex, setCurrentCircleIndex] = useState(0);
   const [parentDimensions, setParentDimensions] = useState([0, 0]);
-  const [videoResolution, setVideoResolution] = useState([]);
+
+  // const [videoResolution, setVideoResolution] = useState([]);
+  const [videoResolution, setVideoResolution] = useState([640, 480]); // Static resolution for sample images
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [clickTimes, setClickTimes] = useState([]);
@@ -47,29 +50,29 @@ const DogCalibration = () => {
       setParentDimensions([clientWidth, clientHeight]);
     }
 
-    const startWebcam = async () => {
-      if (!navigator.mediaDevices.getUserMedia) {
-        console.error("getUserMedia not supported");
-        return;
-      }
+    // const startWebcam = async () => {
+    //   if (!navigator.mediaDevices.getUserMedia) {
+    //     console.error("getUserMedia not supported");
+    //     return;
+    //   }
 
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoRef.current.srcObject = stream;
+    //   try {
+    //     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    //     videoRef.current.srcObject = stream;
 
-        const handleMetadata = () => {
-          const width = videoRef.current.videoWidth;
-          const height = videoRef.current.videoHeight;
-          setVideoResolution([width, height]);
-        };
+    //     const handleMetadata = () => {
+    //       const width = videoRef.current.videoWidth;
+    //       const height = videoRef.current.videoHeight;
+    //       setVideoResolution([width, height]);
+    //     };
 
-        videoRef.current.onloadedmetadata = handleMetadata;
-      } catch (error) {
-        console.error("Webcam start error:", error);
-      }
-    };
+    //     videoRef.current.onloadedmetadata = handleMetadata;
+    //   } catch (error) {
+    //     console.error("Webcam start error:", error);
+    //   }
+    // };
 
-    startWebcam();
+    // startWebcam();
   }, []);
 
   const handleNextButtonClick = () => {
@@ -77,20 +80,25 @@ const DogCalibration = () => {
   };
 
   const captureFrame = () => {
-    if (canvasRef.current && videoRef.current) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+    // if (canvasRef.current && videoRef.current) {
+    //   const canvas = canvasRef.current;
+    //   const context = canvas.getContext("2d");
 
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+    //   canvas.width = videoRef.current.videoWidth;
+    //   canvas.height = videoRef.current.videoHeight;
 
-      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    //   context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-      const frameData = canvas.toDataURL("image/jpeg");
-      return frameData;
-    } else {
-      console.warn("Frame capture failed: canvasRef or videoRef is null");
-    }
+    //   const frameData = canvas.toDataURL("image/jpeg");
+    //   return frameData;
+    // } else {
+    //   console.warn("Frame capture failed: canvasRef or videoRef is null");
+    // }
+
+    //sending sample image
+    const sampleImageUrl = "/DancingDog.png";  // Path to sample image
+
+    return sampleImageUrl;
   };
 
   const handleCircleClick = async () => {
@@ -111,13 +119,16 @@ const DogCalibration = () => {
         }, 33) // Adjusted to 33ms for ~30 fps
       );
       setCurrentCircleIndex(currentCircleIndex + 1);
-    } else if (currentCircleIndex < circleCoordinates.length - 1) {
+    } else if (currentCircleIndex < circleCoordinates.length - 1 && currentCircleIndex > 0) {
       setClickTimes((clicktimes) => [
         ...clicktimes,
         (Date.now() - startTime) / 1000
       ]);
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else {
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
       setClickTimes((clicktimes) => [
         ...clicktimes,
         (Date.now() - startTime) / 1000
@@ -125,9 +136,21 @@ const DogCalibration = () => {
       var finalClickTimes = [...clickTimes, (Date.now() - startTime) / 1000];
       setIsCircleVisible(false);
 
-      const USER_ID = 'frontman68' 
+      const timeElapsed = (Date.now() - startTime) / 1000;
+      console.log(`It took ${timeElapsed.toFixed(2)} seconds for the calibration`);
+
+      console.log(`Number of frames captured: ${frames.length}`);
+
+      let fps = parseInt((frames.length / parseInt(timeElapsed.toString())).toString());
+
+      console.log(`Average FPS: ${fps}`);
+
+
+      const USER_ID = '65bbbb04-f29f-4d6b-b207-999e08bef384'; 
       const calibrationData = {
         patient_uid: USER_ID,
+        dob: '20240601',
+        sex: 1, // 1 for female, 0 for male
         transaction_id: TRANSACTION_IDENTIFIER,
         camera_resolution: { width: videoResolution[0], height: videoResolution[1] },
         screen_resolution: { width: window.innerWidth, height: window.innerHeight },
@@ -137,10 +160,16 @@ const DogCalibration = () => {
       var calibration_points = []
       for (let i = 0; i < finalClickTimes.length; i++) {
         let currentClickFramesList = [];
-        let frameRangeStartIndex = Math.floor(30 * finalClickTimes[i]);
+        let frameRangeStartIndex = Math.floor(fps * finalClickTimes[i]);
         currentClickFramesList.push({
           timestamp: finalClickTimes[i],
-          frame: frames[frameRangeStartIndex],
+          // frame: frames[frameRangeStartIndex],
+          frame: "/DancingDog.png",
+        });
+        currentClickFramesList.push({
+          timestamp: finalClickTimes[i] + 1 / fps,
+          // frame: frames[frameRangeStartIndex + 1],
+          frame: "/DancingDog.png",
         });
         calibration_points.push({
           point: {
@@ -151,9 +180,6 @@ const DogCalibration = () => {
           frames: currentClickFramesList,
         });
       }
-
-      
-      console.log(`FINAL CALIBRATION DATA BEFORE ENCRYPTION: ${JSON.stringify(calibrationData)}`); // Fixed template literal
 
       // ENCRYPTION STARTS HERE
 
