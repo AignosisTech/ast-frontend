@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 // import config from './config';
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = 'http://35.200.217.63:5001/rest/calibration/data/';
+  const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
   const TRANSACTION_IDENTIFIER = uuidv4()
 
@@ -151,6 +151,9 @@ const DogCalibration = () => {
           frames: currentClickFramesList,
         });
       }
+
+      
+      console.log(`FINAL CALIBRATION DATA BEFORE ENCRYPTION: ${JSON.stringify(calibrationData)}`); // Fixed template literal
 
       // ENCRYPTION STARTS HERE
 
