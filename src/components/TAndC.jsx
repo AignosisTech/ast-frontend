@@ -50,7 +50,7 @@ const TAndC = () => {
 
 <p><b>How to Use Aignosis’s Website</b></p>
 <ul>
-    <li>To use the website (<a href="http://www.aignosis.com">www.aignosis.com</a>), users must provide accurate and complete information.</li>
+    <li>To use the website (<a href="https://www.aignosis.in">www.aignosis.in</a>), users must provide accurate and complete information.</li>
     <li>By using the website, you confirm that you are at least the age of majority or have consent to allow a minor dependent to use the site.</li>
 </ul>
 
