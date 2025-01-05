@@ -7,6 +7,7 @@ import BackgroundInformationForm from "./BackgroundInformationForm";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { differenceInYears, differenceInMonths } from "date-fns";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 
 export const FillupPage = () => {
   const [isBackInfoVisible, setIsBackInfoVisible] = useState(false);
@@ -14,13 +15,16 @@ export const FillupPage = () => {
   const [ageYears, setAgeYears] = useState("");
   const [ageMonths, setAgeMonths] = useState("");
   const [ageFullYear, setAgeFullYear] = useState("");
+  const navigate = useNavigate();  // Initialize the useNavigate hook
 
   const handleNextClick = async () => {
     try {
       // Request permission for webcam and microphone
       // await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       // If permission is granted, show the CalibrationPage
-      setIsBackInfoVisible(true);
+      // setIsBackInfoVisible(true);
+      //if permission go to download report page
+      navigate("/download");
     } catch (error) {
       console.error("Permission denied for webcam and microphone:", error);
       alert("Please allow webcam and microphone access to proceed.");
