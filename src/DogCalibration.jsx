@@ -33,11 +33,11 @@ const DogCalibration = () => {
     [50, 50], // left top
     [50, window.innerHeight / 2], // left mid
     [50, window.innerHeight - 100], // left bottom
-    // [window.innerWidth - 100, 50], // right top
-    // [window.innerWidth - 100, window.innerHeight / 2], // right mid
-    // [window.innerWidth - 100, window.innerHeight - 100], // right bottom
-    // [window.innerWidth / 2, 50], // mid top
-    // [window.innerWidth / 2, window.innerHeight - 100] // mid bottom
+    [window.innerWidth - 100, 50], // right top
+    [window.innerWidth - 100, window.innerHeight / 2], // right mid
+    [window.innerWidth - 100, window.innerHeight - 100], // right bottom
+    [window.innerWidth / 2, 50], // mid top
+    [window.innerWidth / 2, window.innerHeight - 100] // mid bottom
   ];
 
   useEffect(() => {
