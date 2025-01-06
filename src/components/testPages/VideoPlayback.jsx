@@ -1,8 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { encryptVideo } from '../EncryptionUtils';
 import { Link, useNavigate  } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const VideoPlayback = (props) => {
+
+  const location = useLocation()
+
   const videoRef = useRef(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
