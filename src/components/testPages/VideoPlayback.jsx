@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { encryptVideo } from '../EncryptionUtils';
 import { Link, useNavigate  } from 'react-router-dom';
 
-const VideoPlayback = () => {
+const VideoPlayback = (props) => {
   const videoRef = useRef(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -16,11 +16,9 @@ const VideoPlayback = () => {
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
-  const patientIUID = 'jdifjio2u4u248tu9q8ghg98439'
-  const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000/rest/';
-  const SERVER_MIDDLEWARE_ENDPOINT = 'http://35.207.211.80:5001/rest/';
-  const IN_USE_URL = SERVER_MIDDLEWARE_ENDPOINT + 'test/video_data';
-
+  const patientIUID = props.PATIENT_UID
+  const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000';
+  const SERVER_MIDDLEWARE_ENDPOINT = 'https://35.207.211.80';
 
 
   const cleanupMediaStream = () => {
@@ -99,7 +97,7 @@ const VideoPlayback = () => {
       const encryptedBlob = await encryptVideo(blob, aesKey);
       
       // Make sure that we are getting the JWK format return in this fetch call
-      const jwk = await fetch(LOCAL_MIDDLEWARE_ENDPOINT + 'return_rsa_public_key/').then(res => res.json());
+      const jwk = await fetch(SERVER_MIDDLEWARE_ENDPOINT + '/rest/return_rsa_public_key/').then(res => res.json());
     
       // Import the JWK key
       const publicKey = await window.crypto.subtle.importKey(
@@ -126,7 +124,7 @@ const VideoPlayback = () => {
       formData.append('encrypted_aes_key', new Blob([encryptedKey]));
       formData.append('patient_uid', patientIUID)
   
-      const response = await fetch(IN_USE_URL, {
+      const response = await fetch(SERVER_MIDDLEWARE_ENDPOINT + '/rest/test/video_data/', {
         method: 'POST',
         body: formData,
       });

@@ -12,7 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 const DogCalibration = () => {
   const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
-  const TRANSACTION_IDENTIFIER = uuidv4()
+  const TRANSACTION_ID = uuidv4()
+  const PATIENT_UID = uuidv4()
 
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
@@ -125,10 +126,9 @@ const DogCalibration = () => {
       var finalClickTimes = [...clickTimes, (Date.now() - startTime) / 1000];
       setIsCircleVisible(false);
 
-      const USER_ID = 'frontman68' 
       const calibrationData = {
-        patient_uid: USER_ID,
-        transaction_id: TRANSACTION_IDENTIFIER,
+        patient_uid: PATIENT_UID,
+        transaction_id: TRANSACTION_ID,
         camera_resolution: { width: videoResolution[0], height: videoResolution[1] },
         screen_resolution: { width: window.innerWidth, height: window.innerHeight },
         debug: true
