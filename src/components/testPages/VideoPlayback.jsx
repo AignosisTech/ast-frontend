@@ -67,35 +67,37 @@ const VideoPlayback = () => {
     console.log("Cleanup complete");
   };
 
-  // const startWebcamRecording = async () => {
-  //   try {
-  //     const stream = await navigator.mediaDevices.getUserMedia({
-  //       video: true,
-  //       audio: false
-  //     });
+  const startWebcamRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false
+      });
 
-  //     videoStreamRef.current = stream;
-  //     webcamRef.current.srcObject = stream;
+      videoStreamRef.current = stream;
+      webcamRef.current.srcObject = stream;
 
-  //     const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream);
 
-  //     mediaRecorderRef.current = mediaRecorder;
-  //     recordedChunksRef.current = [];
+      mediaRecorderRef.current = mediaRecorder;
+      recordedChunksRef.current = [];
 
-  //     mediaRecorder.ondataavailable = (event) => {
-  //       if (event.data.size > 0) {
-  //         recordedChunksRef.current.push(event.data);
-  //       }
-  //     };
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
 
-  //     mediaRecorder.start(1000);
-  //     setIsRecording(true);
-  //     console.log("Webcam Recording");
-  //   } catch (error) {
-  //     console.error('Error accessing webcam:', error);
-  //     alert('Error accessing webcam. Please ensure you have granted camera permissions.');
-  //   }
-  // };
+      mediaRecorder.start(1000);
+      setIsRecording(true);
+      console.log("Webcam Recording");
+    } catch (error) {
+      console.error('Error accessing webcam:', error);
+      alert('Error accessing webcam. Please ensure you have granted camera permissions.');
+
+      //TODO: redirect to "take assessment page"
+    }
+  };
 
   const uploadRecording = async (blob) => {
     try {
@@ -163,8 +165,8 @@ const VideoPlayback = () => {
       cleanupMediaStream();
       setIsUploading(false);
 
-      // window.location.replace('/test/fillup');
-      navigate("/test/fillup");
+      window.location.replace('/test/fillup');
+      // navigate("/test/fillup");
     } catch (error) {
       console.error("Error uploading video:", error);
       cleanupMediaStream();
@@ -172,7 +174,7 @@ const VideoPlayback = () => {
       window.location.replace("/test/fillup");
       alert("Failed to upload video. Please try again.");
 
-      // console.log("Failed to Upload Video");
+      console.log("Failed to Upload Video");
     }
   };
 
@@ -226,7 +228,7 @@ const VideoPlayback = () => {
       return;
     }
     if (!hasStartedOnce) {
-      // startWebcamRecording();
+      startWebcamRecording();
       setHasStartedOnce(true);
     } else if (mediaRecorderRef.current) {
       resumeRecording();
