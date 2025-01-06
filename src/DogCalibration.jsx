@@ -74,7 +74,9 @@ const DogCalibration = () => {
   }, []);
 
   const handleNextButtonClick = () => {
-    navigate("/video");  // Navigate to the video page
+    navigate("/video", {
+      state: { PATIENT_UID, TRANSACTION_ID },
+    });  // Navigate to the video page
   };
 
   const captureFrame = () => {

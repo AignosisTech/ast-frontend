@@ -16,7 +16,7 @@ const VideoPlayback = (props) => {
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
-  const patientIUID = props.PATIENT_UID
+  const { patientUID, transactionId } = location.state || {};
   const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000';
   const SERVER_MIDDLEWARE_ENDPOINT = 'https://35.207.211.80';
 
@@ -122,7 +122,8 @@ const VideoPlayback = (props) => {
       const formData = new FormData();
       formData.append('video', encryptedBlob, 'encrypted-test.bin');
       formData.append('encrypted_aes_key', new Blob([encryptedKey]));
-      formData.append('patient_uid', patientIUID)
+      formData.append('patient_uid', patientUID)
+      formData.append('transaction_id', transactionId)
   
       const response = await fetch(SERVER_MIDDLEWARE_ENDPOINT + '/rest/test/video_data/', {
         method: 'POST',
