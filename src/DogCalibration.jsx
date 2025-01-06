@@ -12,9 +12,9 @@ import { v4 as uuidv4 } from 'uuid';
 const DogCalibration = () => {
   const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
-  const TRANSACTION_ID = uuidv4()
-  const PATIENT_UID = uuidv4()
-
+  
+  const [TRANSACTION_ID, SET_TRANSACTION_ID] = useState(uuidv4())
+  const [PATIENT_UID, SET_PATIENT_UID] = useState(uuidv4())
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
@@ -42,6 +42,8 @@ const DogCalibration = () => {
   ];
 
   useEffect(() => {
+    
+
     // Get the webcam stream and metadata on mount
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
