@@ -20,8 +20,8 @@ const VideoPlayback = () => {
   const videoStreamRef = useRef(null);
 
   const { PATIENT_UID, TRANSACTION_ID } = location.state || {};
-  const LOCAL_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
-  const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
+  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+  // const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
 
 
   if (!PATIENT_UID || !TRANSACTION_ID) {
@@ -136,7 +136,7 @@ const VideoPlayback = () => {
 
       const formData = new FormData();
       formData.append("video", encryptedBlob, "encrypted-test.bin");
-      formData.append("encrypted_aes_key", new Blob([encryptedKey]));
+      formData.append("encrypted_aes_key", new Blob([encryptedKey], { type: 'application/octet-stream' }));
       formData.append("patient_uid", PATIENT_UID);
       formData.append("transaction_id", TRANSACTION_ID);
 
@@ -165,7 +165,7 @@ const VideoPlayback = () => {
       cleanupMediaStream();
       setIsUploading(false);
 
-      window.location.replace('/test/fillup');
+      // window.location.replace('/test/fillup');
       // navigate("/test/fillup");
     } catch (error) {
       console.error("Error uploading video:", error);
@@ -211,6 +211,8 @@ const VideoPlayback = () => {
         const blob = new Blob(recordedChunksRef.current, {
           type: "video/webm",
         });
+
+        console.log("Uploading Video");
         uploadRecording(blob);
       };
     }
@@ -246,11 +248,6 @@ const VideoPlayback = () => {
   const handleVideoEnd = async () => {
     setIsVideoEnded(true);
     stopRecording();
-    const sampleVideo = await fetch("/DancingDog.mp4"); // Fetch the video file
-    const blob = await sampleVideo.blob(); // Convert sampleVideo to a Blob
-    console.log("Uploading Video");
-    uploadRecording(blob);
-    console.log("Video ended.");
   };
 
   return (
