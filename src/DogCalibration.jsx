@@ -10,8 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 // import config from './config';
 
 const DogCalibration = () => {
-  // const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
-  const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
+  const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
+  // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
   
   const [TRANSACTION_ID, SET_TRANSACTION_ID] = useState(uuidv4())
   const [PATIENT_UID, SET_PATIENT_UID] = useState(uuidv4())

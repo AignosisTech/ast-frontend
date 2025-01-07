@@ -20,8 +20,8 @@ const VideoPlayback = () => {
   const videoStreamRef = useRef(null);
 
   const { PATIENT_UID, TRANSACTION_ID } = location.state || {};
-  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
-  // const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
+  // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+  const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
 
 
   if (!PATIENT_UID || !TRANSACTION_ID) {
