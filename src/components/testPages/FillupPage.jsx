@@ -7,6 +7,7 @@ import BackgroundInformationForm from "./BackgroundInformationForm";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { differenceInYears, differenceInMonths } from "date-fns";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 
 export const FillupPage = () => {
   const [isBackInfoVisible, setIsBackInfoVisible] = useState(false);
@@ -14,13 +15,18 @@ export const FillupPage = () => {
   const [ageYears, setAgeYears] = useState("");
   const [ageMonths, setAgeMonths] = useState("");
   const [ageFullYear, setAgeFullYear] = useState("");
+  const [dataCollectionMode, setDataCollectionMode] = useState([]); // New state for selected options
+  const navigate = useNavigate();  // Initialize the useNavigate hook
 
   const handleNextClick = async () => {
     try {
       // Request permission for webcam and microphone
       // await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       // If permission is granted, show the CalibrationPage
-      setIsBackInfoVisible(true);
+      // setIsBackInfoVisible(true);
+      //if permission go to download report page
+      // navigate("/patienthistory");
+      navigate("/dataCollection", { state: { dataCollectionMode } });
     } catch (error) {
       console.error("Permission denied for webcam and microphone:", error);
       alert("Please allow webcam and microphone access to proceed.");
@@ -38,6 +44,16 @@ export const FillupPage = () => {
     setAgeYears(years);
     setAgeMonths(months);
     setAgeFullYear(fullYear);
+  };
+
+  // Function to handle checkbox change
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+    setDataCollectionMode((prev) =>{
+      const updatedData= checked ? [...prev, value] : prev.filter((item) => item !== value)
+      console.log(updatedData);
+      return updatedData;
+    });
   };
 
   return (
@@ -129,6 +145,40 @@ export const FillupPage = () => {
                   readOnly
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
+
+                {/* Data Collection Mode Section */}
+                <div className="text-white">
+                <h3 className="font-semibold mb-2 text-sm">Data Collection Mode</h3>
+                <div className="space-y-2">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value="INCLEN"
+                        onChange={handleCheckboxChange}
+                        className="accent-pink-500"
+                      />
+                      <span>INCLEN</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value="ISAA"
+                        onChange={handleCheckboxChange}
+                        className="accent-pink-500"
+                      />
+                      <span>ISAA</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value="CARS"
+                        onChange={handleCheckboxChange}
+                        className="accent-pink-500"
+                      />
+                      <span>CARS</span>
+                    </label>
+                  </div>
+                </div>
 
                 <div className="flex justify-center items-center gap-2 max-sm:flex-col">
                   <Link

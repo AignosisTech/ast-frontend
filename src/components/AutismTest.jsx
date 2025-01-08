@@ -151,7 +151,8 @@ const AutismTest = () => {
               onClick={()=>{
                 console.log('we are going to take the assessment now')
               }}
-                to="/test/fillup"
+                // to="/test/fillup"
+                to="/calibrationpage"
                 className={`px-6 py-2 bg-transparent border border-pink-400 rounded-full text-white hover:bg-[#B7407D] hover:text-white transition w-[206px] ${currentStep === index + 1 ? 'slide-right-fast' : ''}`}
                 style={{ textDecoration: "none" }}
 

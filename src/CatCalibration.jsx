@@ -1,4 +1,4 @@
-// DogCalibration.jsx
+// CatCalibration.jsx
 
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
@@ -9,12 +9,11 @@ import { encryptCalibrationData, encryptPassword } from "./components/utils/Encr
 import { v4 as uuidv4 } from 'uuid';
 // import config from './config';
 
-const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
+const CatCalibration = () => {
+  const SERVER_MIDDLEWARE_URL = 'http://35.200.217.63:5001/rest/calibration/data/';
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
-  
-  const [TRANSACTION_ID, SET_TRANSACTION_ID] = useState(uuidv4())
-  const [PATIENT_UID, SET_PATIENT_UID] = useState(uuidv4())
+  const TRANSACTION_IDENTIFIER = uuidv4();
+
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
@@ -45,8 +44,6 @@ const DogCalibration = () => {
   ];
 
   useEffect(() => {
-    
-
     // Get the webcam stream and metadata on mount
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
@@ -79,9 +76,7 @@ const DogCalibration = () => {
   }, []);
 
   const handleNextButtonClick = () => {
-    navigate("/video", {
-      state: { PATIENT_UID, TRANSACTION_ID },
-    });  // Navigate to the video page
+    navigate("/test/fillup");  // Navigate to the video page
   };
 
   const captureFrame = () => {
@@ -101,13 +96,13 @@ const DogCalibration = () => {
     // }
 
     //sending sample image
-    const sampleImageUrl = "/DancingDog.png";  // Path to sample image
+    const sampleImageUrl = "/DancingCat.jpg";  // Path to sample image
 
     return sampleImageUrl;
   };
 
   const handleCircleClick = async () => {
-    const audio = new Audio("/dog_bark.mp3"); // Path to your audio file
+    const audio = new Audio("/CatMeow.mp3"); // Path to your audio file
     try {
       await audio.play(); // Play the audio
     } catch (error) {
@@ -141,11 +136,6 @@ const DogCalibration = () => {
       var finalClickTimes = [...clickTimes, (Date.now() - startTime) / 1000];
       setIsCircleVisible(false);
 
-<<<<<<< Updated upstream
-      const calibrationData = {
-        patient_uid: PATIENT_UID,
-        transaction_id: TRANSACTION_ID,
-=======
       const timeElapsed = (Date.now() - startTime) / 1000;
       console.log(`It took ${timeElapsed.toFixed(2)} seconds for the calibration`);
 
@@ -162,7 +152,6 @@ const DogCalibration = () => {
         dob: '20240601',
         sex: 1, // 1 for female, 0 for male
         transaction_id: TRANSACTION_IDENTIFIER,
->>>>>>> Stashed changes
         camera_resolution: { width: videoResolution[0], height: videoResolution[1] },
         screen_resolution: { width: window.innerWidth, height: window.innerHeight },
         debug: true
@@ -175,12 +164,12 @@ const DogCalibration = () => {
         currentClickFramesList.push({
           timestamp: finalClickTimes[i],
           // frame: frames[frameRangeStartIndex],
-          frame: "/DancingDog.png",
+          frame: "/DancingCat.jpg",
         });
         currentClickFramesList.push({
           timestamp: finalClickTimes[i] + 1 / fps,
           // frame: frames[frameRangeStartIndex + 1],
-          frame: "/DancingDog.png",
+          frame: "/DancingCat.jpg",
         });
         calibration_points.push({
           point: {
@@ -191,9 +180,6 @@ const DogCalibration = () => {
           frames: currentClickFramesList,
         });
       }
-
-      
-      console.log(`FINAL CALIBRATION DATA BEFORE ENCRYPTION: ${JSON.stringify(calibrationData)}`); // Fixed template literal
 
       // ENCRYPTION STARTS HERE
 
@@ -274,7 +260,7 @@ const DogCalibration = () => {
           x={circleCoordinates[currentCircleIndex][0]}
           y={circleCoordinates[currentCircleIndex][1]}
           radius={50}
-          imageUrl="/dog_face.png"
+          imageUrl="/CatFace.png"
         />
       )}
 
@@ -311,4 +297,4 @@ const DogCalibration = () => {
   );
 };
 
-export default DogCalibration;
+export default CatCalibration;

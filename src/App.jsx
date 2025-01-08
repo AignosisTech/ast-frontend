@@ -26,6 +26,12 @@ import AutismTest from './components/AutismTest';
 import DownloadPage from './components/testPages/DownloadPage';
 import DogCalibration from './DogCalibration'; // New import for DogCalibration
 import VideoPlayback from './components/testPages/VideoPlayback';
+import CatCalibration from './CatCalibration';
+import CARS from './components/patient-history-form/CARS';
+import ISAA from './components/patient-history-form/ISAA';
+import INCLEN from './components/patient-history-form/INCLEN';
+import Error from './Error';
+import DataCollectionPage from './DataCollectionPage';
 
 const App = () => {
   return (
@@ -53,9 +59,16 @@ const App = () => {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TAndC />} />
         <Route path="/refundandreschedule" element={<RefundAndReschedule />} />
-        
+        <Route path="/calibrationpage" element={<CalibrationPage />} />
+        <Route path="/CARS" element={<CARS />} />
+        <Route path="/ISAA" element={<ISAA />} />
+        <Route path="/INCLEN" element={<INCLEN />} />
+        <Route path="/Error" element={<Error />} />
+        <Route path="/dataCollection" element={<DataCollectionPage />} />
+
         {/* Add route for DogCalibration */}
         <Route path="/dogcalibration" element={<DogCalibration />} />
+        <Route path="/catcalibration" element={<CatCalibration />} />
       </Routes>
     </>
   );
