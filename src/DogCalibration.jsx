@@ -5,16 +5,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import Circle from "./Circle"; // Import Circle component
 import "bootstrap/dist/css/bootstrap.min.css";
-import { encryptCalibrationData, encryptPassword } from "./components/utils/EncryptionUtils";
-import { v4 as uuidv4 } from 'uuid';
+import {
+  encryptCalibrationData,
+  encryptPassword,
+} from "./components/utils/EncryptionUtils";
+import { v4 as uuidv4 } from "uuid";
 // import config from './config';
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = 'https://35.207.211.80/rest/calibration/data/';
+  const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
-  
-  const [TRANSACTION_ID, SET_TRANSACTION_ID] = useState(uuidv4())
-  const [PATIENT_UID, SET_PATIENT_UID] = useState(uuidv4())
+
+  const [TRANSACTION_ID, ] = useState(uuidv4());
+  const [PATIENT_UID, ] = useState(uuidv4());
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
@@ -22,7 +25,6 @@ const DogCalibration = () => {
   const [currentCircleIndex, setCurrentCircleIndex] = useState(0);
   const [parentDimensions, setParentDimensions] = useState([0, 0]);
 
-  // const [videoResolution, setVideoResolution] = useState([]);
   const [videoResolution, setVideoResolution] = useState([640, 480]); // Static resolution for sample images
 
   const videoRef = useRef(null);
@@ -41,69 +43,65 @@ const DogCalibration = () => {
     [window.innerWidth - 100, window.innerHeight / 2], // right mid
     [window.innerWidth - 100, window.innerHeight - 100], // right bottom
     [window.innerWidth / 2, 50], // mid top
-    [window.innerWidth / 2, window.innerHeight - 100] // mid bottom
+    [window.innerWidth / 2, window.innerHeight - 100], // mid bottom
   ];
 
   useEffect(() => {
-    
-
     // Get the webcam stream and metadata on mount
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
       setParentDimensions([clientWidth, clientHeight]);
     }
 
-    // const startWebcam = async () => {
-    //   if (!navigator.mediaDevices.getUserMedia) {
-    //     console.error("getUserMedia not supported");
-    //     return;
-    //   }
+    const startWebcam = async () => {
+      if (!navigator.mediaDevices.getUserMedia) {
+        console.error("getUserMedia not supported");
+        return;
+      }
 
-    //   try {
-    //     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    //     videoRef.current.srcObject = stream;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        videoRef.current.srcObject = stream;
 
-    //     const handleMetadata = () => {
-    //       const width = videoRef.current.videoWidth;
-    //       const height = videoRef.current.videoHeight;
-    //       setVideoResolution([width, height]);
-    //     };
+        const handleMetadata = () => {
+          const width = videoRef.current.videoWidth;
+          const height = videoRef.current.videoHeight;
+          setVideoResolution([width, height]);
+        };
 
-    //     videoRef.current.onloadedmetadata = handleMetadata;
-    //   } catch (error) {
-    //     console.error("Webcam start error:", error);
-    //   }
-    // };
+        videoRef.current.onloadedmetadata = handleMetadata;
+      } catch (error) {
+        console.error("Webcam start error:", error);
+      }
+    };
 
-    // startWebcam();
+    startWebcam();
   }, []);
 
   const handleNextButtonClick = () => {
     navigate("/video", {
       state: { PATIENT_UID, TRANSACTION_ID },
-    });  // Navigate to the video page
+    }); // Navigate to the video page
   };
 
   const captureFrame = () => {
-    // if (canvasRef.current && videoRef.current) {
-    //   const canvas = canvasRef.current;
-    //   const context = canvas.getContext("2d");
+    if (canvasRef.current && videoRef.current) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
 
-    //   canvas.width = videoRef.current.videoWidth;
-    //   canvas.height = videoRef.current.videoHeight;
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
 
-    //   context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-    //   const frameData = canvas.toDataURL("image/jpeg");
-    //   return frameData;
-    // } else {
-    //   console.warn("Frame capture failed: canvasRef or videoRef is null");
-    // }
-
-    //sending sample image
-    const sampleImageUrl = "/DancingDog.png";  // Path to sample image
-
-    return sampleImageUrl;
+      const frameData = canvas.toDataURL("image/jpeg");
+      return frameData;
+    } else {
+      console.warn("Frame capture failed: canvasRef or videoRef is null");
+      // TODO: send back to take assignment page, with alert saying some error occurred
+    }
   };
 
   const handleCircleClick = async () => {
@@ -124,63 +122,56 @@ const DogCalibration = () => {
         }, 33) // Adjusted to 33ms for ~30 fps
       );
       setCurrentCircleIndex(currentCircleIndex + 1);
-    } else if (currentCircleIndex < circleCoordinates.length - 1 && currentCircleIndex > 0) {
+    } else if (
+      currentCircleIndex < circleCoordinates.length - 1 &&
+      currentCircleIndex > 0
+    ) {
       setClickTimes((clicktimes) => [
         ...clicktimes,
-        (Date.now() - startTime) / 1000
+        (Date.now() - startTime) / 1000,
       ]);
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else {
-      function sleep(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      }
+      // function sleep(ms) {
+      //   return new Promise((resolve) => setTimeout(resolve, ms));
+      // }
       setClickTimes((clicktimes) => [
         ...clicktimes,
-        (Date.now() - startTime) / 1000
+        (Date.now() - startTime) / 1000,
       ]);
       var finalClickTimes = [...clickTimes, (Date.now() - startTime) / 1000];
       setIsCircleVisible(false);
 
-<<<<<<< Updated upstream
+      const timeElapsed = (Date.now() - startTime) / 1000;
+      let fps = parseInt(
+        (frames.length / parseInt(timeElapsed.toString())).toString()
+      );
+
       const calibrationData = {
         patient_uid: PATIENT_UID,
         transaction_id: TRANSACTION_ID,
-=======
-      const timeElapsed = (Date.now() - startTime) / 1000;
-      console.log(`It took ${timeElapsed.toFixed(2)} seconds for the calibration`);
-
-      console.log(`Number of frames captured: ${frames.length}`);
-
-      let fps = parseInt((frames.length / parseInt(timeElapsed.toString())).toString());
-
-      console.log(`Average FPS: ${fps}`);
-
-
-      const USER_ID = '65bbbb04-f29f-4d6b-b207-999e08bef384'; 
-      const calibrationData = {
-        patient_uid: USER_ID,
-        dob: '20240601',
-        sex: 1, // 1 for female, 0 for male
-        transaction_id: TRANSACTION_IDENTIFIER,
->>>>>>> Stashed changes
-        camera_resolution: { width: videoResolution[0], height: videoResolution[1] },
-        screen_resolution: { width: window.innerWidth, height: window.innerHeight },
-        debug: true
+        camera_resolution: {
+          width: videoResolution[0],
+          height: videoResolution[1],
+        },
+        screen_resolution: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+        debug: true,
       };
 
-      var calibration_points = []
+      var calibration_points = [];
       for (let i = 0; i < finalClickTimes.length; i++) {
         let currentClickFramesList = [];
         let frameRangeStartIndex = Math.floor(fps * finalClickTimes[i]);
         currentClickFramesList.push({
           timestamp: finalClickTimes[i],
-          // frame: frames[frameRangeStartIndex],
-          frame: "/DancingDog.png",
+          frame: frames[frameRangeStartIndex],
         });
         currentClickFramesList.push({
           timestamp: finalClickTimes[i] + 1 / fps,
-          // frame: frames[frameRangeStartIndex + 1],
-          frame: "/DancingDog.png",
+          frame: frames[frameRangeStartIndex + 1],
         });
         calibration_points.push({
           point: {
@@ -192,52 +183,56 @@ const DogCalibration = () => {
         });
       }
 
-      
-      console.log(`FINAL CALIBRATION DATA BEFORE ENCRYPTION: ${JSON.stringify(calibrationData)}`); // Fixed template literal
+      console.log(
+        `FINAL CALIBRATION DATA BEFORE ENCRYPTION: ${JSON.stringify(
+          calibrationData
+        )}`
+      ); // Fixed template literal
 
       // ENCRYPTION STARTS HERE
 
       async function processAndSendData() {
         try {
           const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
 
           const encryptedCalibrationPoints = await encryptCalibrationData(
             calibration_points,
             aesKey
-          ).catch(error => {
-            console.error('Failed to encrypt calibration points:', error);
+          ).catch((error) => {
+            console.error("Failed to encrypt calibration points:", error);
             throw error;
           });
 
-          const encryptedKey = await encryptPassword(aesKey)
-            .catch(error => {
-              console.error('Failed to encrypt password:', error);
-              throw error;
-            });
+          const encryptedKey = await encryptPassword(aesKey).catch((error) => {
+            console.error("Failed to encrypt password:", error);
+            throw error;
+          });
 
           // Create final data object
           const finalCalibrationData = {
             ...calibrationData,
             encrypted_calibration_points: encryptedCalibrationPoints,
-            encrypted_Key: encryptedKey
+            encrypted_Key: encryptedKey,
           };
 
           // Convert to string and send
           const calibrationDataString = JSON.stringify(finalCalibrationData);
           console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
 
-          return axios.request({
-            method: "POST",
-            url: SERVER_MIDDLEWARE_URL,
-            data: calibrationDataString,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }).then(response => console.log(response));
+          return axios
+            .request({
+              method: "POST",
+              url: SERVER_MIDDLEWARE_URL,
+              data: calibrationDataString,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => console.log(response));
         } catch (error) {
-          console.error('Processing error:', error);
+          console.error("Processing error:", error);
           throw error;
         }
       }
@@ -268,15 +263,17 @@ const DogCalibration = () => {
         backgroundColor: "#8a00c2",
       }}
     >
-      {isCircleVisible && parentDimensions[0] > 0 && parentDimensions[1] > 0 && (
-        <Circle
-          onClickHandler={handleCircleClick}
-          x={circleCoordinates[currentCircleIndex][0]}
-          y={circleCoordinates[currentCircleIndex][1]}
-          radius={50}
-          imageUrl="/dog_face.png"
-        />
-      )}
+      {isCircleVisible &&
+        parentDimensions[0] > 0 &&
+        parentDimensions[1] > 0 && (
+          <Circle
+            onClickHandler={handleCircleClick}
+            x={circleCoordinates[currentCircleIndex][0]}
+            y={circleCoordinates[currentCircleIndex][1]}
+            radius={50}
+            imageUrl="/dog_face.png"
+          />
+        )}
 
       {/* Display Next Button */}
       {!isCircleVisible && (
@@ -297,7 +294,7 @@ const DogCalibration = () => {
             cursor: "pointer",
             transition: "background-color 0.3s ease",
           }}
-          onClick={handleNextButtonClick}  // Navigate to video page
+          onClick={handleNextButtonClick} // Navigate to video page
         >
           Next
         </button>
