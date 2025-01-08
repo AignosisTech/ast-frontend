@@ -10,14 +10,16 @@ import {
   encryptPassword,
 } from "./components/utils/EncryptionUtils";
 import { v4 as uuidv4 } from "uuid";
-// import config from './config';
+import { useLocation } from "react-router-dom";
 
 const DogCalibration = () => {
   const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
-  const [TRANSACTION_ID, ] = useState(uuidv4());
-  const [PATIENT_UID, ] = useState(uuidv4());
+  const location = useLocation();
+
+  const { PATIENT_UID, TRANSACTION_ID } = location.state || {};
+
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
@@ -81,7 +83,7 @@ const DogCalibration = () => {
   }, []);
 
   const handleNextButtonClick = () => {
-    navigate("/video", {
+    navigate("/test/fillup", {
       state: { PATIENT_UID, TRANSACTION_ID },
     }); // Navigate to the video page
   };
@@ -105,7 +107,7 @@ const DogCalibration = () => {
   };
 
   const handleCircleClick = async () => {
-    const audio = new Audio("public/CatMeow.mp3"); // Path to your audio file
+    const audio = new Audio("/CatMeow.mp3"); // Path to your audio file
     try {
       await audio.play(); // Play the audio
     } catch (error) {
@@ -271,7 +273,7 @@ const DogCalibration = () => {
             x={circleCoordinates[currentCircleIndex][0]}
             y={circleCoordinates[currentCircleIndex][1]}
             radius={50}
-            imageUrl="public/CatFace.png"
+            imageUrl="/CatFace.png"
           />
         )}
 

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 const VideoPlayback = () => {
+  
   const location = useLocation();
   const navigate = useNavigate();
   const videoRef = useRef(null);
@@ -248,6 +249,10 @@ const VideoPlayback = () => {
   const handleVideoEnd = async () => {
     setIsVideoEnded(true);
     stopRecording();
+
+    navigate('/catcalibration', {
+      state: { PATIENT_UID, TRANSACTION_ID },
+    })
   };
 
   return (
