@@ -236,10 +236,15 @@ const DogCalibration = () => {
                 "Content-Type": "application/json",
               },
             })
-            .then((response) => console.log(response.status));
+            .then((response) => { if (response.status !== 200) {
+              navigate("/Error Page"); // Navigate to Error Page if status code is not 200
+            }});
         } catch (error) {
           console.error("Processing error:", error);
-          throw error;
+          navigate("/Error");
+          // throw error;
+          console.log(error); 
+          
         }
       }
 
