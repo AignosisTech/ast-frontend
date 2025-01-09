@@ -17,7 +17,7 @@ const PatientHistoryForm4 = () => {
 
       axios({
         method: "POST",
-        url: "http://localhost:8000/rest/send_ast_form_data/",
+        url: "https://35.207.211.80/rest/send_ast_form_data/",
         data: JSON.stringify(testData),
         headers: {
           "Content-Type": "application/json",
