@@ -262,7 +262,6 @@ const ISAA = () => {
           </button>
         </div>
       </div>
-      </center>
     </div>
   );
 };

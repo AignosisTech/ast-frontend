@@ -81,7 +81,7 @@ const INCLEN = () => {
   useEffect(() => {
     questions.map((question) => {
       if (index !== questions.length - 1) {
-        inclenFormData[index] = "yes";
+        inclenFormData[index] = "";
         index++;
       }
     });
@@ -232,7 +232,6 @@ const INCLEN = () => {
           </button>
         </div>
       </div>
-      </center>
     </div>
   );
 };
