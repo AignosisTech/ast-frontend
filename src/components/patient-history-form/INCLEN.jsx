@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  useState, useEffect } from "react";
 // import { useNavigate } from 'react-router-dom'; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
@@ -11,6 +11,23 @@ const INCLEN = () => {
 //   const dataCollectionMode = ["ISAA", "CARS"];  // Example, replace with your actual data
 const { dataCollectionMode } = location.state || { dataCollectionMode: [] };
     console.log(dataCollectionMode);
+
+    useEffect(() => {
+        // Push initial state to prevent default navigation
+        window.history.pushState(null, null, window.location.href);
+      
+        const handleBackButton = () => {
+          navigate("/test/fillup"); // Redirect to fillup on back press
+        };
+      
+        // Listen for the popstate event
+        window.addEventListener("popstate", handleBackButton);
+      
+        // Cleanup the listener on unmount
+        return () => {
+          window.removeEventListener("popstate", handleBackButton);
+        };
+      }, [navigate]);
   const handleNext = (e) => {
     e.preventDefault();
 
@@ -52,7 +69,7 @@ const { dataCollectionMode } = location.state || { dataCollectionMode: [] };
           </p>
         </div>
       </div>
-      </center>
+      
 
       {/* Form Section */}
       <div style={styles.formContainer}>
@@ -135,6 +152,7 @@ const { dataCollectionMode } = location.state || { dataCollectionMode: [] };
           </button>
         </div>
       </div>
+      </center>
     </div>
   );
 };
@@ -173,11 +191,13 @@ const styles = {
     marginTop: '1rem',
     fontSize: '1rem',
     lineHeight: '1.5',
+    textAlign: 'justify',
   },
   sidebarDetails: {
     marginTop: '1rem',
     fontSize: '0.9rem',
     lineHeight: '1.5',
+    textAlign: 'justify',
   },
   progress: {
     marginTop: '2rem',

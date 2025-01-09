@@ -18,9 +18,9 @@ const CARS = () => {
   return (
     <div style={styles.container}>
       {/* Sidebar Section */}
-      
-      <div style={styles.sidebar}>
       <center>
+      <div style={styles.sidebar}>
+      
         <h1 style={styles.logo}>Ai.gnosis</h1>
         <div style={styles.sidebarContent}>
           <h2 style={styles.sidebarTitle}>CARS</h2>
@@ -31,7 +31,7 @@ const CARS = () => {
             It evaluates behaviors across areas like social interaction, communication, emotional responses, and sensory sensitivities. Combining direct observation with input from parents or caregivers, it provides a comprehensive developmental profile.
           </p>
         </div>
-        </center>
+        
       </div>
 
       {/* Form Section */}
@@ -585,6 +585,7 @@ const CARS = () => {
           </div>
         </form>
       </div>
+      </center>
     </div>
   );
 };
@@ -611,12 +612,16 @@ const styles = {
     },
     sidebarContent: {
       marginTop: "2rem",
+      width: '70vw',
+      
+
     },
     sidebarTitle: {
       fontSize: "1.5rem",
       fontWeight: "bold",
     },
     sidebarDescription: {
+        
       marginTop: "1rem",
       fontSize: "1rem",
       lineHeight: "1.5",

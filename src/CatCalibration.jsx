@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { Navigate, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import Circle from "./Circle"; // Import Circle component
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -50,12 +50,22 @@ const DogCalibration = () => {
 
   useEffect(() => {
     // Get the webcam stream and metadata on mount
+    window.history.pushState(null, null, window.location.href);
+  
+    const handleBackButton = () => {
+      navigate("/calibrationpage"); // Redirect to calibration page
+    };
+  
+    // Listen for the popstate event
+    window.addEventListener("popstate", handleBackButton);
+  
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
       setParentDimensions([clientWidth, clientHeight]);
     }
 
     const startWebcam = async () => {
+        
       if (!navigator.mediaDevices.getUserMedia) {
         console.error("getUserMedia not supported");
         return;
@@ -80,7 +90,10 @@ const DogCalibration = () => {
     };
 
     startWebcam();
-  }, []);
+    return () => {
+        window.removeEventListener("popstate", handleBackButton);
+      };
+  }, [navigate]);
 
   const handleNextButtonClick = () => {
     navigate("/test/fillup", {

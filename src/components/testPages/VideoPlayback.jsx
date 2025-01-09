@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { encryptVideo } from "../EncryptionUtils";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 const VideoPlayback = () => {
-  
   const location = useLocation();
   const navigate = useNavigate();
   const videoRef = useRef(null);
@@ -23,7 +22,21 @@ const VideoPlayback = () => {
   const { PATIENT_UID, TRANSACTION_ID } = location.state || {};
   // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
   const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
-
+  useEffect(() => {
+    // Push the current location to history to override back behavior
+    window.history.pushState(null, null, window.location.href);
+  
+    const handleBackButton = () => {
+      navigate("/calibrationpage"); // Redirect to calibration page
+    };
+  
+    // Listen for the popstate event
+    window.addEventListener("popstate", handleBackButton);
+  
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
 
   if (!PATIENT_UID || !TRANSACTION_ID) {
     console.error("Missing state in location!");
@@ -166,13 +179,13 @@ const VideoPlayback = () => {
       cleanupMediaStream();
       setIsUploading(false);
 
-      // window.location.replace('/test/fillup');
-      // navigate("/test/fillup");
+      // window.location.replace('/catcalibration');
+      navigate("/catcalibration");
     } catch (error) {
       console.error("Error uploading video:", error);
       cleanupMediaStream();
       setIsUploading(false);
-      window.location.replace("/test/fillup");
+      window.location.replace("/catcalibration");
       alert("Failed to upload video. Please try again.");
 
       console.log("Failed to Upload Video");
@@ -215,6 +228,7 @@ const VideoPlayback = () => {
 
         console.log("Uploading Video");
         uploadRecording(blob);
+        
       };
     }
   };
@@ -249,10 +263,6 @@ const VideoPlayback = () => {
   const handleVideoEnd = async () => {
     setIsVideoEnded(true);
     stopRecording();
-
-    navigate('/catcalibration', {
-      state: { PATIENT_UID, TRANSACTION_ID },
-    })
   };
 
   return (
@@ -365,7 +375,7 @@ export default VideoPlayback;
 //         {isVideoEnded ? (
 //           <button
 //             onClick={() => {
-//               window.location.replace('/test/fillup');
+//               window.location.replace('/catcalibration');
 //             }}
 //             className="px-6 py-3 bg-[#9C00AD] text-white rounded-full font-semibold hover:bg-[#F0A1FF] transition-colors"
 //           >

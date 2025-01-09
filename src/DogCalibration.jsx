@@ -230,7 +230,7 @@ const DogCalibration = () => {
                 "Content-Type": "application/json",
               },
             })
-            .then((response) => console.log(response));
+            .then((response) => console.log(response.status));
         } catch (error) {
           console.error("Processing error:", error);
           throw error;
@@ -242,6 +242,7 @@ const DogCalibration = () => {
           clearInterval(frameCaptureInterval);
           console.log("Frame capturing stopped");
           console.log(response);
+          
         })
         .catch((err) => {
           clearInterval(frameCaptureInterval);

@@ -47,7 +47,7 @@ const ISAA = () => {
           </p>
         </div>
       </div>
-    </center>
+    
       {/* Form Section */}
       <div style={styles.formContainer}>
         <h2 style={styles.formTitle}>INDIAN SCALE FOR ASSESSMENT OF AUTISM</h2>
@@ -132,6 +132,7 @@ const ISAA = () => {
           </button>
         </div>
       </div>
+      </center>
     </div>
   );
 };
@@ -157,6 +158,7 @@ const styles = {
   },
   sidebarContent: {
     marginTop: '2rem',
+    width: '70vw',
   },
   sidebarTitle: {
     fontSize: '1.5rem',
