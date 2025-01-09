@@ -1,4 +1,4 @@
-// DogCalibration.jsx
+// CatCalibration.jsx updated
 
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
@@ -12,7 +12,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { useLocation } from "react-router-dom";
 
-const DogCalibration = () => {
+const CatCalibration = () => {
   const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
@@ -323,4 +323,4 @@ const DogCalibration = () => {
   );
 };
 
-export default DogCalibration;
+export default CatCalibration;

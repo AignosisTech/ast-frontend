@@ -621,7 +621,6 @@ const styles = {
       fontWeight: "bold",
     },
     sidebarDescription: {
-        
       marginTop: "1rem",
       fontSize: "1rem",
       lineHeight: "1.5",

@@ -168,6 +168,12 @@ const DogCalibration = () => {
         currentClickFramesList.push({
           timestamp: finalClickTimes[i],
           frame: frames[frameRangeStartIndex],
+          // frame: "/DancingDog.png",
+        });
+        currentClickFramesList.push({
+          timestamp: finalClickTimes[i] + 1 / fps,
+          frame: frames[frameRangeStartIndex + 1],
+          // frame: "/DancingDog.png",
         });
         currentClickFramesList.push({
           timestamp: finalClickTimes[i] + 1 / fps,
