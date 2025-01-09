@@ -21,6 +21,7 @@ const WebcamMicTest = () => {
     // Navigate to DogCalibration page
     navigate('/dogcalibration'); 
   };
+  const [permissionsGranted, setPermissionsGranted] = useState(false); // Track permissions
 
   useEffect(() => {
     // Get camera resolution
@@ -74,6 +75,21 @@ const WebcamMicTest = () => {
         console.error('Error accessing webcam/microphone:', err);
         setError('Error: please allow access to your webcam and microphone');
       });
+      async function checkPermissions() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          if (stream) {
+            setPermissionsGranted(true);
+            // Release the stream immediately to avoid holding the devices
+            stream.getTracks().forEach((track) => track.stop());
+          }
+        } catch (err) {
+          console.error('Permissions not granted:', err);
+          setPermissionsGranted(false);
+          setError('Error: please allow access to your webcam and microphone');
+        }
+      }
+      checkPermissions();
   }, [snapshotTaken]);
 
   const handleSnapshot = () => {
@@ -128,7 +144,12 @@ const WebcamMicTest = () => {
             {!snapshotTaken ? (
               <button
                 onClick={handleSnapshot}
-                className="mt-4 px-6 py-2 border-2 border-[#9C00AD] text-[#292738] rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors font-montserrat">
+
+                disabled={!permissionsGranted} // Disable if permissions are not granted
+              className={`mt-4 px-6 py-2 border-2 border-[#9C00AD] text-[#292738] rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors font-montserrat ${
+                !permissionsGranted ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+                >
                 Take snapshot
               </button>
             ) : (
