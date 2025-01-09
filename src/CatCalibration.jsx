@@ -1,10 +1,12 @@
-// DogCalibration.jsx
+// CatCalibration.jsx updated
 
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Circle from "./Circle";
 import "bootstrap/dist/css/bootstrap.min.css";
+import BeatLoader from "react-spinners/BeatLoader"; // Ensure you import the BeatLoader component
+
 import {
   encryptCalibrationData,
   encryptPassword,
@@ -12,7 +14,7 @@ import {
 import { AppContext } from "./AppContext";
 import { useContext } from "react";
 
-const DogCalibration = () => {
+const CatCalibration = () => {
   const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
@@ -22,6 +24,8 @@ const DogCalibration = () => {
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
   const [isCircleVisible, setIsCircleVisible] = useState(true);
+    const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
+  
   const [currentCircleIndex, setCurrentCircleIndex] = useState(0);
   const [parentDimensions, setParentDimensions] = useState([0, 0]);
 
@@ -51,12 +55,22 @@ const DogCalibration = () => {
     console.log('cat calibration TEST DATA', testData);
 
     // Get the webcam stream and metadata on mount
+    window.history.pushState(null, null, window.location.href);
+  
+    const handleBackButton = () => {
+      navigate("/calibrationpage"); // Redirect to calibration page
+    };
+  
+    // Listen for the popstate event
+    window.addEventListener("popstate", handleBackButton);
+  
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
       setParentDimensions([clientWidth, clientHeight]);
     }
 
     const startWebcam = async () => {
+        
       if (!navigator.mediaDevices.getUserMedia) {
         console.error("getUserMedia not supported");
         return;
@@ -81,7 +95,10 @@ const DogCalibration = () => {
     };
 
     startWebcam();
-  }, []);
+    return () => {
+        window.removeEventListener("popstate", handleBackButton);
+      };
+  }, [navigate]);
 
   const handleNextButtonClick = () => {
     navigate("/test/fillup");
@@ -193,6 +210,8 @@ const DogCalibration = () => {
       // ENCRYPTION STARTS HERE
 
       async function processAndSendData() {
+        setIsLoading(true); // Show spinner
+
         try {
           const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
             .map((b) => b.toString(16).padStart(2, "0"))
@@ -231,10 +250,20 @@ const DogCalibration = () => {
                 "Content-Type": "application/json",
               },
             })
-            .then((response) => console.log(response));
+            .then((response) => {
+              setIsLoading(false); // Hide spinner
+
+                console.log(response.status);
+                if (response.status !== 200) {
+                navigate("/Error Page"); // Navigate to Error Page if status code is not 200
+              }});
         } catch (error) {
           console.error("Processing error:", error);
-          throw error;
+          navigate("/Error");
+        //   throw error;
+        console.log(error);
+        }finally{
+          setIsLoading(false); // Ensure spinner is hidden in case of errors
         }
       }
 
@@ -276,31 +305,57 @@ const DogCalibration = () => {
           />
         )}
 
-      {/* Display Next Button */}
-      {!isCircleVisible && (
-        <button
-          className="mt-4"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "rgba(138, 0, 194, 0.6)", // Translucent background
-            color: "white",
-            padding: "12px 24px",
-            borderRadius: "25px",
-            border: "none",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-          }}
-          onClick={handleNextButtonClick} // Navigate to video page
-        >
-          Next
-        </button>
-      )}
-
+{/* Conditionally render spinner or button */}
+{!isCircleVisible &&
+        (isLoading ? (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <BeatLoader color="#ffffff" size={15} />
+            <br />
+            <p className="mt-4"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "rgba(138, 0, 194, 0.6)",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "25px",
+              border: "none",
+              fontSize: "32px",
+              fontWeight: "bold",
+              cursor: "pointer",}}> Calibrating</p>
+          </div>
+        ) : (
+          <button
+            className="mt-4"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "rgba(138, 0, 194, 0.6)",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "25px",
+              border: "none",
+              fontSize: "32px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+            }}
+            onClick={handleNextButtonClick}
+          >
+            Next
+          </button>
+        ))}
       <div style={{ display: "none", flex: 1 }}>
         <video ref={videoRef} autoPlay playsInline></video>
       </div>
@@ -309,4 +364,4 @@ const DogCalibration = () => {
   );
 };
 
-export default DogCalibration;
+export default CatCalibration;

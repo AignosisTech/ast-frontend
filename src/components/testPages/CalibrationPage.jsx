@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import WebcamMicTest from './WebcamMicTest'; 
+import WebcamMicTest from './WebcamMicTest';
 
 const CalibrationPage = () => {
   const [showWebcamMicTest, setShowWebcamMicTest] = useState(false);
+  const [checks, setChecks] = useState({
+    checkbox1: false,
+    checkbox2: false,
+    checkbox3: false,
+  });
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setChecks((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
+
+  const allChecked = Object.values(checks).every((value) => value);
 
   const handleNextClick = () => {
-    setShowWebcamMicTest(true);
+    if (allChecked) {
+      setShowWebcamMicTest(true);
+    }
   };
 
   return (
@@ -27,44 +44,66 @@ const CalibrationPage = () => {
 
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <input type="checkbox" className="w-5 h-5" />
-                <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">Ensure the webcam is connected properly</span>
+                <input
+                  type="checkbox"
+                  name="checkbox1"
+                  className="w-5 h-5"
+                  checked={checks.checkbox1}
+                  onChange={handleCheckboxChange}
+                />
+                <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">
+                  Ensure the webcam is connected properly
+                </span>
               </div>
               <div className="flex items-center space-x-3">
-                <input type="checkbox" className="w-5 h-5" />
-                <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">Adjust lighting to avoid glare</span>
+                <input
+                  type="checkbox"
+                  name="checkbox2"
+                  className="w-5 h-5"
+                  checked={checks.checkbox2}
+                  onChange={handleCheckboxChange}
+                />
+                <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">
+                  Adjust lighting to avoid glare
+                </span>
               </div>
               <div className="flex items-center space-x-3">
-                <input type="checkbox" className="w-5 h-5" />
-                <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">Position yourself comfortably in front of the camera</span>
+                <input
+                  type="checkbox"
+                  name="checkbox3"
+                  className="w-5 h-5"
+                  checked={checks.checkbox3}
+                  onChange={handleCheckboxChange}
+                />
+                <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">
+                  Position yourself comfortably in front of the camera
+                </span>
               </div>
             </div>
 
             <div className="flex max-sm:flex-col max-sm:space-y-3 md:space-x-8 mt-[40px]">
-              <Link 
-                onClick={handleNextClick} 
-                className="flex items-center justify-center w-[200px] h-[50px] border border-[#9C00AD] text-[#292738] font-montserrat rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors"
+              <Link
+                onClick={handleNextClick}
+                className={`flex items-center justify-center w-[200px] h-[50px] border ${
+                  allChecked
+                    ? 'border-[#9C00AD] text-[#292738] hover:bg-[#1a0c25] hover:text-white'
+                    : 'border-gray-300 text-gray-400 cursor-not-allowed'
+                } font-montserrat rounded-full font-semibold transition-colors`}
+                style={{ pointerEvents: allChecked ? 'auto' : 'none' }}
               >
                 Start calibration
-              </Link>
-              <Link 
-                className="flex items-center justify-center w-[200px] h-[50px] bg-[#FDF9FF] border border-[#9C00AD] text-[#292738] font-montserrat rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors"
-              >
-                Stop calibration
               </Link>
             </div>
           </div>
         </div>
       ) : (
-        <WebcamMicTest /> 
+        <WebcamMicTest />
       )}
     </>
   );
 };
 
 export default CalibrationPage;
-
-
 
 
 

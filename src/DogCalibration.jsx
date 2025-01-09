@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import Circle from "./Circle"; // Import Circle component
 import "bootstrap/dist/css/bootstrap.min.css";
+import BeatLoader from "react-spinners/BeatLoader"; // Ensure you import the BeatLoader component
+
 import {
   encryptCalibrationData,
   encryptPassword,
@@ -23,6 +25,8 @@ const DogCalibration = () => {
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
   const [isCircleVisible, setIsCircleVisible] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
+
   const [currentCircleIndex, setCurrentCircleIndex] = useState(0);
   const [parentDimensions, setParentDimensions] = useState([0, 0]);
 
@@ -113,8 +117,8 @@ const DogCalibration = () => {
     } else {
       console.warn("Frame capture failed: canvasRef or videoRef is null");
       // TODO: send back to take assignment page, with alert saying some error occurred
-    }
-  };
+    }
+  };
 
   const handleCircleClick = async () => {
     const audio = new Audio("/dog_bark.mp3"); // Path to your audio file
@@ -180,6 +184,12 @@ const DogCalibration = () => {
         currentClickFramesList.push({
           timestamp: finalClickTimes[i],
           frame: frames[frameRangeStartIndex],
+          // frame: "/DancingDog.png",
+        });
+        currentClickFramesList.push({
+          timestamp: finalClickTimes[i] + 1 / fps,
+          frame: frames[frameRangeStartIndex + 1],
+          // frame: "/DancingDog.png",
         });
         currentClickFramesList.push({
           timestamp: finalClickTimes[i] + 1 / fps,
@@ -204,6 +214,8 @@ const DogCalibration = () => {
       // ENCRYPTION STARTS HERE
 
       async function processAndSendData() {
+        setIsLoading(true); // Show spinner
+
         try {
           const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
             .map((b) => b.toString(16).padStart(2, "0"))
@@ -242,10 +254,21 @@ const DogCalibration = () => {
                 "Content-Type": "application/json",
               },
             })
-            .then((response) => console.log(response));
+            .then((response) => { 
+              console.log(response);
+              if (response.status !== 200) {
+                setIsLoading(false); // Hide spinner
+
+              navigate("/Error Page"); // Navigate to Error Page if status code is not 200
+            }});
         } catch (error) {
           console.error("Processing error:", error);
-          throw error;
+          navigate("/Error");
+          // throw error;
+          console.log(error); 
+          
+        }finally{
+          setIsLoading(false); // Ensure spinner is hidden in case of errors
         }
       }
 
@@ -254,6 +277,7 @@ const DogCalibration = () => {
           clearInterval(frameCaptureInterval);
           console.log("Frame capturing stopped");
           console.log(response);
+          
         })
         .catch((err) => {
           clearInterval(frameCaptureInterval);
@@ -287,30 +311,57 @@ const DogCalibration = () => {
           />
         )}
 
-      {/* Display Next Button */}
-      {!isCircleVisible && (
-        <button
-          className="mt-4"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "rgba(138, 0, 194, 0.6)", // Translucent background
-            color: "white",
-            padding: "12px 24px",
-            borderRadius: "25px",
-            border: "none",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-          }}
-          onClick={handleNextButtonClick} // Navigate to video page
-        >
-          Next
-        </button>
-      )}
+      {/* Conditionally render spinner or button */}
+      {!isCircleVisible &&
+        (isLoading ? (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <BeatLoader color="#ffffff" size={15} />
+            <br />
+            <p className="mt-4"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "rgba(138, 0, 194, 0.6)",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "25px",
+              border: "none",
+              fontSize: "32px",
+              fontWeight: "bold",
+              cursor: "pointer",}}> Calibrating</p>
+          </div>
+        ) : (
+          <button
+            className="mt-4"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "rgba(138, 0, 194, 0.6)",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "25px",
+              border: "none",
+              fontSize: "32px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+            }}
+            onClick={handleNextButtonClick}
+          >
+            Next
+          </button>
+        ))}
 
       <div style={{ display: "none", flex: 1 }}>
         <video ref={videoRef} autoPlay playsInline></video>

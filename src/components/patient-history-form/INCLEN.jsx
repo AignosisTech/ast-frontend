@@ -232,6 +232,7 @@ const INCLEN = () => {
           </button>
         </div>
       </div>
+      </center>
     </div>
   );
 };

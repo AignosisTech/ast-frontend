@@ -103,7 +103,7 @@ const PatientHistoryForm3 = ({ onNext }) => {
 const styles = {
   container: {
     display: 'flex',
-    height: '100vh',
+    // height: '100vh',
     backgroundColor: '#1e0a2d',
     color: '#e6e6e6',
     fontFamily: 'Montserrat, sans-serif',

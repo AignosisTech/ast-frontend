@@ -142,12 +142,12 @@ const PatientHistoryForm4 = () => {
 // Inline Styles
 const styles = {
   container: {
-    display: "flex",
-    height: "100vh",
-    backgroundColor: "#1e0a2d",
-    color: "#e6e6e6",
-    fontFamily: "Montserrat, sans-serif",
-    padding: "2rem",
+    display: 'flex',
+    // height: '100vh',
+    backgroundColor: '#1e0a2d',
+    color: '#e6e6e6',
+    fontFamily: 'Montserrat, sans-serif',
+    padding: '2rem',
   },
   sidebar: {
     flex: 1,

@@ -30,6 +30,24 @@ export const FillupPage = () => {
     document.getElementById("patient-uid-input").value = testData.PATIENT_UID;
   }, []);
 
+  useEffect(() => {
+    // Push initial state to prevent default navigation
+    window.history.pushState(null, null, window.location.href);
+  
+    const handleBackButton = () => {
+      navigate("/calibrationpage"); // Redirect to CalibrationPage on back press
+    };
+  
+    // Listen for the popstate event
+    window.addEventListener("popstate", handleBackButton);
+  
+    // Cleanup the listener on unmount
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
+  
+
   const handleNextClick = async () => {
     try {
       // Request permission for webcam and microphone
@@ -179,6 +197,7 @@ export const FillupPage = () => {
                   selected={dob}
                   onChange={handleDateChange}
                   placeholderText="Patient DOB"
+                  showYearDropdown
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
 

@@ -6,7 +6,6 @@ import { AppContext } from "../../AppContext";
 import { useContext } from "react";
 
 const VideoPlayback = () => {
-  
   const location = useLocation();
   const navigate = useNavigate();
   const videoRef = useRef(null);
@@ -26,7 +25,21 @@ const VideoPlayback = () => {
 
   // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
   const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
-
+  useEffect(() => {
+    // Push the current location to history to override back behavior
+    window.history.pushState(null, null, window.location.href);
+  
+    const handleBackButton = () => {
+      navigate("/calibrationpage"); // Redirect to calibration page
+    };
+  
+    // Listen for the popstate event
+    window.addEventListener("popstate", handleBackButton);
+  
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
 
   useEffect(()=>{
     console.log('VIDEO PLAYBACK TEST DATA', testData);
@@ -168,13 +181,13 @@ const VideoPlayback = () => {
       cleanupMediaStream();
       setIsUploading(false);
 
-      // window.location.replace('/test/fillup');
-      // navigate("/test/fillup");
+      // window.location.replace('/catcalibration');
+      navigate("/catcalibration");
     } catch (error) {
       console.error("Error uploading video:", error);
       cleanupMediaStream();
       setIsUploading(false);
-      window.location.replace("/test/fillup");
+      window.location.replace("/catcalibration");
       alert("Failed to upload video. Please try again.");
 
       console.log("Failed to Upload Video");
@@ -217,6 +230,7 @@ const VideoPlayback = () => {
 
         console.log("Uploading Video");
         uploadRecording(blob);
+        
       };
     }
   };
@@ -365,7 +379,7 @@ export default VideoPlayback;
 //         {isVideoEnded ? (
 //           <button
 //             onClick={() => {
-//               window.location.replace('/test/fillup');
+//               window.location.replace('/catcalibration');
 //             }}
 //             className="px-6 py-3 bg-[#9C00AD] text-white rounded-full font-semibold hover:bg-[#F0A1FF] transition-colors"
 //           >
