@@ -1,35 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import INCLEN from './components/patient-history-form/INCLEN';
 import ISAA from './components/patient-history-form/ISAA';
 import CARS from './components/patient-history-form/CARS';
+import { AppContext } from './AppContext';
 
 const DataCollectionPage = () => {
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useNavigate();
 
-  const { dataCollectionMode } = location.state || { dataCollectionMode: [] };
+  const {testData, setTestData} = useContext(AppContext);
 
   useEffect(() => {
-    if (!dataCollectionMode || dataCollectionMode.length === 0) {
-      navigate('/patienthistory'); // Redirect to /patienthistory if no dataCollectionMode present
-    } else if (dataCollectionMode.includes('INCLEN')) {
-        navigate('/INCLEN', { state: { dataCollectionMode } });
-    } else if (dataCollectionMode.includes('ISAA')) {
-        navigate('/ISAA', { state: { dataCollectionMode } });
-    } else if (dataCollectionMode.includes('CARS')) {
-        navigate('/CARS', { state: { dataCollectionMode } });
+    if (!testData.dataCollectionMode || testData.dataCollectionMode.length === 0) {
+      navigate('/patienthistory'); // Redirect to /patienthistory if no testData.dataCollectionMode present
+    } else if (testData.dataCollectionMode.includes('INCLEN')) {
+        navigate('/INCLEN');
+    } else if (testData.dataCollectionMode.includes('ISAA')) {
+        navigate('/ISAA');
+    } else if (testData.dataCollectionMode.includes('CARS')) {
+        navigate('/CARS');
     } else {
       navigate('/patienthistory'); // Default to patienthistory if none of the options are present
     }
-  }, [dataCollectionMode, navigate]);
+  }, [testData.dataCollectionMode, navigate]);
 
   return (
     <div>
       {/* You can conditionally render components if needed, though they won't be displayed because of the navigation above */}
-      {/* {dataCollectionMode.includes('INCLEN') && <INCLEN dataCollectionMode={dataCollectionMode} />}
-      {dataCollectionMode.includes('ISAA') && <ISAA dataCollectionMode={dataCollectionMode} />}
-      {dataCollectionMode.includes('CARS') && <CARS dataCollectionMode={dataCollectionMode} />} */}
+      {/* {testData.dataCollectionMode.includes('INCLEN') && <INCLEN testData.dataCollectionMode={testData.dataCollectionMode} />}
+      {testData.dataCollectionMode.includes('ISAA') && <ISAA testData.dataCollectionMode={testData.dataCollectionMode} />}
+      {testData.dataCollectionMode.includes('CARS') && <CARS testData.dataCollectionMode={testData.dataCollectionMode} />} */}
     </div>
   );
 };

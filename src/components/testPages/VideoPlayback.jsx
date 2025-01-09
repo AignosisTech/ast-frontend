@@ -1,7 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { encryptVideo } from "../EncryptionUtils";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { AppContext } from "../../AppContext";
+import { useContext } from "react";
 
 const VideoPlayback = () => {
   
@@ -20,15 +22,15 @@ const VideoPlayback = () => {
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
-  const { PATIENT_UID, TRANSACTION_ID } = location.state || {};
+  const {testData, setTestData} = useContext(AppContext);
+
   // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
   const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
 
 
-  if (!PATIENT_UID || !TRANSACTION_ID) {
-    console.error("Missing state in location!");
-    return <p>Error: Missing patient or transaction data.</p>;
-  }
+  useEffect(()=>{
+    console.log('VIDEO PLAYBACK TEST DATA', testData);
+  }, [])
 
   const cleanupMediaStream = () => {
     console.log("Starting cleanup");
@@ -138,8 +140,8 @@ const VideoPlayback = () => {
       const formData = new FormData();
       formData.append("video", encryptedBlob, "encrypted-test.bin");
       formData.append("encrypted_aes_key", new Blob([encryptedKey], { type: 'application/octet-stream' }));
-      formData.append("patient_uid", PATIENT_UID);
-      formData.append("transaction_id", TRANSACTION_ID);
+      formData.append("patient_uid", testData.PATIENT_UID);
+      formData.append("transaction_id", testData.TRANSACTION_ID);
 
       const formDataString = Array.from(formData.entries())
         .map(([key, value]) => `${key}=${value}`)
@@ -250,9 +252,7 @@ const VideoPlayback = () => {
     setIsVideoEnded(true);
     stopRecording();
 
-    navigate('/catcalibration', {
-      state: { PATIENT_UID, TRANSACTION_ID },
-    })
+    navigate('/catcalibration')
   };
 
   return (

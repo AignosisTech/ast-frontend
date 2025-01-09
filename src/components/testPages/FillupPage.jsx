@@ -1,22 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import StepProgress from "./StepProgress";
 import { Link } from "react-router-dom";
 import CalibrationPage from "./CalibrationPage";
-import WebcamMicTest from './WebcamMicTest';
+import WebcamMicTest from "./WebcamMicTest";
 import BackgroundInformationForm from "./BackgroundInformationForm";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { differenceInYears, differenceInMonths } from "date-fns";
-import { useNavigate } from "react-router-dom";  // Import useNavigate
+import { useNavigate, useLocation } from "react-router-dom";
+import { AppContext } from "../../AppContext";
 
 export const FillupPage = () => {
   const [isBackInfoVisible, setIsBackInfoVisible] = useState(false);
   const [dob, setDob] = useState(null);
-  const [ageYears, setAgeYears] = useState("");
-  const [ageMonths, setAgeMonths] = useState("");
-  const [ageFullYear, setAgeFullYear] = useState("");
+  const [, setAgeYears] = useState("");
+  const [, setAgeMonths] = useState("");
+  const [, setAgeFullYear] = useState("");
   const [dataCollectionMode, setDataCollectionMode] = useState([]); // New state for selected options
-  const navigate = useNavigate();  // Initialize the useNavigate hook
+  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const { testData, setTestData } = useContext(AppContext);
+
+  useEffect(() => {
+    if (testData.PATIENT_UID === "" || testData.TRANSACTION_ID == "") {
+      navigate("/");
+    }
+
+    console.log("FILLUP UP TEST DATA", testData);
+
+    document.getElementById("patient-uid-input").value = testData.PATIENT_UID;
+  }, []);
 
   const handleNextClick = async () => {
     try {
@@ -26,7 +38,18 @@ export const FillupPage = () => {
       // setIsBackInfoVisible(true);
       //if permission go to download report page
       // navigate("/patienthistory");
-      navigate("/dataCollection", { state: { dataCollectionMode } });
+
+      if (document.getElementById("patient-name-input").value == "") {
+        alert("Please enter all fields");
+      } else {
+        setTestData({
+          ...testData,
+          patientName: document.getElementById("patient-name-input").value,
+        });
+
+        console.log("going to  data collection", testData.dataCollectionMode);
+        navigate("/dataCollection");
+      }
     } catch (error) {
       console.error("Permission denied for webcam and microphone:", error);
       alert("Please allow webcam and microphone access to proceed.");
@@ -46,16 +69,39 @@ export const FillupPage = () => {
     setAgeFullYear(fullYear);
   };
 
-  // Function to handle checkbox change
+  // // Function to handle checkbox change
+  // const handleCheckboxChange = (event) => {
+  //   const { value, checked } = event.target;
+  //   setDataCollectionMode((prev) => {
+  //     const updatedData = checked
+  //       ? [...prev, value]
+  //       : prev.filter((item) => item !== value);
+
+  //     setTestData((prevTestData) => ({
+  //       ...prevTestData,
+  //       dataCollectionMode: updatedData, // Use the updated state here
+  //     }));
+
+  //     console.log(updatedData);
+  //     return updatedData;
+  //   });
+  // };
+
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
-    setDataCollectionMode((prev) =>{
-      const updatedData= checked ? [...prev, value] : prev.filter((item) => item !== value)
-      console.log(updatedData);
-      return updatedData;
+  
+    setTestData((prevTestData) => {
+      const updatedDataCollectionMode = checked
+        ? [...prevTestData.dataCollectionMode, value] // Add value if checked
+        : prevTestData.dataCollectionMode.filter((item) => item !== value); // Remove value if unchecked
+  
+      return {
+        ...prevTestData,
+        dataCollectionMode: updatedDataCollectionMode,
+      };
     });
   };
-
+  
   return (
     <>
       <div className="bg-[#1A0C25] flex flex-col justify-center items-center min-h-screen">
@@ -75,7 +121,8 @@ export const FillupPage = () => {
               {/* Assessment Text */}
               <div className="flex flex-col space-y-4 max-w-sm ">
                 <p className="text-white font-manrope text-center text-2xl">
-                  Please take the assessment to <span className="text-left ">begin with diagnosis</span>
+                  Please take the assessment to{" "}
+                  <span className="text-left ">begin with diagnosis</span>
                 </p>
                 <p className="text-[#FFFFFF] font-raleway text-sm px-4 py-2 text-center ">
                   Assessment duration: 5 mins
@@ -89,25 +136,39 @@ export const FillupPage = () => {
                 Welcome to Ai.gnosis early detection screener
               </h2>
               <p className="text-gray-400 text-sm mb-8 font-raleway text-center">
-                Ai.gnosis is an online platform that helps you detect early signs of <br /> developmental disorder in children.
+                Ai.gnosis is an online platform that helps you detect early
+                signs of <br /> developmental disorder in children.
               </p>
 
               <form className="space-y-4">
                 <select className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500">
                   <option className="bg-[#1A0C25]">Choose Language</option>
-                  <option className="bg-[#1A0C25]" value="en">English</option>
-                  <option className="bg-[#1A0C25]" value="es">Spanish</option>
-                  <option className="bg-[#1A0C25]" value="fr">French</option>
-                  <option className="bg-[#1A0C25]" value="de">German</option>
+                  <option className="bg-[#1A0C25]" value="en">
+                    English
+                  </option>
+                  <option className="bg-[#1A0C25]" value="es">
+                    Spanish
+                  </option>
+                  <option className="bg-[#1A0C25]" value="fr">
+                    French
+                  </option>
+                  <option className="bg-[#1A0C25]" value="de">
+                    German
+                  </option>
                 </select>
 
                 <input
+                  id="patient-name-input"
                   type="text"
                   placeholder="Patient Name"
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  // onChange={(e) => {
+                  //   setPName(e.target.value);
+                  // }}
                 />
 
                 <input
+                  id="patient-uid-input"
                   type="text"
                   placeholder="Patient ID"
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -122,7 +183,7 @@ export const FillupPage = () => {
                 />
 
                 {/* Automatically populated fields for age */}
-                <input
+                {/* <input
                   type="text"
                   placeholder="Patient Age (Years)"
                   value={ageYears}
@@ -144,12 +205,14 @@ export const FillupPage = () => {
                   value={ageFullYear}
                   readOnly
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
-                />
+                /> */}
 
                 {/* Data Collection Mode Section */}
                 <div className="text-white">
-                <h3 className="font-semibold mb-2 text-sm">Data Collection Mode</h3>
-                <div className="space-y-2">
+                  <h3 className="font-semibold mb-2 text-sm">
+                    Data Collection Mode
+                  </h3>
+                  <div className="space-y-2">
                     <label className="flex items-center space-x-2">
                       <input
                         type="checkbox"

@@ -2,23 +2,21 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import Circle from "./Circle"; // Import Circle component
+import { useNavigate } from "react-router-dom";
+import Circle from "./Circle";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   encryptCalibrationData,
   encryptPassword,
 } from "./components/utils/EncryptionUtils";
-import { v4 as uuidv4 } from "uuid";
-import { useLocation } from "react-router-dom";
+import { AppContext } from "./AppContext";
+import { useContext } from "react";
 
 const DogCalibration = () => {
   const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
-  const location = useLocation();
-
-  const { PATIENT_UID, TRANSACTION_ID } = location.state || {};
+  const {testData, } = useContext(AppContext);
 
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
@@ -34,7 +32,7 @@ const DogCalibration = () => {
   const [clickTimes, setClickTimes] = useState([]);
   const parentRef = useRef(null);
 
-  const navigate = useNavigate(); // Initialize navigate from useNavigate
+  const navigate = useNavigate();
 
   const circleCoordinates = [
     [window.innerWidth / 2, window.innerHeight / 2], // center
@@ -49,6 +47,9 @@ const DogCalibration = () => {
   ];
 
   useEffect(() => {
+
+    console.log('cat calibration TEST DATA', testData);
+
     // Get the webcam stream and metadata on mount
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
@@ -83,9 +84,7 @@ const DogCalibration = () => {
   }, []);
 
   const handleNextButtonClick = () => {
-    navigate("/test/fillup", {
-      state: { PATIENT_UID, TRANSACTION_ID },
-    }); // Navigate to the video page
+    navigate("/test/fillup");
   };
 
   const captureFrame = () => {
@@ -150,8 +149,8 @@ const DogCalibration = () => {
       );
 
       const calibrationData = {
-        patient_uid: PATIENT_UID,
-        transaction_id: TRANSACTION_ID,
+        patient_uid: testData.PATIENT_UID,
+        transaction_id: testData.TRANSACTION_ID,
         camera_resolution: {
           width: videoResolution[0],
           height: videoResolution[1],
