@@ -24,9 +24,30 @@ const Error = () => {
   };
 
   return (
-    <div style={errorStyle}>
-      <div style={errorTitleStyle}>ERROR</div>
-      <div style={errorMessageStyle}>Some Problem Occurred</div>
+    <div className="bg-[#1A0C25] flex flex-col justify-center items-center min-h-screen text-center">
+      {/* Step Progress Indicator */}
+      {/* <StepProgress /> */}
+
+      {/* Ai.gnosis Title with Glow Effect */}
+      <div className="relative ">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 blur-lg opacity-60 rounded-lg"></div>
+        <h1 className="relative text-5xl font-semibold text-[#E3E2E5] z-10 font-montserrat">
+          Ai.gnosis
+        </h1>
+      </div>
+
+      {/* Big Thank You Message */}
+      <div className="mt-4">
+        <h2 className="text-6xl font-bold text-[#FFFFFF] font-manrope">Error</h2>
+      </div>
+
+      {/* Thank You Paragraph */}
+      <div className="mt-6 max-w-2xl px-6 text-[#F6E8FB] font-raleway">
+        <p className="text-lg text-center">
+        We deeply value your presence and sincerely apologize for the inconvenience caused. At Aignosis, your experience is of utmost importance to us, and we strive to ensure a seamless journey. Unfortunately, something went wrong during the process. We kindly request you to go through the process again to complete your task. Rest assured, our team is working diligently to improve and prevent such interruptions in the future. Thank you for your patience and understanding.
+        </p>
+      </div>
+      
     </div>
   );
 };

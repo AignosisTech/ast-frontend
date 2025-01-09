@@ -87,21 +87,21 @@ const DogCalibration = () => {
   };
 
   const captureFrame = () => {
-    if (canvasRef.current && videoRef.current) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+    // if (canvasRef.current && videoRef.current) {
+    //   const canvas = canvasRef.current;
+    //   const context = canvas.getContext("2d");
 
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+    //   canvas.width = videoRef.current.videoWidth;
+    //   canvas.height = videoRef.current.videoHeight;
 
-      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    //   context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-      const frameData = canvas.toDataURL("image/jpeg");
-      return frameData;
-    } else {
-      console.warn("Frame capture failed: canvasRef or videoRef is null");
-      // TODO: send back to take assignment page, with alert saying some error occurred
-    }
+    //   const frameData = canvas.toDataURL("image/jpeg");
+    //   return frameData;
+    // } else {
+    //   console.warn("Frame capture failed: canvasRef or videoRef is null");
+    //   // TODO: send back to take assignment page, with alert saying some error occurred
+    // }
   };
 
   const handleCircleClick = async () => {
