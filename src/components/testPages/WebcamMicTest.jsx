@@ -84,6 +84,7 @@ const WebcamMicTest = () => {
             stream.getTracks().forEach((track) => track.stop());
           }
         } catch (err) {
+          navigate("/Error");
           console.error('Permissions not granted:', err);
           setPermissionsGranted(false);
           setError('Error: please allow access to your webcam and microphone');

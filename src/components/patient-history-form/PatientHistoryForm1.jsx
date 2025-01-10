@@ -1,26 +1,61 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import React, { useState , useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
+import { AppContext } from "../../AppContext";
 
 const PatientHistoryForm1 = ({ onNext }) => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    schoolClass: '',
+    motherName: '',
+    fatherName: '',
+    motherOccupation: '',
+    fatherOccupation: '',
+    birthCry: '',
+    nicuCare: '',
+    hospitalized: '',
+    complaints: [],
+  });
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prevState) => {
+      const updatedComplaints = checked
+        ? [...prevState.complaints, value]
+        : prevState.complaints.filter((complaint) => complaint !== value);
+        console.log(formData);
+      return { ...prevState, complaints: updatedComplaints };
+      
+    });
+  };
+  const {testData, setTestData} = useContext(AppContext);
   const handleNext = (e) => {
     e.preventDefault();
 
-    // Add any validation or data processing here
+    // Save data to testdata (for example purposes)
+    
+
+    // const testdata = formData;
+    console.log('Form Data Saved:', formData);
+    setTestData({
+      ...testData,
+      patientform1Data: formData
+    });
+
     try {
-      // Navigate to PatientHistoryForm2 
       onNext(); // Call the parent function to move to the next form
     } catch (error) {
-      console.error('Error during navigation:', error); // Log the error
-      // Optionally, display an error message to the user
+      console.error('Error during navigation:', error);
     }
   };
 
   return (
     <div style={styles.container}>
-      {/* Sidebar Section */}
       <div style={styles.sidebar}>
         <h1 style={styles.logo}>Ai.gnosis</h1>
         <div style={styles.sidebarContent}>
@@ -32,8 +67,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
           <p style={styles.sidebarDetails}>
             This information is collected for our AI-powered tool, Ai.gnosis, to generate
             accurate insights and personalized recommendations in support of a patient’s
-            growth and development. It provides valuable insights, enabling our
-            interdisciplinary teams to create a comprehensive support plan tailored to your needs.
+            growth and development.
           </p>
           <div style={styles.progress}>
             <span style={{ ...styles.progressStep, ...styles.circleStep }}>1</span> → 
@@ -44,7 +78,6 @@ const PatientHistoryForm1 = ({ onNext }) => {
         </div>
       </div>
 
-      {/* Form Section */}
       <div style={styles.formContainer}>
         <h2 style={styles.formTitle}>Patient History</h2>
         <p style={styles.formDescription}>
@@ -54,63 +87,204 @@ const PatientHistoryForm1 = ({ onNext }) => {
         </p>
         <button style={styles.languageButton}>Choose language</button>
 
-        {/* Form Fields */}
         <form style={styles.form} onSubmit={handleNext}>
           <div style={styles.field}>
-            <input type="text" style={styles.input} placeholder="School & class of the child" />
+            <input
+              type="text"
+              style={styles.input}
+              name="schoolClass"
+              placeholder="School & class of the child"
+              value={formData.schoolClass}
+              onChange={handleInputChange}
+            />
           </div>
           <div style={styles.field}>
-            <input type="text" style={styles.input} placeholder="Mother's name" />
+            <input
+              type="text"
+              style={styles.input}
+              name="motherName"
+              placeholder="Mother's name"
+              value={formData.motherName}
+              onChange={handleInputChange}
+            />
           </div>
           <div style={styles.field}>
-            <input type="text" style={styles.input} placeholder="Father's name" />
+            <input
+              type="text"
+              style={styles.input}
+              name="fatherName"
+              placeholder="Father's name"
+              value={formData.fatherName}
+              onChange={handleInputChange}
+            />
           </div>
           <div style={styles.field}>
-            <input type="text" style={styles.input} placeholder="Mother's occupation" />
+            <input
+              type="text"
+              style={styles.input}
+              name="motherOccupation"
+              placeholder="Mother's occupation"
+              value={formData.motherOccupation}
+              onChange={handleInputChange}
+            />
           </div>
           <div style={styles.field}>
-            <input type="text" style={styles.input} placeholder="Father's occupation" />
+            <input
+              type="text"
+              style={styles.input}
+              name="fatherOccupation"
+              placeholder="Father's occupation"
+              value={formData.fatherOccupation}
+              onChange={handleInputChange}
+            />
           </div>
 
-          {/* Radio Questions */}
           <div style={styles.question}>
             <p style={styles.questionLabel}>1. Cried at time of birth?</p>
             <div style={styles.radioGroup}>
-              <label><input type="radio" name="birthCry" value="Yes" /> Yes</label>
-              <label><input type="radio" name="birthCry" value="Maybe" /> Maybe</label>
-              <label><input type="radio" name="birthCry" value="No" /> No</label>
+              <label>
+                <input
+                  type="radio"
+                  name="birthCry"
+                  value="Yes"
+                  checked={formData.birthCry === 'Yes'}
+                  onChange={handleInputChange}
+                />{' '}
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="birthCry"
+                  value="Maybe"
+                  checked={formData.birthCry === 'Maybe'}
+                  onChange={handleInputChange}
+                />{' '}
+                Maybe
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="birthCry"
+                  value="No"
+                  checked={formData.birthCry === 'No'}
+                  onChange={handleInputChange}
+                />{' '}
+                No
+              </label>
             </div>
           </div>
 
           <div style={styles.question}>
             <p style={styles.questionLabel}>2. NICU care?</p>
             <div style={styles.radioGroup}>
-              <label><input type="radio" name="nicu" value="Yes" /> Yes</label>
-              <label><input type="radio" name="nicu" value="Maybe" /> Maybe</label>
-              <label><input type="radio" name="nicu" value="No" /> No</label>
+              <label>
+                <input
+                  type="radio"
+                  name="nicuCare"
+                  value="Yes"
+                  checked={formData.nicuCare === 'Yes'}
+                  onChange={handleInputChange}
+                />{' '}
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="nicuCare"
+                  value="Maybe"
+                  checked={formData.nicuCare === 'Maybe'}
+                  onChange={handleInputChange}
+                />{' '}
+                Maybe
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="nicuCare"
+                  value="No"
+                  checked={formData.nicuCare === 'No'}
+                  onChange={handleInputChange}
+                />{' '}
+                No
+              </label>
             </div>
           </div>
 
           <div style={styles.question}>
             <p style={styles.questionLabel}>3. Hospitalized anytime in the past</p>
             <div style={styles.radioGroup}>
-              <label><input type="radio" name="hospitalized" value="Yes" /> Yes</label>
-              <label><input type="radio" name="hospitalized" value="Maybe" /> Maybe</label>
-              <label><input type="radio" name="hospitalized" value="No" /> No</label>
+              <label>
+                <input
+                  type="radio"
+                  name="hospitalized"
+                  value="Yes"
+                  checked={formData.hospitalized === 'Yes'}
+                  onChange={handleInputChange}
+                />{' '}
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="hospitalized"
+                  value="Maybe"
+                  checked={formData.hospitalized === 'Maybe'}
+                  onChange={handleInputChange}
+                />{' '}
+                Maybe
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="hospitalized"
+                  value="No"
+                  checked={formData.hospitalized === 'No'}
+                  onChange={handleInputChange}
+                />{' '}
+                No
+              </label>
             </div>
           </div>
 
           <div style={styles.question}>
             <p style={styles.questionLabel}>4. Patient complaints</p>
             <div style={styles.radioGroup}>
-              <label><input type="checkbox" /> Speech delay</label>
-              <label><input type="checkbox" /> Dyslexia</label>
-              <label><input type="checkbox" /> Delayed development</label>
-              <label><input type="checkbox" /> No</label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Speech delay"
+                  onChange={handleCheckboxChange}
+                />{' '}
+                Speech delay
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Dyslexia"
+                  onChange={handleCheckboxChange}
+                />{' '}
+                Dyslexia
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Delayed development"
+                  onChange={handleCheckboxChange}
+                />{' '}
+                Delayed development
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="No"
+                  onChange={handleCheckboxChange}
+                />{' '}
+                No
+              </label>
             </div>
           </div>
 
-          {/* Next Button */}
           <button type="submit" style={styles.nextButton}>
             <strong>Next</strong>
             <div style={styles.iconContainer}>
@@ -218,6 +392,7 @@ const styles = {
     padding: '0.5rem',
     borderRadius: '5px',
     border: '1px solid #ccc',
+    color: '#000000'
   },
   question: {
     marginBottom: '1rem',

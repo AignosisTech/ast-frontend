@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useState , useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { FaArrowRight } from 'react-icons/fa'; 
+import { AppContext } from "../../AppContext";
 
 const PatientHistoryForm2 = ({ onNext }) => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    familyType: '',
+    language: '',
+    otherLanguage: '',
+    familyHistory: '',
+    otherCondition: '',
+    otherFamilyMember: '',
+    jaundice: '',
+  });
+  const {testData, setTestData} = useContext(AppContext);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleNext = (e) => {
     e.preventDefault();
     try {
-      // Add any validation or data processing here before navigation// Navigate to PatientHistoryForm3
+      // Save form data to testData
+      console.log(formData);
+      setTestData({
+        ...testData,
+        patienthistoryform2data: formData,
+      });
+
       onNext(); // Call the parent function to move to the next form
     } catch (error) {
       console.error('Error during navigation:', error); // Log the error
@@ -54,11 +78,17 @@ const PatientHistoryForm2 = ({ onNext }) => {
 
         {/* Form Fields */}
         <form style={styles.form} onSubmit={handleNext}>
-
           {/* Question 9 */}
           <div style={styles.question}>
             <p style={styles.questionLabel}>9. Type of family</p>
-            <input type="text" style={styles.input} placeholder="Enter family type" />
+            <input
+              type="text"
+              name="familyType"
+              value={formData.familyType}
+              onChange={handleInputChange}
+              style={styles.input}
+              placeholder="Enter family type"
+            />
           </div>
 
           {/* Question 10 */}
@@ -66,14 +96,42 @@ const PatientHistoryForm2 = ({ onNext }) => {
             <p style={styles.questionLabel}>10. Which language is spoken at home?</p>
             <div style={styles.radioGroup}>
               <label>
-                <input type="radio" name="language" value="English" style={styles.radio} /> English
+                <input
+                  type="radio"
+                  name="language"
+                  value="English"
+                  onChange={handleInputChange}
+                  checked={formData.language === 'English'}
+                  style={styles.radio}
+                /> English
               </label>
               <label>
-                <input type="radio" name="language" value="Hindi" style={styles.radio} /> Hindi
+                <input
+                  type="radio"
+                  name="language"
+                  value="Hindi"
+                  onChange={handleInputChange}
+                  checked={formData.language === 'Hindi'}
+                  style={styles.radio}
+                /> Hindi
               </label>
               <label>
-                <input type="radio" name="language" value="Other" style={styles.radio} /> Other (specify)
-                <input type="text" style={styles.input} placeholder="Specify language" />
+                <input
+                  type="radio"
+                  name="language"
+                  value="Other"
+                  onChange={handleInputChange}
+                  checked={formData.language === 'Other'}
+                  style={styles.radio}
+                /> Other (specify)
+                <input
+                  type="text"
+                  name="otherLanguage"
+                  value={formData.otherLanguage}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  placeholder="Specify language"
+                />
               </label>
             </div>
           </div>
@@ -83,24 +141,80 @@ const PatientHistoryForm2 = ({ onNext }) => {
             <p style={styles.questionLabel}>11. Family medical history</p>
             <div style={styles.radioGroup}>
               <label>
-                <input type="radio" name="familyHistory" value="Convulsions" style={styles.radio} /> History of convulsions
+                <input
+                  type="radio"
+                  name="familyHistory"
+                  value="Convulsions"
+                  onChange={handleInputChange}
+                  checked={formData.familyHistory === 'Convulsions'}
+                  style={styles.radio}
+                /> History of convulsions
               </label>
               <label>
-                <input type="radio" name="familyHistory" value="Neuromuscular" style={styles.radio} /> Neuro muscular disorder
+                <input
+                  type="radio"
+                  name="familyHistory"
+                  value="Neuromuscular"
+                  onChange={handleInputChange}
+                  checked={formData.familyHistory === 'Neuromuscular'}
+                  style={styles.radio}
+                /> Neuro muscular disorder
               </label>
               <label>
-                <input type="radio" name="familyHistory" value="MentalIllness" style={styles.radio} /> Mental illness
+                <input
+                  type="radio"
+                  name="familyHistory"
+                  value="MentalIllness"
+                  onChange={handleInputChange}
+                  checked={formData.familyHistory === 'MentalIllness'}
+                  style={styles.radio}
+                /> Mental illness
               </label>
               <label>
-                <input type="radio" name="familyHistory" value="LossUnderstanding" style={styles.radio} /> Loss of understanding
+                <input
+                  type="radio"
+                  name="familyHistory"
+                  value="LossUnderstanding"
+                  onChange={handleInputChange}
+                  checked={formData.familyHistory === 'LossUnderstanding'}
+                  style={styles.radio}
+                /> Loss of understanding
               </label>
               <label>
-                <input type="radio" name="familyHistory" value="MaternalBMI" style={styles.radio} /> Mother’s antenatal weight / BMI
+                <input
+                  type="radio"
+                  name="familyHistory"
+                  value="MaternalBMI"
+                  onChange={handleInputChange}
+                  checked={formData.familyHistory === 'MaternalBMI'}
+                  style={styles.radio}
+                /> Mother’s antenatal weight / BMI
               </label>
               <label>
-                <input type="radio" name="familyHistory" value="Other" style={styles.radio} /> If other (Specify condition & family member)
-                <input type="text" style={styles.input} placeholder="Condition" />
-                <input type="text" style={styles.input} placeholder="Family Member" />
+                <input
+                  type="radio"
+                  name="familyHistory"
+                  value="Other"
+                  onChange={handleInputChange}
+                  checked={formData.familyHistory === 'Other'}
+                  style={styles.radio}
+                /> If other (Specify condition & family member)
+                <input
+                  type="text"
+                  name="otherCondition"
+                  value={formData.otherCondition}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  placeholder="Condition"
+                />
+                <input
+                  type="text"
+                  name="otherFamilyMember"
+                  value={formData.otherFamilyMember}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  placeholder="Family Member"
+                />
               </label>
             </div>
           </div>
@@ -109,9 +223,36 @@ const PatientHistoryForm2 = ({ onNext }) => {
           <div style={styles.question}>
             <p style={styles.questionLabel}>12. Did your child have jaundice at birth?</p>
             <div style={styles.radioGroup}>
-              <label><input type="radio" name="jaundice" value="Yes" style={styles.radio} /> Yes</label>
-              <label><input type="radio" name="jaundice" value="Maybe" style={styles.radio} /> Maybe</label>
-              <label><input type="radio" name="jaundice" value="No" style={styles.radio} /> No</label>
+              <label>
+                <input
+                  type="radio"
+                  name="jaundice"
+                  value="Yes"
+                  onChange={handleInputChange}
+                  checked={formData.jaundice === 'Yes'}
+                  style={styles.radio}
+                /> Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="jaundice"
+                  value="Maybe"
+                  onChange={handleInputChange}
+                  checked={formData.jaundice === 'Maybe'}
+                  style={styles.radio}
+                /> Maybe
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="jaundice"
+                  value="No"
+                  onChange={handleInputChange}
+                  checked={formData.jaundice === 'No'}
+                  style={styles.radio}
+                /> No
+              </label>
             </div>
           </div>
 
@@ -127,6 +268,8 @@ const PatientHistoryForm2 = ({ onNext }) => {
     </div>
   );
 };
+
+
 
 // Inline Styles
 const styles = {
@@ -235,6 +378,7 @@ const styles = {
     borderRadius: '5px',
     border: '1px solid #ccc',
     marginTop: '0.5rem',
+    color: '#000000',
   },
   nextButton: {
     marginTop: '1rem',
