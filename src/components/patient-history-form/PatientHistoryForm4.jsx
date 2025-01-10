@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState , useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import axios from "axios";
@@ -6,19 +6,36 @@ import { AppContext } from "../../AppContext";
 
 const PatientHistoryForm4 = () => {
   const navigate = useNavigate();
-
-  const { testData } = useContext(AppContext);
+  const { testData, setTestData } = useContext(AppContext);
+  const [formData, setFormData] = useState({});
+  // Handle radio button changes
+  const handleOptionChange = (question, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [question]: value,
+    }));
+  };
+  
+  
 
   const handleNext = (e) => {
     e.preventDefault();
     try {
       // Add any validation or data processing here before navigation
       // For example, you could collect form data here and validate it
+      // Update testData with formData before proceeding
+      console.log(formData);
+      setTestData({
 
+        ...testData,
+
+        patienthistoryform4data: formData,
+
+      });
       axios({
         method: "POST",
         url: "https://35.207.211.80/rest/send_ast_form_data/",
-        data: JSON.stringify(testData),
+        data: JSON.stringify({ ...testData, patienthistoryform4data: formData }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,6 +119,7 @@ const PatientHistoryForm4 = () => {
                     name={`question${index}`}
                     value="yes"
                     style={styles.radio}
+                    onChange={() => handleOptionChange(`question${index}`, "yes")}
                   />
                 </td>
                 <td style={styles.radioCell}>
@@ -109,6 +127,7 @@ const PatientHistoryForm4 = () => {
                     type="radio"
                     name={`question${index}`}
                     value="no"
+                    onChange={() => handleOptionChange(`question${index}`, "no")}
                     style={styles.radio}
                   />
                 </td>
@@ -117,6 +136,7 @@ const PatientHistoryForm4 = () => {
                     type="radio"
                     name={`question${index}`}
                     value="maybe"
+                    onChange={() => handleOptionChange(`question${index}`, "maybe")}
                     style={styles.radio}
                   />
                 </td>
@@ -197,7 +217,8 @@ const styles = {
     borderRadius: "10px",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
     margin: "2rem",
-    minHeight: "130vh",
+    // minHeight: "130vh",
+    height:"100vh",
   },
   formTitle: {
     fontSize: "1.8rem",
@@ -220,6 +241,8 @@ const styles = {
   },
   radioCell: {
     borderLeft: "1px solid #e6e6e6",
+    borderRight: "1px solid #e6e6e6",
+    borderBottom: "1px solid #e6e6e6",
     textAlign: "center",
   },
   radio: {
