@@ -44,7 +44,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
     console.log('Form Data Saved:', formData);
     setTestData({
       ...testData,
-      patientform1Data: formData
+      patienthistoryform1data: formData
     });
 
     try {
