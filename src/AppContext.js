@@ -15,10 +15,15 @@ export const AppProvider = ({ children }) => {
     isaaFormData: '',
     carsFormData: '',
     dataCollectionMode: [],
-    patienthistoryform1data: '',
-    patienthistoryform2data: '',
-    patienthistoryform3data: '',
-    patienthistoryform4data: '',
+    patienthistoryform1Data: '',
+    patienthistoryform2Data: '',
+    patienthistoryform3Data: '',
+    patienthistoryform4Data: '',
+    videolanguage:'',
+    mchatscore:'',
+    carsscore:'',
+    isaascore:'',
+    inclenscore:'',
   });
 
   // Pass the state and updater function to the provider
