@@ -4,11 +4,21 @@ import { Link } from "react-router-dom";
 import CalibrationPage from "./CalibrationPage";
 import WebcamMicTest from "./WebcamMicTest";
 import BackgroundInformationForm from "./BackgroundInformationForm";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
+// import DatePicker from 'react-date-picker';
+// import { DatePicker } from 'rsuite';
+import DatePicker from 'rsuite/DatePicker';
+
+// (Optional) Import component styles. If you are using Less, import the `index.less` file. 
+import 'rsuite/DatePicker/styles/index.css';
+
+// import "react-date-picker/dist/DatePicker.css";
+
 import { differenceInYears, differenceInMonths } from "date-fns";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../../AppContext";
+import { data } from "autoprefixer";
 
 export const FillupPage = () => {
   const [isBackInfoVisible, setIsBackInfoVisible] = useState(false);
@@ -19,18 +29,37 @@ export const FillupPage = () => {
   const [dataCollectionMode, setDataCollectionMode] = useState([]); // New state for selected options
   const navigate = useNavigate(); // Initialize the useNavigate hook
   const { testData, setTestData } = useContext(AppContext);
-
+  const [age, setAge] = useState(null);
+  const [isButtonsDisabled, setIsButtonsDisabled] = useState(true);
+  const [buttonAccessibility, setButtonAccessibility] = useState({
+    INCLEN: true,
+    ISAA: true,
+    CARS: true,
+  });
   useEffect(() => {
-    if (testData.PATIENT_UID === "" || testData.TRANSACTION_ID == "") {
-      navigate("/");
-    }
+    // if (testData.PATIENT_UID === "" || testData.TRANSACTION_ID == "") {
+    //   navigate("/");
+    // }
 
     console.log("FILLUP UP TEST DATA", testData);
 
-    document.getElementById("patient-uid-input").value = testData.PATIENT_UID;
+    // document.getElementById("patient-uid-input").value = testData.PATIENT_UID;
   }, []);
 
   useEffect(() => {
+    if (dob) {
+      const years = differenceInYears(new Date(), dob);
+      setAge(years);
+      setIsButtonsDisabled(false);
+
+      setButtonAccessibility({
+        INCLEN: years < 2 || years > 9,
+        ISAA: years < 3,
+        CARS: years < 2,
+      });
+      console.log(years);
+    }
+    
     // Push initial state to prevent default navigation
     window.history.pushState(null, null, window.location.href);
   
@@ -45,7 +74,7 @@ export const FillupPage = () => {
     return () => {
       window.removeEventListener("popstate", handleBackButton);
     };
-  }, [navigate]);
+  }, [navigate,dob]);
   
 
   const handleNextClick = async () => {
@@ -57,7 +86,7 @@ export const FillupPage = () => {
       //if permission go to download report page
       // navigate("/patienthistory");
 
-      if (document.getElementById("patient-name-input").value == "") {
+      if (document.getElementById("patient-name-input").value == "" || !dob) {
         alert("Please enter all fields");
       } else {
         setTestData({
@@ -107,7 +136,7 @@ export const FillupPage = () => {
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
-  
+    console.log(dataCollectionMode);
     setTestData((prevTestData) => {
       const updatedDataCollectionMode = checked
         ? [...prevTestData.dataCollectionMode, value] // Add value if checked
@@ -185,12 +214,12 @@ export const FillupPage = () => {
                   // }}
                 />
 
-                <input
+                {/* <input
                   id="patient-uid-input"
                   type="text"
                   placeholder="Patient ID"
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
-                />
+                /> */}
 
                 {/* Date Picker for DOB */}
                 <DatePicker
@@ -198,8 +227,11 @@ export const FillupPage = () => {
                   onChange={handleDateChange}
                   placeholderText="Patient DOB"
                   showYearDropdown
-                  className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  // style={backgroundColor: "transparent",}
+                  className="bg-[#1A0C25] text-white px-4 py-2.5 w-25 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
+                {/* <DatePicker oneTap style={{ width: 200 }} onChange={handleDateChange} className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500 "/> */}
+                
 
                 {/* Automatically populated fields for age */}
                 {/* <input
@@ -232,32 +264,47 @@ export const FillupPage = () => {
                     Data Collection Mode
                   </h3>
                   <div className="space-y-2">
-                    <label className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-2" style={{marginLeft:'-63%',}}>
                       <input
                         type="checkbox"
                         value="INCLEN"
                         onChange={handleCheckboxChange}
-                        className="accent-pink-500"
+                        disabled={isButtonsDisabled || buttonAccessibility.INCLEN}
+                  className={`${
+                    buttonAccessibility.INCLEN
+                      ? "bg-gray-500"
+                      : "bg-blue-500 hover:bg-blue-700"
+                  } text-white px-4 py-2 rounded-lg w-full`}
                       />
-                      <span>INCLEN</span>
+                      <span style={{marginLeft:'-47%',}}>INCLEN</span>
                     </label>
-                    <label className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-2" style={{marginLeft:'-63%',}}>
                       <input
                         type="checkbox"
                         value="ISAA"
                         onChange={handleCheckboxChange}
-                        className="accent-pink-500"
+                        disabled={isButtonsDisabled || buttonAccessibility.ISAA}
+                  className={`${
+                    buttonAccessibility.ISAA
+                      ? "bg-gray-500"
+                      : "bg-blue-500 hover:bg-blue-700"
+                  } text-white px-4 py-2 rounded-lg w-full`}
                       />
-                      <span>ISAA</span>
+                      <span style={{marginLeft:'-47%',}}>ISAA</span>
                     </label>
-                    <label className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-2 " style={{marginLeft:'-62%',}}>
                       <input
                         type="checkbox"
                         value="CARS"
+                        disabled={isButtonsDisabled || buttonAccessibility.CARS}
                         onChange={handleCheckboxChange}
-                        className="accent-pink-500"
+                        className={`${
+                          buttonAccessibility.CARS
+                            ? "bg-gray-500"
+                            : "bg-blue-500 hover:bg-blue-700"
+                        } text-white px-4 py-2 rounded-lg w-full`}
                       />
-                      <span>CARS</span>
+                      <span style={{marginLeft:'-47%',}}>CARS</span>
                     </label>
                   </div>
                 </div>

@@ -28,6 +28,7 @@ const VideoPlayback = () => {
   useEffect(() => {
     // Push the current location to history to override back behavior
     window.history.pushState(null, null, window.location.href);
+    console.log(testData);
   
     const handleBackButton = () => {
       navigate("/calibrationpage"); // Redirect to calibration page
@@ -238,6 +239,20 @@ const VideoPlayback = () => {
   const handleVideoLoadedData = () => {
     setIsVideoLoaded(true);
     console.log("Video loaded successfully.");
+    // Enter fullscreen mode automatically
+    if (videoRef.current) {
+      videoRef.current
+        .play()
+        .then(() => {
+          console.log("Video is playing.");
+          videoRef.current.requestFullscreen().catch((err) => {
+            console.error("Failed to enter fullscreen mode:", err);
+          });
+        })
+        .catch((err) => {
+          console.error("Error playing video:", err);
+        });
+    }
   };
 
   const handleVideoPlay = () => {
@@ -275,7 +290,14 @@ const VideoPlayback = () => {
       <video ref={webcamRef} autoPlay playsInline muted className="hidden" />
       <video
         ref={videoRef}
-        src="https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
+        // src="https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
+        src={
+          testData.videolanguage === "English"
+            ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
+            : testData.videolanguage === "Hindi"
+            ? "samplevideo.mp4"
+            : ""
+        }
         controls
         autoPlay={false}
         className="w-full h-full object-cover"

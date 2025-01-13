@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight , FaArrowLeft} from "react-icons/fa";
 import axios from "axios";
 import { AppContext } from "../../AppContext";
 
@@ -580,15 +580,36 @@ const CARS = () => {
     console.log(carsFormData);
   }, []);
 
+  const handleBackClick = () => {
+    if (testData.dataCollectionMode.includes('ISAA')) {
+        // Redirect to INCLEN if dataCollectionMode contains INCLEN
+        navigate('/ISAA');
+      } 
+    else if (testData.dataCollectionMode.includes('INCLEN')) {
+      // Redirect to INCLEN if dataCollectionMode contains INCLEN
+      navigate('/INCLEN');
+    } else {
+      // Handle the back functionality in other cases, e.g., going back to the previous page
+      navigate('/Error');
+    }
+  };
   const handleNext = (e) => {
     e.preventDefault();
 
     console.log('cars form data is ', carsFormData);
+    let carsscore = 0;
+    for (const key in carsFormData) {
+      if (carsFormData[key]) {
+        carsscore += parseFloat(carsFormData[key]);
+      }
+    }
 
+  console.log("CARS Total Score:", carsscore);
     
     setTestData({
       ...testData,
-      carsFormData: carsFormData
+      carsFormData: carsFormData,
+      carsscore: carsscore,
     });
 
     try {
@@ -1233,6 +1254,14 @@ const CARS = () => {
 
           {/* Centered Next Button */}
           <div style={styles.buttonContainer}>
+            <button onClick={handleBackClick} style={styles.nextButton}>
+                        <div style={styles.iconContainer}>
+                          <FaArrowLeft style={styles.icon} />
+                        </div>
+                        &nbsp;&nbsp;
+                        <strong>Back</strong>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <button type="submit" style={styles.nextButton}>
               <strong>Next</strong>
               <div style={styles.iconContainer}>
@@ -1327,6 +1356,11 @@ const styles = {
   },
   radio: {
     accentColor: "#f7aef8",
+  },
+  radioInput: {
+    width: "1rem", // Adjust size as needed
+    height: "1rem", // Adjust size as needed
+    accentColor: "#f7aef8", // Optional: For custom color
   },
   buttonContainer: {
     display: "flex",

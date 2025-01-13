@@ -49,9 +49,14 @@ const CatCalibration = () => {
     [window.innerWidth / 2, 50], // mid top
     [window.innerWidth / 2, window.innerHeight - 100], // mid bottom
   ];
-
+  const audio = new Audio("/CatMeow.mp3"); // Path to your audio file
   useEffect(() => {
+    const handleAudioPlay = () => {
+      audio.loop = true; // Enable looping
+      audio.play().catch((error) => console.error("Audio play error:", error));
+    };
 
+    audio.addEventListener("canplaythrough", handleAudioPlay);
     console.log('cat calibration TEST DATA', testData);
 
     // Get the webcam stream and metadata on mount
@@ -97,10 +102,15 @@ const CatCalibration = () => {
     startWebcam();
     return () => {
         window.removeEventListener("popstate", handleBackButton);
+        audio.pause();
       };
   }, [navigate]);
 
   const handleNextButtonClick = () => {
+    audio.pause();
+    // audio.currentTime = 0; // Reset audio
+    // audio.pause();
+    // audio.currentTime = 0; // Reset audio
     navigate("/test/fillup");
   };
 
@@ -123,12 +133,8 @@ const CatCalibration = () => {
   };
 
   const handleCircleClick = async () => {
-    const audio = new Audio("/CatMeow.mp3"); // Path to your audio file
-    try {
-      await audio.play(); // Play the audio
-    } catch (error) {
-      console.error("Audio play error:", error);
-    }
+    
+    
 
     if (currentCircleIndex === 0) {
       setStartTime(Date.now());
@@ -212,59 +218,60 @@ const CatCalibration = () => {
       async function processAndSendData() {
         setIsLoading(true); // Show spinner
 
-        try {
-          const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-            .map((b) => b.toString(16).padStart(2, "0"))
-            .join("");
+        // try {
+        //   const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+        //     .map((b) => b.toString(16).padStart(2, "0"))
+        //     .join("");
 
-          const encryptedCalibrationPoints = await encryptCalibrationData(
-            calibration_points,
-            aesKey
-          ).catch((error) => {
-            console.error("Failed to encrypt calibration points:", error);
-            throw error;
-          });
+        //   const encryptedCalibrationPoints = await encryptCalibrationData(
+        //     calibration_points,
+        //     aesKey
+        //   ).catch((error) => {
+        //     console.error("Failed to encrypt calibration points:", error);
+        //     throw error;
+        //   });
 
-          const encryptedKey = await encryptPassword(aesKey).catch((error) => {
-            console.error("Failed to encrypt password:", error);
-            throw error;
-          });
+        //   const encryptedKey = await encryptPassword(aesKey).catch((error) => {
+        //     console.error("Failed to encrypt password:", error);
+        //     throw error;
+        //   });
 
-          // Create final data object
-          const finalCalibrationData = {
-            ...calibrationData,
-            encrypted_calibration_points: encryptedCalibrationPoints,
-            encrypted_Key: encryptedKey,
-          };
+        //   // Create final data object
+        //   const finalCalibrationData = {
+        //     ...calibrationData,
+        //     encrypted_calibration_points: encryptedCalibrationPoints,
+        //     encrypted_Key: encryptedKey,
+        //   };
 
-          // Convert to string and send
-          const calibrationDataString = JSON.stringify(finalCalibrationData);
-          console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
+        //   // Convert to string and send
+        //   const calibrationDataString = JSON.stringify(finalCalibrationData);
+        //   console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
 
-          return axios
-            .request({
-              method: "POST",
-              url: SERVER_MIDDLEWARE_URL,
-              data: calibrationDataString,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-            .then((response) => {
-              setIsLoading(false); // Hide spinner
+        //   return axios
+        //     .request({
+        //       method: "POST",
+        //       url: SERVER_MIDDLEWARE_URL,
+        //       data: calibrationDataString,
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //       },
+        //     })
+        //     .then((response) => {
+        //       setIsLoading(false); // Hide spinner
 
-                console.log(response.status);
-                if (response.status !== 200) {
-                navigate("/Error Page"); // Navigate to Error Page if status code is not 200
-              }});
-        } catch (error) {
-          console.error("Processing error:", error);
-          navigate("/Error");
-        //   throw error;
-        console.log(error);
-        }finally{
+        //         console.log(response.status);
+        //         if (response.status !== 200) {
+        //         navigate("/Error Page"); // Navigate to Error Page if status code is not 200
+        //       }});
+        // } catch (error) {
+        //   console.error("Processing error:", error);
+        //   navigate("/Error");
+        // //   throw error;
+        // console.log(error);
+        // }finally{
+        //   setIsLoading(false); // Ensure spinner is hidden in case of errors
+        // }
           setIsLoading(false); // Ensure spinner is hidden in case of errors
-        }
       }
 
       processAndSendData()
@@ -290,7 +297,7 @@ const CatCalibration = () => {
         flexDirection: "column",
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#8a00c2",
+        backgroundColor: "#1b0c26",
       }}
     >
       {isCircleVisible &&
@@ -341,15 +348,15 @@ const CatCalibration = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              backgroundColor: "rgba(138, 0, 194, 0.6)",
+              backgroundColor: "transparent", // Transparent background
               color: "white",
               padding: "12px 24px",
-              borderRadius: "25px",
-              border: "none",
+              borderRadius: "50px", // Elliptical shape
+              border: "2px solid white", // White border
               fontSize: "32px",
               fontWeight: "bold",
               cursor: "pointer",
-              transition: "background-color 0.3s ease",
+              transition: "background-color 0.3s ease, color 0.3s ease",
             }}
             onClick={handleNextButtonClick}
           >

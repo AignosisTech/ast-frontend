@@ -50,6 +50,7 @@ const INCLEN = () => {
   ]);
 
   const handleNext = (e) => {
+    console.log(testData.dataCollectionMode);
     e.preventDefault();
 
     setTestData({
@@ -79,15 +80,31 @@ const INCLEN = () => {
 
   var index = 0;
   useEffect(() => {
+    // Push initial state to prevent default navigation
+    window.history.pushState(null, null, window.location.href);
+  
+    const handleBackButton = () => {
+      navigate("/test/fillup"); // Redirect to Fillup on back press
+    };
+  
+    // Listen for the popstate event
+    window.addEventListener("popstate", handleBackButton);
+    
     questions.map((question) => {
       if (index !== questions.length - 1) {
         inclenFormData[index] = "";
         index++;
       }
     });
-
     console.log(inclenFormData);
-  }, []);
+    
+  
+    // Cleanup the listener on unmount
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+    
+  }, [navigate]);
 
   return (
     <div style={styles.container}>
@@ -115,6 +132,7 @@ const INCLEN = () => {
       </center>
 
       {/* Form Section */}
+      <center>
       <div style={styles.formContainer}>
         {/* <h2 style={styles.formTitle}>INCLEN Diagnostic Tool</h2> */}
 
@@ -232,6 +250,7 @@ const INCLEN = () => {
           </button>
         </div>
       </div>
+      </center>
     </div>
   );
 };
@@ -327,6 +346,9 @@ const styles = {
   radio: {
     accentColor: "#f7aef8",
     marginRight: "0.5rem",
+    width: "1rem", // Adjust size as needed
+    height: "1rem", // Adjust size as needed
+      
   },
   buttonContainer: {
     display: "flex",

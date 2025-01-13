@@ -20,10 +20,32 @@ const PatientHistoryForm3 = ({ onNext }) => {
     try {
       // Update test data and proceed
       console.log(formData);
-      setTestData({
-        ...testData,
-        patienthistoryform3data: formData,
-      });
+      let score = 0;
+    const riskQuestions = Object.keys(formData);
+
+    riskQuestions.forEach((key) => {
+      const questionIndex = parseInt(key.replace('question', ''), 10);
+
+      // Questions 2, 5, and 12 are 1-based indices; in 0-based indexing, they are 1, 4, and 11.
+      const isSpecialQuestion = questionIndex === 1 || questionIndex === 4 || questionIndex === 11;
+
+      if (
+        (isSpecialQuestion && formData[key] === true) || // "YES" indicates risk for special questions
+        (!isSpecialQuestion && formData[key] === false) // "NO" indicates risk for other questions
+      ) {
+        score++;
+      }
+    });
+
+    console.log('MCHAT Score:', score);
+
+    // Update test data and proceed
+    setTestData({
+      ...testData,
+      patienthistoryform3data: formData,
+      mchatScore: score,
+    });
+      console.log(testData);
       onNext(); // Call the parent function to move to the next form
     } catch (error) {
       console.error("Error during navigation:", error);

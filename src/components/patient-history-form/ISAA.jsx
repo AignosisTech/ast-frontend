@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { AppContext } from "../../AppContext";
+
 
 const ISAA = () => {
   const navigate = useNavigate();
@@ -52,12 +53,33 @@ const ISAA = () => {
     "Has unusual memory of some kind",
     "Has 'savant' ability",
   ]);
-
+  const handleBackClick = () => {
+    if (testData.dataCollectionMode.includes('INCLEN')) {
+      // Redirect to INCLEN if dataCollectionMode contains INCLEN
+      navigate('/INCLEN');
+    } else {
+      // Handle the back functionality in other cases, e.g., going back to the previous page
+      navigate('/Error');
+    }
+  };
   const handleNext = (e) => {
     e.preventDefault();
-    console.log('inclen is', testData.inclenFormData)
+    console.log('inclen is', testData.inclenFormData);
     console.log('isaa form data is ', isaaFormData);
-
+    const calculateScore = () => {
+      let totalScore = 0;
+      for (const key in isaaFormData) {
+        const value = parseInt(isaaFormData[key], 10);
+        if (!isNaN(value)) {
+          totalScore += value;
+        }
+      }
+      return totalScore;
+    };
+  
+    const totalScore = calculateScore();
+    console.log('Total ISAA Score:', totalScore);
+  
 
     try {
       // Add any validation or data processing here before navigation
@@ -65,7 +87,9 @@ const ISAA = () => {
       // 
       setTestData({
         ...testData,
-        isaaFormData: isaaFormData
+        isaaFormData: isaaFormData,
+        isaascore: totalScore, // Store the score in testData for later use
+
       });
 
       // Check if 'CARS' is in the testData.dataCollectionMode array
@@ -254,12 +278,21 @@ const ISAA = () => {
 
         {/* Centered Next Button */}
         <div style={styles.buttonContainer}>
+        <button onClick={handleBackClick} style={styles.nextButton}>
+            <div style={styles.iconContainer}>
+              <FaArrowLeft style={styles.icon} />
+            </div>
+            &nbsp;&nbsp;
+            <strong>Back</strong>
+          </button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <button type="submit" onClick={handleNext} style={styles.nextButton}>
             <strong>Next</strong>
             <div style={styles.iconContainer}>
               <FaArrowRight style={styles.icon} />
             </div>
           </button>
+          
         </div>
       </div>
     </div>
@@ -364,6 +397,8 @@ const styles = {
   },
   radio: {
     accentColor: "#f7aef8",
+    width: "1.5rem", // Adjust size as needed
+    height: "1.5rem", // Adjust size as needed
   },
   buttonContainer: {
     display: "flex",

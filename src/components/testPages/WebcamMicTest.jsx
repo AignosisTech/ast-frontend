@@ -134,7 +134,7 @@ const WebcamMicTest = () => {
               {snapshotTaken ? (
                 <img src={snapshot} alt="Snapshot" className="w-full h-full object-cover" />
               ) : (
-                <video ref={videoRef} className="w-full h-full object-cover" muted></video>
+                <video ref={videoRef} className="w-full h-full object-cover" muted style={{ maxWidth: '500px', maxHeight: '300px' }} ></video>
               )}
             </div>
 

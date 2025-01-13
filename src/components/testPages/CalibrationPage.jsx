@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState , useContext} from 'react';
 import { Link } from 'react-router-dom';
 import WebcamMicTest from './WebcamMicTest';
+import { AppContext } from "../../AppContext";
+
 
 const CalibrationPage = () => {
   const [showWebcamMicTest, setShowWebcamMicTest] = useState(false);
@@ -9,6 +11,11 @@ const CalibrationPage = () => {
     checkbox2: false,
     checkbox3: false,
   });
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+
+  const handleLanguageChange = (e) => {
+    setSelectedLanguage(e.target.value);
+  };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -17,12 +24,30 @@ const CalibrationPage = () => {
       [name]: checked,
     }));
   };
-
+  const {testData, setTestData} = useContext(AppContext);
   const allChecked = Object.values(checks).every((value) => value);
 
   const handleNextClick = () => {
+    console.log('Testdata:', selectedLanguage);
     if (allChecked) {
+      
+      setTestData({
+        ...testData,
+        videolanguage: selectedLanguage,
+        calibrationCompleted: true,
+      });
+      
+      // Set the selected language in the testdata
+      // const testdata = {
+      //   language: selectedLanguage,
+        
+      // };
+      
+      
+
       setShowWebcamMicTest(true);
+    } else {
+      alert('Please complete all tasks and select a language before proceeding.');
     }
   };
 
@@ -81,15 +106,30 @@ const CalibrationPage = () => {
               </div>
             </div>
 
+            <div className="space-y-3">
+              <label className="text-[#292738] font-medium font-raleway">
+                Select Language: &nbsp;&nbsp;
+              </label>
+              <select
+                value={selectedLanguage}
+                onChange={handleLanguageChange}
+                className="border border-gray-300 rounded-md px-4 py-2"
+              >
+                <option value="">Choose language</option>
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+              </select>
+            </div>
+
             <div className="flex max-sm:flex-col max-sm:space-y-3 md:space-x-8 mt-[40px]">
               <Link
                 onClick={handleNextClick}
                 className={`flex items-center justify-center w-[200px] h-[50px] border ${
-                  allChecked
+                  allChecked && selectedLanguage
                     ? 'border-[#9C00AD] text-[#292738] hover:bg-[#1a0c25] hover:text-white'
                     : 'border-gray-300 text-gray-400 cursor-not-allowed'
                 } font-montserrat rounded-full font-semibold transition-colors`}
-                style={{ pointerEvents: allChecked ? 'auto' : 'none' }}
+                style={{ pointerEvents: allChecked && selectedLanguage ? 'auto' : 'none' }}
               >
                 Start calibration
               </Link>
