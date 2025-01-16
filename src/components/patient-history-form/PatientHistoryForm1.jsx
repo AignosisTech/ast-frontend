@@ -1,20 +1,54 @@
-import React, { useState , useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaArrowRight } from 'react-icons/fa';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
 import { AppContext } from "../../AppContext";
 
 const PatientHistoryForm1 = ({ onNext }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    schoolClass: '',
-    motherName: '',
-    fatherName: '',
-    motherOccupation: '',
-    fatherOccupation: '',
-    birthCry: '',
-    nicuCare: '',
-    hospitalized: '',
+    NameOfChild: "",
+    Sex: "",
+    marriageRelation: "",
+    AssessorName: "",
+    EducationStatus: "",
+    fatherOccupation: "",
+    birthCry: "",
+    SocioEconomicStatus: "",
+    Infertility: "",
     complaints: [],
+    Abortion: "",
+    PerinatalDeath: "",
+    antenatalRiskFactors: [],
+    bloodPressure: "",
+    birthOrder: "",
+    marriageRelation: "",
+    familyType: "",
+    familyMedicalHistory: [],
+    placeOfDelivery: "",
+    gestationAge: "",
+    deliveryType: "",
+    criedAtBirth: "",
+    NICUStay: "",
+    NICUReason: [],
+    birthWeight: "",
+    birthHeadCircumference: "",
+    congenitalMalformations: "",
+    developmentalHistory: {
+      socialSmile: "",
+      headControl: "",
+      sitting: "",
+      standing: "",
+      walking: "",
+      babbling: "",
+      oneWord: "",
+      speech: "",
+      communication: "",
+    },
+    medicationHistory: [],
+    screenTime: "",
+    screenSize: "",
+    behavioralConcerns: "",
+    provisionalDiagnosis: "",
   });
 
   const handleInputChange = (e) => {
@@ -22,35 +56,29 @@ const PatientHistoryForm1 = ({ onNext }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e, field) => {
     const { value, checked } = e.target;
     setFormData((prevState) => {
-      const updatedComplaints = checked
-        ? [...prevState.complaints, value]
-        : prevState.complaints.filter((complaint) => complaint !== value);
-        console.log(formData);
-      return { ...prevState, complaints: updatedComplaints };
-      
+      const updatedField = checked
+        ? [...prevState[field], value]
+        : prevState[field].filter((item) => item !== value);
+      return { ...prevState, [field]: updatedField };
     });
   };
-  const {testData, setTestData} = useContext(AppContext);
+
+  const { testData, setTestData } = useContext(AppContext);
   const handleNext = (e) => {
     e.preventDefault();
-
-    // Save data to testdata (for example purposes)
-    
-
-    // const testdata = formData;
-    console.log('Form Data Saved:', formData);
+    console.log("Form Data Saved:", formData);
     setTestData({
       ...testData,
-      patienthistoryform1data: formData
+      patienthistoryform1data: formData,
     });
 
     try {
-      onNext(); // Call the parent function to move to the next form
+      onNext();
     } catch (error) {
-      console.error('Error during navigation:', error);
+      console.error("Error during navigation:", error);
     }
   };
 
@@ -75,7 +103,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
             <span style={styles.progressStep}>3</span> → 
             <span style={styles.progressStep}>4</span>
           </div>
-        </div>
+       </div>
       </div>
 
       <div style={styles.formContainer}>
@@ -92,9 +120,9 @@ const PatientHistoryForm1 = ({ onNext }) => {
             <input
               type="text"
               style={styles.input}
-              name="schoolClass"
-              placeholder="School & class of the child"
-              value={formData.schoolClass}
+              name="NameOfChild"
+              placeholder="Name of the child"
+              value={formData.NameOfChild}
               onChange={handleInputChange}
             />
           </div>
@@ -102,9 +130,9 @@ const PatientHistoryForm1 = ({ onNext }) => {
             <input
               type="text"
               style={styles.input}
-              name="motherName"
-              placeholder="Mother's name"
-              value={formData.motherName}
+              name="Sex"
+              placeholder="Sex"
+              value={formData.Sex}
               onChange={handleInputChange}
             />
           </div>
@@ -112,9 +140,9 @@ const PatientHistoryForm1 = ({ onNext }) => {
             <input
               type="text"
               style={styles.input}
-              name="fatherName"
-              placeholder="Father's name"
-              value={formData.fatherName}
+              name="AssessorName"
+              placeholder="Assessor (Psychologist's) name"
+              value={formData.AssessorName}
               onChange={handleInputChange}
             />
           </div>
@@ -122,9 +150,9 @@ const PatientHistoryForm1 = ({ onNext }) => {
             <input
               type="text"
               style={styles.input}
-              name="motherOccupation"
-              placeholder="Mother's occupation"
-              value={formData.motherOccupation}
+              name="EducationStatus"
+              placeholder="Education Status"
+              value={formData.EducationStatus}
               onChange={handleInputChange}
             />
           </div>
@@ -138,7 +166,26 @@ const PatientHistoryForm1 = ({ onNext }) => {
               onChange={handleInputChange}
             />
           </div>
-
+          <div style={styles.field}>
+            <input
+              type="text"
+              style={styles.input}
+              name="birthWeight"
+              placeholder="Birth Weight (in Kg)"
+              value={formData.birthWeight}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.field}>
+            <input
+              type="text"
+              style={styles.input}
+              name="birthHeadCircumference"
+              placeholder="Birth Head Circumference (in cm)"
+              value={formData.birthHeadCircumference}
+              onChange={handleInputChange}
+            />
+          </div>
           <div style={styles.question}>
             <p style={styles.questionLabel}>1. Cried at time of birth?</p>
             <div style={styles.radioGroup}>
@@ -174,16 +221,70 @@ const PatientHistoryForm1 = ({ onNext }) => {
               </label>
             </div>
           </div>
-
           <div style={styles.question}>
-            <p style={styles.questionLabel}>2. NICU care?</p>
+            <p style={styles.questionLabel}>2. Socio Economic Status?</p>
             <div style={styles.radioGroup}>
               <label>
                 <input
                   type="radio"
-                  name="nicuCare"
+                  name="SocioEconomicStatus"
+                  value="Upper"
+                  checked={formData.SocioEconomicStatus === 'Upper'}
+                  onChange={handleInputChange}
+                />{' '}
+                Upper
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="SocioEconomicStatus"
+                  value="Upper-Middle"
+                  checked={formData.SocioEconomicStatus === 'Upper-Middle'}
+                  onChange={handleInputChange}
+                />{' '}
+                Upper-Middle
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="SocioEconomicStatus"
+                  value="Upper-Lower"
+                  checked={formData.SocioEconomicStatus === 'Upper-Lower'}
+                  onChange={handleInputChange}
+                />{' '}
+                Upper-Lower
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="SocioEconomicStatus"
+                  value="Lower-Middle"
+                  checked={formData.SocioEconomicStatus === 'Lower-Middle'}
+                  onChange={handleInputChange}
+                />{' '}
+                Lower-Middle
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="SocioEconomicStatus"
+                  value="Lower"
+                  checked={formData.SocioEconomicStatus === 'Lower'}
+                  onChange={handleInputChange}
+                />{' '}
+                Lower
+              </label>
+            </div>
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>3. Infertility in Maternal/Family History</p>
+            <div style={styles.radioGroup}>
+              <label>
+                <input
+                  type="radio"
+                  name="Infertility"
                   value="Yes"
-                  checked={formData.nicuCare === 'Yes'}
+                  checked={formData.Infertility === 'Yes'}
                   onChange={handleInputChange}
                 />{' '}
                 Yes
@@ -191,9 +292,9 @@ const PatientHistoryForm1 = ({ onNext }) => {
               <label>
                 <input
                   type="radio"
-                  name="nicuCare"
+                  name="Infertility"
                   value="Maybe"
-                  checked={formData.nicuCare === 'Maybe'}
+                  checked={formData.Infertility === 'Maybe'}
                   onChange={handleInputChange}
                 />{' '}
                 Maybe
@@ -201,25 +302,24 @@ const PatientHistoryForm1 = ({ onNext }) => {
               <label>
                 <input
                   type="radio"
-                  name="nicuCare"
+                  name="Infertility"
                   value="No"
-                  checked={formData.nicuCare === 'No'}
+                  checked={formData.Infertility === 'No'}
                   onChange={handleInputChange}
                 />{' '}
                 No
               </label>
             </div>
           </div>
-
           <div style={styles.question}>
-            <p style={styles.questionLabel}>3. Hospitalized anytime in the past</p>
+            <p style={styles.questionLabel}>4. Previous Abortion</p>
             <div style={styles.radioGroup}>
               <label>
                 <input
                   type="radio"
-                  name="hospitalized"
+                  name="Abortion"
                   value="Yes"
-                  checked={formData.hospitalized === 'Yes'}
+                  checked={formData.Abortion === 'Yes'}
                   onChange={handleInputChange}
                 />{' '}
                 Yes
@@ -227,19 +327,59 @@ const PatientHistoryForm1 = ({ onNext }) => {
               <label>
                 <input
                   type="radio"
-                  name="hospitalized"
-                  value="Maybe"
-                  checked={formData.hospitalized === 'Maybe'}
+                  name="Abortion"
+                  value="No"
+                  checked={formData.Abortion === 'No'}
                   onChange={handleInputChange}
                 />{' '}
-                Maybe
+                No
+              </label>
+            </div>
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>5. Perinatal/Neonatal Death</p>
+            <div style={styles.radioGroup}>
+              <label>
+                <input
+                  type="radio"
+                  name="PerinatalDeath"
+                  value="Yes"
+                  checked={formData.PerinatalDeath === 'Yes'}
+                  onChange={handleInputChange}
+                />{' '}
+                Yes
               </label>
               <label>
                 <input
                   type="radio"
-                  name="hospitalized"
+                  name="PerinatalDeath"
                   value="No"
-                  checked={formData.hospitalized === 'No'}
+                  checked={formData.PerinatalDeath === 'No'}
+                  onChange={handleInputChange}
+                />{' '}
+                No
+              </label>
+            </div>
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Any Apparent Congenital Malformations / Atypical Body Feature</p>
+            <div style={styles.radioGroup}>
+              <label>
+                <input
+                  type="radio"
+                  name="congenitalMalformations"
+                  value="Yes"
+                  checked={formData.congenitalMalformations === 'Yes'}
+                  onChange={handleInputChange}
+                />{' '}
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="congenitalMalformations"
+                  value="No"
+                  checked={formData.congenitalMalformations === 'No'}
                   onChange={handleInputChange}
                 />{' '}
                 No
@@ -284,7 +424,199 @@ const PatientHistoryForm1 = ({ onNext }) => {
               </label>
             </div>
           </div>
+          {/* Antenatal Risk Factors */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Antenatal Risk Factors</p>
+            <div style={styles.radioGroup}>
+              {[
+                "Hyperthyroidism",
+                "Poor Weight Gain",
+                "Bleeding in Pregnancy",
+                "Diabetes",
+              ].map((risk, index) => (
+                <label key={index}>
+                  <input
+                    type="checkbox"
+                    value={risk}
+                    onChange={(e) =>
+                      handleCheckboxChange(e, "antenatalRiskFactors")
+                    }
+                  />{" "}
+                  {risk}
+                </label>
+              ))}
+            </div>
+          </div>
 
+          {/* Blood Pressure */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Blood Pressure during Pregnancy</p>
+            {["High", "Low", "Normal"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="bloodPressure"
+                  value={option}
+                  checked={formData.bloodPressure === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+
+          {/* Birth Order */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Birth Order</p>
+            {["Only Child", "Firstborn", "Second Born", "Third Born", "Other"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="birthOrder"
+                    value={option}
+                    checked={formData.birthOrder === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+
+          {/* Family Type */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Family Type</p>
+            {["Joint Family", "Nuclear Family"].map((type, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="familyType"
+                  value={type}
+                  checked={formData.familyType === type}
+                  onChange={handleInputChange}
+                />{" "}
+                {type}
+              </label>
+            ))}
+          </div>
+
+          {/* Family Medical History */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Family Medical History</p>
+            <div style={styles.radioGroup}>
+              {[
+                "Convulsions",
+                "Neuromuscular Disorder",
+                "Mental Illness",
+                "Less Understanding",
+                "Mother's Weight/BMI",
+                "None",
+                "Other",
+              ].map((history, index) => (
+                <label key={index}>
+                  <input
+                    type="checkbox"
+                    value={history}
+                    onChange={(e) =>
+                      handleCheckboxChange(e, "familyMedicalHistory")
+                    }
+                  />{" "}
+                  {history}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Place of Delivery */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Place of Delivery</p>
+            {["Hospital", "Home", "Other"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="placeOfDelivery"
+                  value={option}
+                  checked={formData.placeOfDelivery === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Gestation Age</p>
+            {["Full Term", "Pre Term", "Post Term"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="gestationAge"
+                  value={option}
+                  checked={formData.gestationAge === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>Delivery Type</p>
+            {["Normal Delivery", "Caesarean Section", "Assisted"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="deliveryType"
+                  value={option}
+                  checked={formData.deliveryType === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          {/* NICU Stay */}
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>NICU Stay</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="NICUStay"
+                  value={option}
+                  checked={formData.NICUStay === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>
+              Is the marriage of parents in Same Gotra/Family/Relation?
+            </p>
+            <div style={styles.radioGroup}>
+              <label>
+                <input
+                  type="radio"
+                  name="marriageRelation"
+                  value="No"
+                  checked={formData.marriageRelation === "No"}
+                  onChange={handleInputChange}
+                />{" "}
+                No
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="marriageRelation"
+                  value="Yes"
+                  checked={formData.marriageRelation === "Yes"}
+                  onChange={handleInputChange}
+                />{" "}
+                Yes
+              </label>
+            </div>
+          </div>
           <button type="submit" style={styles.nextButton}>
             <strong>Next</strong>
             <div style={styles.iconContainer}>
@@ -296,6 +628,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
     </div>
   );
 };
+
 
 // Inline Styles
 const styles = {
