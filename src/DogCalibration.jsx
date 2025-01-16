@@ -233,61 +233,61 @@ const DogCalibration = () => {
       async function processAndSendData() {
         setIsLoading(true); // Show spinner
 
-        // try {
-        //   const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-        //     .map((b) => b.toString(16).padStart(2, "0"))
-        //     .join("");
+        try {
+          const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
 
-        //   const encryptedCalibrationPoints = await encryptCalibrationData(
-        //     calibration_points,
-        //     aesKey
-        //   ).catch((error) => {
-        //     console.error("Failed to encrypt calibration points:", error);
-        //     throw error;
-        //   });
+          const encryptedCalibrationPoints = await encryptCalibrationData(
+            calibration_points,
+            aesKey
+          ).catch((error) => {
+            console.error("Failed to encrypt calibration points:", error);
+            throw error;
+          });
 
-        //   const encryptedKey = await encryptPassword(aesKey).catch((error) => {
-        //     console.error("Failed to encrypt password:", error);
-        //     throw error;
-        //   });
+          const encryptedKey = await encryptPassword(aesKey).catch((error) => {
+            console.error("Failed to encrypt password:", error);
+            throw error;
+          });
 
-        //   // Create final data object
-        //   const finalCalibrationData = {
-        //     ...calibrationData,
-        //     encrypted_calibration_points: encryptedCalibrationPoints,
-        //     encrypted_Key: encryptedKey,
-        //   };
+          // Create final data object
+          const finalCalibrationData = {
+            ...calibrationData,
+            encrypted_calibration_points: encryptedCalibrationPoints,
+            encrypted_Key: encryptedKey,
+          };
 
-        //   // Convert to string and send
-        //   const calibrationDataString = JSON.stringify(finalCalibrationData);
-        //   console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
+          // Convert to string and send
+          const calibrationDataString = JSON.stringify(finalCalibrationData);
+          console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
 
-        //   return axios
-        //     .request({
-        //       method: "POST",
-        //       url: SERVER_MIDDLEWARE_URL,
-        //       data: calibrationDataString,
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //       },
-        //     })
-        //     .then((response) => { 
-        //       console.log(response);
-        //       if (response.status !== 200) {
-        //         setIsLoading(false); // Hide spinner
+          return axios
+            .request({
+              method: "POST",
+              url: SERVER_MIDDLEWARE_URL,
+              data: calibrationDataString,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => { 
+              console.log(response);
+              if (response.status !== 200) {
+                setIsLoading(false); // Hide spinner
 
-        //       navigate("/Error Page"); // Navigate to Error Page if status code is not 200
-        //     }});
-        // } catch (error) {
-        //   console.error("Processing error:", error);
-        //   navigate("/Error");
-        //   // throw error;
-        //   console.log(error); 
+              navigate("/Error Page"); // Navigate to Error Page if status code is not 200
+            }});
+        } catch (error) {
+          console.error("Processing error:", error);
+          navigate("/Error");
+          // throw error;
+          console.log(error); 
           
-        // }finally{
-        //   setIsLoading(false); // Ensure spinner is hidden in case of errors
-        // }
-        setIsLoading(false);
+        }finally{
+          setIsLoading(false); // Ensure spinner is hidden in case of errors
+        }
+        // setIsLoading(false);
       }
 
       processAndSendData()
