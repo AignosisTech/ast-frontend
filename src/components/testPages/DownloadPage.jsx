@@ -56,21 +56,24 @@ const DownloadPage = () => {
        {/* Scores and Severity Display */}
       <div className="mt-10 text-[#F6E8FB] text-lg font-montserrat font-medium">
         <div>
-          ISAA Score: {isaascore || 'N/A'} ({getSeverityLevel(isaascore, 'isaa')})
+          INCLEN Score: {testData.inclenFullScore || 'N/A'} 
         </div>
         <div>
-          M-CHAT Score: {mchatScore || 'N/A'} ({getSeverityLevel(mchatScore, 'mchat')})
+          ISAA Score: {isaascore || 'N/A'} 
         </div>
         <div>
-          CARS Score: {carsscore || 'N/A'} ({getSeverityLevel(carsscore, 'cars')})
+          M-CHAT Score: {mchatScore || 'N/A'} 
+        </div>
+        <div>
+          CARS Score: {carsscore || 'N/A'} 
         </div>
       </div>
       {/* Download Button */}
-      <div className="mt-10">
+      {/* <div className="mt-10">
         <a href='https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Reports.pdf?alt=media&token=4b491bc6-5c98-490c-bd2c-a5909ed69d04' target='_blank' className=" text-[#F6E8FB] text-lg font-montserrat font-medium py-3 px-6 rounded-full shadow-lg transition-transform transform hover:scale-105 border border-[#9C00AD]">
           Download your report
         </a>
-      </div>
+      </div> */}
     </div>
   );
 };
