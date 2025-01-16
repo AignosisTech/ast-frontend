@@ -2,61 +2,179 @@ import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import { AppContext } from "../../AppContext";
+  // Questions categorized by subsections
+  const questions = [
+    {
+      subsection: "Social Interaction A1a",
+      items: [
+        "Does your child usually enjoy being taken in the lap or hugged? (For children aged less than 4 years)",
+        "When your child was a baby/toddler, did he/she enjoy being taken in the lap or hugged? (For children aged 4 years or more)",
+        "Does your child usually make eye contact with you or other people? (E.g., while playing, asking for things, or talking to you)",
+        "Does your child usually use various gestures appropriately during social interactions? (E.g., Namaste, Salaam, waving bye-bye, hello, touching feet, etc.)",
+      ],
+    },
+    {
+      subsection: "Social Interaction A1b",
+      items: [
+        "Does your child usually show appropriate facial expressions according to the situation? (E.g., being happy, sad, afraid, etc.)",
+        "Does your child usually enjoy the company of other children?",
+        "Does your child have friends of his/her age (in school or neighborhood) with whom he/she loves to chat, share food, or play together? (For children aged 4 years or more)",
+      ],
+    },
+    {
+      subsection: "Social Interaction A1c",
+      items: [
+        "Does your child play mostly with children who are much older or much younger than him/her? (For children aged 4 years or more)",
+        "Does your child ever point with his/her index finger to bring your attention to show the things that interest him/her? (E.g., kite, plane flying, cow, etc.) (For children aged less than 4 years)",
+      ],
+    },
+    {
+      subsection: "Social Interaction A1d",
+      items: [
+        "Does your child bring things to show you on his/her own that he/she has made, painted, or a new toy/gift? (For children aged 4 years or more)",
+        "Does your child talk to you about things he/she likes or has achieved without being asked? (For children aged 4 years or more and able to speak)",
+        "Does your child usually prefer to play alone and gets irritated or moves away when his/her siblings or other kids try to play with him/her?",
+        "Does your child play games involving turn-taking or rule-based games with other children properly? (E.g., Cricket, Hide and Seek, Ludo, etc.)",
+      ],
+    },
+    {
+      subsection: "Communication A2a",
+      items: [
+        "Does your child speak normally for his/her age? (If not, can he/she communicate with you using gestures? E.g., pointing, nodding, or shaking head for yes/no)",
+      ],
+    },
+    {
+      subsection: "Communication A2b",
+      items: [
+        "Does your child initiate a conversation with you?",
+        "Can you have a conversation with your child during which he/she not only answers your questions but also adds something new to continue the conversation? (For children aged 4 years or more)",
+      ],
+    },
+    {
+      subsection: "Communication A2c",
+      items: [
+        "Does your child usually repeat words or phrases (immediate echolalia)? (E.g., repeating 'What is your name?' after hearing it)",
+        "Does your child incessantly repeat things or dialogues regardless of context (delayed echolalia)?",
+        "Does your child use 'I for me' and 'me for you' incorrectly? (For children aged 4 years or more)",
+        "During conversation, does your child often speak out of context or irrelevantly? (For children aged 4 years or more)",
+      ],
+    },
+    {
+      subsection: "Communication A2d",
+      items: [
+        "Does your child understand jokes or when someone is making fun of him/her? (For children aged 6 years or more)",
+      ],
+    },
+    {
+      subsection: "Restricted Interests A3a",
+      items: [
+        "Does your child have excessive interest in odd things or activities? (E.g., collecting wrappers, strings, etc.)",
+        "Does your child have excessive interest in typical activities that interfere with daily life? (Exclude TV watching)",
+        "Does your child excessively line up or stack objects/toys (excluding blocks)?",
+      ],
+    },
+    {
+      subsection: "Restricted Interests A3b",
+      items: [
+        "Does your child unreasonably insist on doing things in a particular way or get upset if there is a change in routine? (E.g., taking the same route to school or insisting on food being served the same way)",
+      ],
+    },
+    {
+      subsection: "Restricted Interests A3c",
+      items: [
+        "Does your child keep repeating behaviors like hand flapping, toe walking, rocking, etc.?",
+        "Does your child have inappropriate fascination with moving objects? (E.g., spinning wheels, running water, electric fans, etc.)",
+      ],
+    },
+    {
+      subsection: "Restricted Interests A3d",
+      items: [
+        "Does your child prefer to play with a specific part of a toy/object rather than the whole? (E.g., wheels of a toy car)",
+      ],
+    },
+  ];
 
+  // Section B Questions
+  const sectionBQuestions = [
+    "Does the child have significant language delays?",
+    "Does the child have difficulty using language in daily activities?",
+    "Did the child start pretend play late?",
+    "Does the child have difficulty making friends?",
+    "Does the child struggle with understanding societal norms?",
+    "Did the child show symptoms before three years of age?",
+    "Does the child have any symptoms consistent with Rett’s Disorder?",
+    "Does the child meet criteria for Childhood Disintegrative Disorder?",
+  ];
 const INCLEN = () => {
-  var [inclenFormData, setInclenFormData] = useState({});
+  // State to store form responses categorized by subsections
+  const [inclenFormData, setInclenFormData] = useState(() => {
+    const initialData = {};
+    questions.forEach((section) => {
+      initialData[section.subsection] = []; // Initialize an array for each subsection
+    });
+    // Initialize Section B
+  initialData["SectionB"] = []; // Add Section B initialization
+    return initialData;
+  });
+
   const navigate = useNavigate();
-  const {testData, setTestData} = useContext(AppContext);
+  const { testData, setTestData } = useContext(AppContext);
+  
 
-  const [questions] = useState([
-    // Social Interaction Section (A1)
-    "Does your child usually enjoy being taken in the lap or hugged? (For children aged less than 4 years)",
-    "When your child was a baby/toddler, did he/she enjoy being taken in the lap or hugged? (For children aged 4 years or more)",
-    "Does your child usually make eye contact with you or other people? (E.g., while playing, asking for things, or talking to you)",
-    "Does your child usually use various gestures appropriately during social interactions? (E.g., Namaste, Salaam, waving bye-bye, hello, touching feet, etc.)",
-    "Does your child usually show appropriate facial expressions according to the situation? (E.g., being happy, sad, afraid, etc.)",
-    "Does your child usually enjoy the company of other children?",
-    "Does your child have friends of his/her age (in school or neighborhood) with whom he/she loves to chat, share food, or play together? (For children aged 4 years or more)",
-    "Does your child play mostly with children who are much older or much younger than him/her? (For children aged 4 years or more)",
-    "Does your child ever point with his/her index finger to bring your attention to show the things that interest him/her? (E.g., kite, plane flying, cow, etc.) (For children aged less than 4 years)",
-    "Does your child bring things to show you on his/her own that he/she has made, painted, or a new toy/gift? (For children aged 4 years or more)",
-    "Does your child talk to you about things he/she likes or has achieved without being asked? (For children aged 4 years or more and able to speak)",
-    "Does your child usually prefer to play alone and gets irritated or moves away when his/her siblings or other kids try to play with him/her?",
-    "Does your child play games involving turn-taking or rule-based games with other children properly? (E.g., Cricket, Hide and Seek, Ludo, etc.)",
-    "Does your child usually share his/her happiness with you or come to you for comfort when hurt or upset?",
-    "Does your child usually share your happiness or try to comfort you when you are upset/sad? (For children aged 4 years or more)",
 
-    // Communication Section (A2)
-    "Does your child speak normally for his/her age? (If not, can he/she communicate with you using gestures? E.g., pointing, nodding, or shaking head for yes/no)",
-    "Does your child initiate a conversation with you?",
-    "Can you have a conversation with your child during which he/she not only answers your questions but also adds something new to continue the conversation? (For children aged 4 years or more)",
-    "Does your child usually repeat words or phrases (immediate echolalia)? (E.g., repeating 'What is your name?' after hearing it)",
-    "Does your child incessantly repeat things or dialogues regardless of context (delayed echolalia)?",
-    "Does your child use 'I for me' and 'me for you' incorrectly? (For children aged 4 years or more)",
-    "During conversation, does your child often speak out of context or irrelevantly? (For children aged 4 years or more)",
-    "Does your child understand jokes or when someone is making fun of him/her? (For children aged 6 years or more)",
-    "Does your child participate in social games like “Pat-a-cake,” “Peek-a-boo,” etc.?",
-    "Does your child engage in imaginative play with toys? (E.g., kitchen set, dolls, toy guns, etc.)",
-    "Does your child play pretend games like “ghar-ghar,” “teacher-student,” etc.)",
+  // Function to handle response updates
+  const handleResponseChange = (subsection, questionIndex, field, value) => {
+    console.log(inclenFormData);
+    setInclenFormData((prevData) => {
+      const updatedSection = [...(prevData[subsection] || [])]; // Ensure it's an array
+      updatedSection[questionIndex] = {
+        ...updatedSection[questionIndex],
+        [field]: value,
+      };
+      return {
+        ...prevData,
+        [subsection]: updatedSection,
+      };
+    });
+  };
+   // Function to calculate INCLEN score
+   const calculateScore = () => {
+    const scores = {};
+    let fullScore = 0; // Initialize fullScore to 0
 
-    // Restricted Interests and Repetitive Behaviors Section (A3)
-    "Does your child have excessive interest in odd things or activities? (E.g., collecting wrappers, strings, etc.)",
-    "Does your child have excessive interest in typical activities that interfere with daily life? (Exclude TV watching)",
-    "Does your child excessively line up or stack objects/toys (excluding blocks)?",
-    "Does your child unreasonably insist on doing things in a particular way or get upset if there is a change in routine? (E.g., taking the same route to school or insisting on food being served the same way)",
-    "Does your child keep repeating behaviors like hand flapping, toe walking, rocking, etc.?",
-    "Does your child have inappropriate fascination with moving objects? (E.g., spinning wheels, running water, electric fans, etc.)",
-    "Does your child prefer to play with a specific part of a toy/object rather than the whole? (E.g., wheels of a toy car)",
-  ]);
+    // Iterate through each subsection in inclenFormData
+    for (const [subsection, responses] of Object.entries(inclenFormData)) {
+      let subsectionScore = 0;
 
+      // Ensure `responses` is an array
+      if (Array.isArray(responses)) {
+        responses.forEach((response) => {
+          if (response?.answer === "yes") subsectionScore += 1;
+          else if (response?.answer === "maybe") subsectionScore += 0.5;
+          // No points for "no" or unanswered questions
+        });
+      }
+
+      scores[subsection] = subsectionScore; // Save the subsection score
+      fullScore += subsectionScore; // Add subsection score to fullScore
+    }
+
+    return { scores, fullScore }; // Return both scores and fullScore
+  };
+  // Function to handle form submission
   const handleNext = (e) => {
-    console.log(testData.dataCollectionMode);
     e.preventDefault();
-
+    const { scores, fullScore } = calculateScore();
+    console.log("INCLEN Scores:", scores);
+    console.log("Total INCLEN Score (Full Score):", fullScore);
+    console.log(testData);
     setTestData({
       ...testData,
       inclenFormData: inclenFormData,
+      inclenScores: scores, // Save scores in testData
+      inclenFullScore: fullScore, // Save total score
     });
+    
 
     // Check if the array is empty
     if (testData.dataCollectionMode.length === 0) {
@@ -82,30 +200,26 @@ const INCLEN = () => {
   useEffect(() => {
     // Push initial state to prevent default navigation
     window.history.pushState(null, null, window.location.href);
-  
+
     const handleBackButton = () => {
       navigate("/test/fillup"); // Redirect to Fillup on back press
     };
-  
+
     // Listen for the popstate event
     window.addEventListener("popstate", handleBackButton);
-    
-    questions.map((question) => {
-      if (index !== questions.length - 1) {
-        inclenFormData[index] = "";
-        index++;
-      }
+
+    questions.map((section) => {
+      section.items.forEach((question) => {
+        inclenFormData[question] = "";
+      });
     });
     console.log(inclenFormData);
-    
-  
+
     // Cleanup the listener on unmount
     return () => {
       window.removeEventListener("popstate", handleBackButton);
     };
-    
   }, [navigate]);
-
   return (
     <div style={styles.container}>
       {/* Sidebar Section */}
@@ -133,127 +247,165 @@ const INCLEN = () => {
 
       {/* Form Section */}
       <center>
-      <div style={styles.formContainer}>
-        {/* <h2 style={styles.formTitle}>INCLEN Diagnostic Tool</h2> */}
-
-        {/* Checklist Table */}
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.tableHeader}>Questions</th>
-              <th style={styles.tableHeader}>Yes</th>
-              <th style={styles.tableHeader}>No</th>
-              <th style={styles.tableHeader}>Maybe</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              // Social Interaction Section (A1)
-              "Does your child usually enjoy being taken in the lap or hugged? (For children aged less than 4 years)",
-              "When your child was a baby/toddler, did he/she enjoy being taken in the lap or hugged? (For children aged 4 years or more)",
-              "Does your child usually make eye contact with you or other people? (E.g., while playing, asking for things, or talking to you)",
-              "Does your child usually use various gestures appropriately during social interactions? (E.g., Namaste, Salaam, waving bye-bye, hello, touching feet, etc.)",
-              "Does your child usually show appropriate facial expressions according to the situation? (E.g., being happy, sad, afraid, etc.)",
-              "Does your child usually enjoy the company of other children?",
-              "Does your child have friends of his/her age (in school or neighborhood) with whom he/she loves to chat, share food, or play together? (For children aged 4 years or more)",
-              "Does your child play mostly with children who are much older or much younger than him/her? (For children aged 4 years or more)",
-              "Does your child ever point with his/her index finger to bring your attention to show the things that interest him/her? (E.g., kite, plane flying, cow, etc.) (For children aged less than 4 years)",
-              "Does your child bring things to show you on his/her own that he/she has made, painted, or a new toy/gift? (For children aged 4 years or more)",
-              "Does your child talk to you about things he/she likes or has achieved without being asked? (For children aged 4 years or more and able to speak)",
-              "Does your child usually prefer to play alone and gets irritated or moves away when his/her siblings or other kids try to play with him/her?",
-              "Does your child play games involving turn-taking or rule-based games with other children properly? (E.g., Cricket, Hide and Seek, Ludo, etc.)",
-              "Does your child usually share his/her happiness with you or come to you for comfort when hurt or upset?",
-              "Does your child usually share your happiness or try to comfort you when you are upset/sad? (For children aged 4 years or more)",
-
-              // Communication Section (A2)
-              "Does your child speak normally for his/her age? (If not, can he/she communicate with you using gestures? E.g., pointing, nodding, or shaking head for yes/no)",
-              "Does your child initiate a conversation with you?",
-              "Can you have a conversation with your child during which he/she not only answers your questions but also adds something new to continue the conversation? (For children aged 4 years or more)",
-              "Does your child usually repeat words or phrases (immediate echolalia)? (E.g., repeating 'What is your name?' after hearing it)",
-              "Does your child incessantly repeat things or dialogues regardless of context (delayed echolalia)?",
-              "Does your child use 'I for me' and 'me for you' incorrectly? (For children aged 4 years or more)",
-              "During conversation, does your child often speak out of context or irrelevantly? (For children aged 4 years or more)",
-              "Does your child understand jokes or when someone is making fun of him/her? (For children aged 6 years or more)",
-              "Does your child participate in social games like “Pat-a-cake,” “Peek-a-boo,” etc.?",
-              "Does your child engage in imaginative play with toys? (E.g., kitchen set, dolls, toy guns, etc.)",
-              "Does your child play pretend games like “ghar-ghar,” “teacher-student,” etc.)",
-
-              // Restricted Interests and Repetitive Behaviors Section (A3)
-              "Does your child have excessive interest in odd things or activities? (E.g., collecting wrappers, strings, etc.)",
-              "Does your child have excessive interest in typical activities that interfere with daily life? (Exclude TV watching)",
-              "Does your child excessively line up or stack objects/toys (excluding blocks)?",
-              "Does your child unreasonably insist on doing things in a particular way or get upset if there is a change in routine? (E.g., taking the same route to school or insisting on food being served the same way)",
-              "Does your child keep repeating behaviors like hand flapping, toe walking, rocking, etc.?",
-              "Does your child have inappropriate fascination with moving objects? (E.g., spinning wheels, running water, electric fans, etc.)",
-              "Does your child prefer to play with a specific part of a toy/object rather than the whole? (E.g., wheels of a toy car)",
-            ].map((question, index) => (
-              <tr key={index}>
-                <td style={styles.tableCell}>{question}</td>
-                <td style={styles.radioCell}>
-                  <input
-                    type="radio"
-                    name={`question${index}`}
-                    value="yes"
-                    style={styles.radio}
-                    onChange={(e) => {
-                      setInclenFormData((prevData) => ({
-                        ...prevData,
-                        [index]: e.target.value,
-                      }));
-
-                      console.log(inclenFormData);
-                    }}
-                  />
-                </td>
-                <td style={styles.radioCell}>
-                  <input
-                    type="radio"
-                    name={`question${index}`}
-                    value="no"
-                    style={styles.radio}
-                    onChange={(e) => {
-                      setInclenFormData((prevData) => ({
-                        ...prevData,
-                        [index]: e.target.value,
-                      }));
-                      console.log(inclenFormData);
-                    }}
-                  />
-                </td>
-                <td style={styles.radioCell}>
-                  <input
-                    type="radio"
-                    name={`question${index}`}
-                    value="maybe"
-                    style={styles.radio}
-                    onChange={(e) => {
-                      setInclenFormData((prevData) => ({
-                        ...prevData,
-                        [index]: e.target.value,
-                      }));
-                      console.log(inclenFormData);
-                    }}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Centered Next Button */}
-        <div style={styles.buttonContainer}>
-          <button type="submit" onClick={handleNext} style={styles.nextButton}>
-            <strong>Next</strong>
-            <div style={styles.iconContainer}>
-              <FaArrowRight style={styles.icon} />
+        <div style={styles.formContainer}>
+          {questions.map((section, sectionIndex) => (
+            <div key={sectionIndex}>
+              <h3 style={styles.formTitle}>{section.subsection}</h3>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.tableHeader}>Questions</th>
+                    <th style={styles.tableHeader}>Based on Observation</th>
+                    <th style={styles.tableHeader}>Yes</th>
+                    <th style={styles.tableHeader}>No</th>
+                    <th style={styles.tableHeader}>Maybe</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.items.map((question, questionIndex) => (
+                    <tr key={questionIndex}>
+                      <td style={styles.tableCell}>{question}</td>
+                      <td style={styles.checkboxCell}>
+                        <input
+                          type="checkbox"
+                          style={styles.checkbox}
+                          onChange={(e) =>
+                            handleResponseChange(
+                              section.subsection,
+                              questionIndex,
+                              "observation",
+                              e.target.checked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={styles.radioCell}>
+                        <input
+                          type="radio"
+                          name={`${sectionIndex}-${questionIndex}`}
+                          value="yes"
+                          style={styles.radio}
+                          onChange={(e) =>
+                            handleResponseChange(
+                              section.subsection,
+                              questionIndex,
+                              "answer",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={styles.radioCell}>
+                        <input
+                          type="radio"
+                          name={`${sectionIndex}-${questionIndex}`}
+                          value="no"
+                          style={styles.radio}
+                          onChange={(e) =>
+                            handleResponseChange(
+                              section.subsection,
+                              questionIndex,
+                              "answer",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={styles.radioCell}>
+                        <input
+                          type="radio"
+                        
+                          name={`${sectionIndex}-${questionIndex}`}
+                          value="maybe"
+                          style={styles.radio}
+                          onChange={(e) =>
+                            handleResponseChange(
+                              section.subsection,
+                              questionIndex,
+                              "answer",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </button>
+          ))}
+
+          {/* Section B */}
+          <h3 style={styles.formTitle}>Section B</h3>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.tableHeader}>Questions</th>
+                {/* <th style={styles.tableHeader}>Based on Observation</th> */}
+                <th style={styles.tableHeader}>Yes</th>
+                <th style={styles.tableHeader}>No</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sectionBQuestions.map((question, index) => (
+                <tr key={index}>
+                  <td style={styles.tableCell}>{question}</td>
+                  {/* <td style={styles.checkboxCell}>
+                    <input
+                      type="checkbox"
+                      style={styles.checkbox}
+                      onChange={(e) =>
+                        handleResponseChange(
+                          "SectionB",
+                          index,
+                          "observation",
+                          e.target.checked
+                        )
+                      }
+                    />
+                  </td> */}
+                  <td style={styles.radioCell}>
+                    <input
+                      type="radio"
+                      style={styles.radio}
+                      name={`sectionB-${index}`}
+                      value="yes"
+                      onChange={(e) =>
+                        handleResponseChange("SectionB", index, "answer", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td style={styles.radioCell}>
+                    <input
+                      type="radio"
+                      name={`sectionB-${index}`}
+                      value="no"
+                      style={styles.radio}
+                      onChange={(e) =>
+                        handleResponseChange("SectionB", index, "answer", e.target.value)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Submit Button */}
+          <div style={styles.buttonContainer}>
+            <button type="submit" onClick={handleNext} style={styles.nextButton}>
+              <strong>Next</strong>
+              <div style={styles.iconContainer}>
+                <FaArrowRight style={styles.icon} />
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
       </center>
     </div>
   );
 };
+
 
 // Inline Styles
 const styles = {
@@ -264,6 +416,18 @@ const styles = {
     color: "#e6e6e6",
     fontFamily: "Montserrat, sans-serif",
     padding: "2rem",
+    
+  },
+  checkboxCell:{
+    borderLeft: "1px solid #ccc",
+    borderRight: "1px solid #ccc",
+    borderBottom: "1px solid #ccc",
+    
+  },
+  checkbox:{
+    height:"18px",
+    width:"18px",
+    marginLeft:"40%",
   },
   sidebar: {
     flex: 1,
@@ -348,7 +512,6 @@ const styles = {
     marginRight: "0.5rem",
     width: "1rem", // Adjust size as needed
     height: "1rem", // Adjust size as needed
-      
   },
   buttonContainer: {
     display: "flex",
