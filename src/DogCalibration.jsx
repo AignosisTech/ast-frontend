@@ -52,11 +52,11 @@ const DogCalibration = () => {
     [window.innerWidth / 2, 50], // mid top
     [window.innerWidth / 2, window.innerHeight - 100], // mid bottom
   ];
+ 
   const audio = new Audio("/DogBarkAudio2.mp3");    
   useEffect(() => {
-    const audio = new Audio("/DogBarkAudio2.mp3");  
+    // const audio = new Audio("/DogBarkAudio2.mp3");  
     // Initialize and play the audio in a loop
-  
 
 
     const handleAudioPlay = () => {
@@ -112,10 +112,11 @@ const DogCalibration = () => {
   }, []);
 
   const handleNextButtonClick = () => {
-    audio.pause();
-    // audio.currentTime = 0; // Reset audio
     // audio.pause();
     // audio.currentTime = 0; // Reset audio
+    audio.loop=false;
+    audio.pause();
+    audio.currentTime = 0; // Reset audio
     navigate("/video"); // Navigate to the video page
   };
 
@@ -208,7 +209,10 @@ const DogCalibration = () => {
           frame: frames[frameRangeStartIndex + 1],
           // frame: "/DancingDog.png",
         });
-        
+        currentClickFramesList.push({
+          timestamp: finalClickTimes[i] + 1 / fps,
+          frame: frames[frameRangeStartIndex + 1],
+        });
         calibration_points.push({
           point: {
             x: circleCoordinates[i][0],
@@ -284,7 +288,7 @@ const DogCalibration = () => {
         }finally{
           setIsLoading(false); // Ensure spinner is hidden in case of errors
         }
-        // setIsLoading(false);
+          
       }
 
       processAndSendData()
