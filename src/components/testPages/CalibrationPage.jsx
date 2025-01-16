@@ -29,7 +29,7 @@ const CalibrationPage = () => {
 
   const handleNextClick = () => {
     console.log('Testdata:', selectedLanguage);
-    if (allChecked) {
+    
       
       setTestData({
         ...testData,
@@ -46,9 +46,6 @@ const CalibrationPage = () => {
       
 
       setShowWebcamMicTest(true);
-    } else {
-      alert('Please complete all tasks and select a language before proceeding.');
-    }
   };
 
   return (
@@ -67,8 +64,8 @@ const CalibrationPage = () => {
               Please complete the task in sequence before proceeding to the next step
             </p>
 
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
+            {/* <div className="space-y-3"> */}
+              {/* <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   name="checkbox1"
@@ -79,8 +76,8 @@ const CalibrationPage = () => {
                 <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">
                   Ensure the webcam is connected properly
                 </span>
-              </div>
-              <div className="flex items-center space-x-3">
+              </div> */}
+              {/* <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   name="checkbox2"
@@ -103,12 +100,12 @@ const CalibrationPage = () => {
                 <span className="text-[#292738] font-medium max-sm:text-sm font-raleway">
                   Position yourself comfortably in front of the camera
                 </span>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
 
             <div className="space-y-3">
               <label className="text-[#292738] font-medium font-raleway">
-                Select Language: &nbsp;&nbsp;
+                Select Video Calibration Language: &nbsp;&nbsp;
               </label>
               <select
                 value={selectedLanguage}
@@ -125,11 +122,11 @@ const CalibrationPage = () => {
               <Link
                 onClick={handleNextClick}
                 className={`flex items-center justify-center w-[200px] h-[50px] border ${
-                  allChecked && selectedLanguage
+                selectedLanguage
                     ? 'border-[#9C00AD] text-[#292738] hover:bg-[#1a0c25] hover:text-white'
                     : 'border-gray-300 text-gray-400 cursor-not-allowed'
                 } font-montserrat rounded-full font-semibold transition-colors`}
-                style={{ pointerEvents: allChecked && selectedLanguage ? 'auto' : 'none' }}
+                style={{ pointerEvents:selectedLanguage ? 'auto' : 'none' }}
               >
                 Start calibration
               </Link>
