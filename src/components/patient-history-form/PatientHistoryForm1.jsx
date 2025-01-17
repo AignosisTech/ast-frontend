@@ -32,23 +32,31 @@ const PatientHistoryForm1 = ({ onNext }) => {
     NICUReason: [],
     birthWeight: "",
     birthHeadCircumference: "",
-    congenitalMalformations: "",
-    developmentalHistory: {
-      socialSmile: "",
-      headControl: "",
-      sitting: "",
-      standing: "",
-      walking: "",
-      babbling: "",
-      oneWord: "",
-      speech: "",
-      communication: "",
-    },
+    congenitalMalformations: "",    
+    //Developmental History
+    socialSmile: "",
+    headControl: "",
+    sitting: "",
+    standing: "",
+    walking: "",
+    babbling: "",
+    oneWord: "",
+    speech: "",
+    communication: "",
+    gestures: "",
     medicationHistory: [],
     screenTime: "",
     screenSize: "",
     behavioralConcerns: "",
     provisionalDiagnosis: "",
+    Seizures: "",
+    feedingDifficulties: "",
+    abnormalMovements: "",
+    visionDifficulties: "",
+    hearingDifficulties: "",
+    anyTherapyReceived: "",
+    behaviourConcern: "",
+
   });
 
   const handleInputChange = (e) => {
@@ -70,6 +78,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
   const handleNext = (e) => {
     e.preventDefault();
     console.log("Form Data Saved:", formData);
+    console.log("TestData", testData);
     setTestData({
       ...testData,
       patienthistoryform1data: formData,
@@ -114,7 +123,12 @@ const PatientHistoryForm1 = ({ onNext }) => {
           diagnoses.
         </p>
         <button style={styles.languageButton}>Choose language</button>
-
+        <center>
+        <h3 className="font-semibold mb-2 text-sm text-white">
+          Fill Google Form Instead? <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_dXebCWKaocA7KpAxWJAyHGfEwsqiDvAgXk0tj4ZQa0bYhg/viewform">click here</a>
+        </h3> 
+        <br />
+        </center>
         <form style={styles.form} onSubmit={handleNext}>
           <div style={styles.field}>
             <input
@@ -362,7 +376,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
             </div>
           </div>
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Any Apparent Congenital Malformations / Atypical Body Feature</p>
+            <p style={styles.questionLabel}>6. Any Apparent Congenital Malformations / Atypical Body Feature</p>
             <div style={styles.radioGroup}>
               <label>
                 <input
@@ -388,7 +402,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
           </div>
 
           <div style={styles.question}>
-            <p style={styles.questionLabel}>4. Patient complaints</p>
+            <p style={styles.questionLabel}>7. Patient complaints</p>
             <div style={styles.radioGroup}>
               <label>
                 <input
@@ -426,7 +440,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
           </div>
           {/* Antenatal Risk Factors */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Antenatal Risk Factors</p>
+            <p style={styles.questionLabel}>8. Antenatal Risk Factors</p>
             <div style={styles.radioGroup}>
               {[
                 "Hyperthyroidism",
@@ -450,11 +464,13 @@ const PatientHistoryForm1 = ({ onNext }) => {
 
           {/* Blood Pressure */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Blood Pressure during Pregnancy</p>
+            <p style={styles.questionLabel}>9. Blood Pressure during Pregnancy</p>
             {["High", "Low", "Normal"].map((option, index) => (
               <label key={index}>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="bloodPressure"
                   value={option}
                   checked={formData.bloodPressure === option}
@@ -467,7 +483,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
 
           {/* Birth Order */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Birth Order</p>
+            <p style={styles.questionLabel}>10. Birth Order</p>
             {["Only Child", "Firstborn", "Second Born", "Third Born", "Other"].map(
               (option, index) => (
                 <label key={index}>
@@ -486,11 +502,13 @@ const PatientHistoryForm1 = ({ onNext }) => {
 
           {/* Family Type */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Family Type</p>
+            <p style={styles.questionLabel}>11. Family Type</p>
             {["Joint Family", "Nuclear Family"].map((type, index) => (
               <label key={index}>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="familyType"
                   value={type}
                   checked={formData.familyType === type}
@@ -503,7 +521,7 @@ const PatientHistoryForm1 = ({ onNext }) => {
 
           {/* Family Medical History */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Family Medical History</p>
+            <p style={styles.questionLabel}>12. Family Medical History</p>
             <div style={styles.radioGroup}>
               {[
                 "Convulsions",
@@ -530,11 +548,13 @@ const PatientHistoryForm1 = ({ onNext }) => {
 
           {/* Place of Delivery */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Place of Delivery</p>
+            <p style={styles.questionLabel}>13. Place of Delivery</p>
             {["Hospital", "Home", "Other"].map((option, index) => (
               <label key={index}>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="placeOfDelivery"
                   value={option}
                   checked={formData.placeOfDelivery === option}
@@ -545,11 +565,13 @@ const PatientHistoryForm1 = ({ onNext }) => {
             ))}
           </div>
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Gestation Age</p>
+            <p style={styles.questionLabel}>14. Gestation Age</p>
             {["Full Term", "Pre Term", "Post Term"].map((option, index) => (
               <label key={index}>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="gestationAge"
                   value={option}
                   checked={formData.gestationAge === option}
@@ -560,11 +582,13 @@ const PatientHistoryForm1 = ({ onNext }) => {
             ))}
           </div>
           <div style={styles.question}>
-            <p style={styles.questionLabel}>Delivery Type</p>
+            <p style={styles.questionLabel}>15. Delivery Type</p>
             {["Normal Delivery", "Caesarean Section", "Assisted"].map((option, index) => (
               <label key={index}>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="deliveryType"
                   value={option}
                   checked={formData.deliveryType === option}
@@ -576,11 +600,13 @@ const PatientHistoryForm1 = ({ onNext }) => {
           </div>
           {/* NICU Stay */}
           <div style={styles.question}>
-            <p style={styles.questionLabel}>NICU Stay</p>
+            <p style={styles.questionLabel}>16. NICU Stay</p>
             {["Yes", "No"].map((option, index) => (
               <label key={index}>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="NICUStay"
                   value={option}
                   checked={formData.NICUStay === option}
@@ -592,12 +618,14 @@ const PatientHistoryForm1 = ({ onNext }) => {
           </div>
           <div style={styles.question}>
             <p style={styles.questionLabel}>
-              Is the marriage of parents in Same Gotra/Family/Relation?
+              17. Is the marriage of parents in Same Gotra/Family/Relation?
             </p>
             <div style={styles.radioGroup}>
               <label>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="marriageRelation"
                   value="No"
                   checked={formData.marriageRelation === "No"}
@@ -608,6 +636,8 @@ const PatientHistoryForm1 = ({ onNext }) => {
               <label>
                 <input
                   type="radio"
+                                    style={styles.radio}
+
                   name="marriageRelation"
                   value="Yes"
                   checked={formData.marriageRelation === "Yes"}
@@ -616,6 +646,291 @@ const PatientHistoryForm1 = ({ onNext }) => {
                 Yes
               </label>
             </div>
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>18. Social Smile</p>
+            {["Normal (3 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="socialSmile"
+                    value={option}
+                    checked={formData.socialSmile === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>19. Head Control</p>
+            {["Normal (4 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="headControl"
+                    value={option}
+                    checked={formData.headControl === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>20. Sitting</p>
+            {["Normal (8 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="sitting"
+                    value={option}
+                    checked={formData.sitting === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>21. Standing</p>
+            {["Normal (12 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="standing"
+                    value={option}
+                    checked={formData.standing === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>22. Walking</p>
+            {["Normal (15 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="walking"
+                    value={option}
+                    checked={formData.walking === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>23. Babbling</p>
+            {["Normal (6 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="babbling"
+                    value={option}
+                    checked={formData.babbling === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>24. One Word</p>
+            {["Normal (12 Months)", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="oneWord"
+                    value={option}
+                    checked={formData.oneWord === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>25. Speech</p>
+            {["Appropriate to Age", "Delayed", "Do Not Remember"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="speech"
+                    value={option}
+                    checked={formData.speech === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>26. Communication</p>
+            {["Gestures", "Words", "Sentences"].map(
+              (option, index) => (
+                <label key={index}>
+                  <input
+                    type="radio"
+                    name="gestures"
+                    value={option}
+                    checked={formData.gestures === option}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {option}
+                </label>
+              )
+            )}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>27. Seizures</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                                    style={styles.radio}
+
+                  name="seizures"
+                  value={option}
+                  checked={formData.seizures === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>28. Feeding Difficulties</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                                    style={styles.radio}
+
+                  name="feedingDifficulties"
+                  value={option}
+                  checked={formData.feedingDifficulties === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>29. Abnormal Movements</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                                    style={styles.radio}
+
+                  name="abnormalMovements"
+                  value={option}
+                  checked={formData.abnormalMovements === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>30. Vision Difficulties</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                                    style={styles.radio}
+
+                  name="visionDifficulties"
+                  value={option}
+                  checked={formData.visionDifficulties === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>31. Hearing Difficulties</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                                    style={styles.radio}
+
+                  name="hearingDifficulties"
+                  value={option}
+                  checked={formData.hearingDifficulties === option}
+                  onChange={handleInputChange}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.question}>
+            <p style={styles.questionLabel}>32. Any Therapy Received</p>
+            {["Yes", "No"].map((option, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+
+                  name="anyTherapyReceived"
+                  value={option}
+                  checked={formData.anyTherapyReceived === option}
+                  onChange={handleInputChange}
+                  style={styles.radio}
+                />{" "}
+                {option}
+              </label>
+            ))}
+          </div>
+          <div style={styles.field}>
+            <input
+              type="text"
+              style={styles.input}
+              name="screenSize"
+              placeholder="How much screen size does he/she use {Small/Medium/large}"
+              value={formData.screenSize}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.field}>
+            <input
+              type="text"
+              style={styles.input}
+              name="screenTime"
+              placeholder="How much screen time does child have "
+              value={formData.screenTime}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={styles.field}>
+            <input
+              type="text"
+              style={styles.input}
+              name="behaviourConcern"
+              placeholder="Specify 1st Behavioural Concerns"
+              value={formData.behaviourConcern}
+              onChange={handleInputChange}
+            />
           </div>
           <button type="submit" style={styles.nextButton}>
             <strong>Next</strong>
@@ -725,7 +1040,8 @@ const styles = {
     padding: '0.5rem',
     borderRadius: '5px',
     border: '1px solid #ccc',
-    color: '#000000'
+    color: '#000000',
+    // marginRight: '5%',
   },
   question: {
     marginBottom: '1rem',
@@ -734,6 +1050,11 @@ const styles = {
   questionLabel: {
     marginBottom: '0.5rem',
     fontSize: '1rem',
+    
+
+  },
+  radio: {
+    marginLeft:'5px',
   },
   radioGroup: {
     display: 'flex',
