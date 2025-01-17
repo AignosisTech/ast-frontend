@@ -110,11 +110,7 @@ const DogCalibration = () => {
     };
   }, []);
   const handleNextButtonClick = () => {
-    // audio.pause();
-    // audio.currentTime = 0; // Reset audio
-    audio.loop = false;
-    audio.pause();
-    audio.currentTime = 0; // Reset audio
+    
     navigate("/video"); // Navigate to the video page
   };
 
@@ -164,9 +160,18 @@ const DogCalibration = () => {
       ]);
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else {
-      // function sleep(ms) {
-      //   return new Promise((resolve) => setTimeout(resolve, ms));
-      // }
+      // THIS IS THE LAST CLICK ON THE DOG / CAT
+      try{
+        console.log('stopping audio')
+        audio.loop = false;
+        audio.pause();
+        audio.currentTime = 0; // Reset audio
+      }
+      catch(err){
+        console.log('error stopping audio', err)
+      }
+      
+
       setClickTimes((clicktimes) => [
         ...clicktimes,
         (Date.now() - startTime) / 1000,

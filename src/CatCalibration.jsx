@@ -18,14 +18,14 @@ const CatCalibration = () => {
   const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
-  const {testData, } = useContext(AppContext);
+  const { testData } = useContext(AppContext);
 
   const [startTime, setStartTime] = useState();
   const [frameCaptureInterval, setFrameCaptureInterval] = useState();
   const [frames, setFrames] = useState([]);
   const [isCircleVisible, setIsCircleVisible] = useState(true);
-    const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
-  
+  const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
+
   const [currentCircleIndex, setCurrentCircleIndex] = useState(0);
   const [parentDimensions, setParentDimensions] = useState([0, 0]);
 
@@ -57,25 +57,24 @@ const CatCalibration = () => {
     };
 
     audio.addEventListener("canplaythrough", handleAudioPlay);
-    console.log('cat calibration TEST DATA', testData);
+    console.log("cat calibration TEST DATA", testData);
 
     // Get the webcam stream and metadata on mount
     window.history.pushState(null, null, window.location.href);
-  
+
     const handleBackButton = () => {
       navigate("/calibrationpage"); // Redirect to calibration page
     };
-  
+
     // Listen for the popstate event
     window.addEventListener("popstate", handleBackButton);
-  
+
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
       setParentDimensions([clientWidth, clientHeight]);
     }
 
     const startWebcam = async () => {
-        
       if (!navigator.mediaDevices.getUserMedia) {
         console.error("getUserMedia not supported");
         return;
@@ -101,9 +100,9 @@ const CatCalibration = () => {
 
     startWebcam();
     return () => {
-        window.removeEventListener("popstate", handleBackButton);
-        audio.pause();
-      };
+      window.removeEventListener("popstate", handleBackButton);
+      audio.pause();
+    };
   }, [navigate]);
 
   const handleNextButtonClick = () => {
@@ -133,9 +132,6 @@ const CatCalibration = () => {
   };
 
   const handleCircleClick = async () => {
-    
-    
-
     if (currentCircleIndex === 0) {
       setStartTime(Date.now());
       setClickTimes((clicktimes) => [...clicktimes, 0.0]);
@@ -156,9 +152,14 @@ const CatCalibration = () => {
       ]);
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else {
-      // function sleep(ms) {
-      //   return new Promise((resolve) => setTimeout(resolve, ms));
-      // }
+      
+      // THIS IS THE FINAL CAT / DOG CLICK
+      audio.loop = false;
+      audio.pause();
+      audio.currentTime = 0; // Reset audio
+
+
+
       setClickTimes((clicktimes) => [
         ...clicktimes,
         (Date.now() - startTime) / 1000,
@@ -259,19 +260,20 @@ const CatCalibration = () => {
             .then((response) => {
               setIsLoading(false); // Hide spinner
 
-                console.log(response.status);
-                if (response.status !== 200) {
+              console.log(response.status);
+              if (response.status !== 200) {
                 navigate("/Error Page"); // Navigate to Error Page if status code is not 200
-              }});
+              }
+            });
         } catch (error) {
           console.error("Processing error:", error);
           navigate("/Error");
-        //   throw error;
-        console.log(error);
-        }finally{
+          //   throw error;
+          console.log(error);
+        } finally {
           setIsLoading(false); // Ensure spinner is hidden in case of errors
         }
-          // setIsLoading(false); // Ensure spinner is hidden in case of errors
+        // setIsLoading(false); // Ensure spinner is hidden in case of errors
       }
 
       processAndSendData()
@@ -308,12 +310,12 @@ const CatCalibration = () => {
             x={circleCoordinates[currentCircleIndex][0]}
             y={circleCoordinates[currentCircleIndex][1]}
             radius={50}
-            imageUrl="/CatFace.png"
+            imageUrl="/catface.webp"
           />
         )}
 
-{/* Conditionally render spinner or button */}
-{!isCircleVisible &&
+      {/* Conditionally render spinner or button */}
+      {!isCircleVisible &&
         (isLoading ? (
           <div
             style={{
@@ -325,20 +327,26 @@ const CatCalibration = () => {
           >
             <BeatLoader color="#ffffff" size={15} />
             <br />
-            <p className="mt-4"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "rgba(138, 0, 194, 0.6)",
-              color: "white",
-              padding: "12px 24px",
-              borderRadius: "25px",
-              border: "none",
-              fontSize: "32px",
-              fontWeight: "bold",
-              cursor: "pointer",}}> Calibrating</p>
+            <p
+              className="mt-4"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "rgba(138, 0, 194, 0.6)",
+                color: "white",
+                padding: "12px 24px",
+                borderRadius: "25px",
+                border: "none",
+                fontSize: "32px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              {" "}
+              Calibrating
+            </p>
           </div>
         ) : (
           <button
