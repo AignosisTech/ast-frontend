@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight , FaArrowLeft } from "react-icons/fa";
 import { AppContext } from "../../AppContext";
   // Questions categorized by subsections
   const questions = [
@@ -161,6 +161,11 @@ const INCLEN = () => {
 
     return { scores, fullScore }; // Return both scores and fullScore
   };
+
+  const handleBackClick = () => {
+    
+    navigate('/test/fillup');
+  };
   // Function to handle form submission
   const handleNext = (e) => {
     e.preventDefault();
@@ -247,6 +252,9 @@ const INCLEN = () => {
 
       {/* Form Section */}
       <center>
+      <h3 className="font-semibold mb-2 text-sm text-white">
+        Fill Google Form Instead? <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_dXebCWKaocA7KpAxWJAyHGfEwsqiDvAgXk0tj4ZQa0bYhg/viewform">click here</a>
+      </h3> 
         <div style={styles.formContainer}>
           {questions.map((section, sectionIndex) => (
             <div key={sectionIndex}>
@@ -393,6 +401,14 @@ const INCLEN = () => {
 
           {/* Submit Button */}
           <div style={styles.buttonContainer}>
+            <button onClick={handleBackClick} style={styles.nextButton}>
+              <div style={styles.iconContainer}>
+                <FaArrowLeft style={styles.icon} />
+              </div>
+              &nbsp;&nbsp;
+              <strong>Back</strong> 
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <button type="submit" onClick={handleNext} style={styles.nextButton}>
               <strong>Next</strong>
               <div style={styles.iconContainer}>
