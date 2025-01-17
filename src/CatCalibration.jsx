@@ -49,7 +49,7 @@ const CatCalibration = () => {
     [window.innerWidth / 2, 50], // mid top
     [window.innerWidth / 2, window.innerHeight - 100], // mid bottom
   ];
-  const audio = new Audio("/CatMeow.mp3"); // Path to your audio file
+  const audio = new Audio(`/CatMeow.mp3?timestamp=${Date.now()}`); // Path to your audio file
   useEffect(() => {
     const handleAudioPlay = () => {
       audio.loop = true; // Enable looping
