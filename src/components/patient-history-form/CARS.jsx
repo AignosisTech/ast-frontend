@@ -641,6 +641,9 @@ const CARS = () => {
               caregivers, it provides a comprehensive developmental profile.
             </p>
           </div>
+          <h3 className="font-semibold mb-2 text-sm text-white">
+            Fill Google Form Instead? <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_dXebCWKaocA7KpAxWJAyHGfEwsqiDvAgXk0tj4ZQa0bYhg/viewform">click here</a>
+          </h3> 
         </center>
       </div>
 
