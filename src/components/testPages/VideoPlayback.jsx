@@ -293,9 +293,10 @@ const VideoPlayback = () => {
         // src="https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
         src={
           testData.videolanguage === "English"
-            ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
+            // ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
+            ? "video_english.mp4"
             : testData.videolanguage === "Hindi"
-            ? "samplevideo.mp4"
+            ? "video_hindi.mp4"
             : ""
         }
         controls
