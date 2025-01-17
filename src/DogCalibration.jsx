@@ -53,9 +53,9 @@ const DogCalibration = () => {
     [window.innerWidth / 2, window.innerHeight - 100], // mid bottom
   ];
  
-  const audio = new Audio("/DogBarkAudio2.mp3");    
+  const audio = new Audio(`/dog_bark.wav?timestamp=${Date.now()}`);
   useEffect(() => {
-    // const audio = new Audio("/DogBarkAudio2.mp3");  
+    // const audio = new Audio("/dog_bark.wav");  
     // Initialize and play the audio in a loop
 
 
@@ -110,7 +110,6 @@ const DogCalibration = () => {
       // audio.currentTime = 0; // Reset audio
     };
   }, []);
-
   const handleNextButtonClick = () => {
     // audio.pause();
     // audio.currentTime = 0; // Reset audio
@@ -120,6 +119,7 @@ const DogCalibration = () => {
     navigate("/video"); // Navigate to the video page
   };
 
+  
   const captureFrame = () => {
     if (canvasRef.current && videoRef.current) {
       const canvas = canvasRef.current;
@@ -209,10 +209,6 @@ const DogCalibration = () => {
           frame: frames[frameRangeStartIndex + 1],
           // frame: "/DancingDog.png",
         });
-        currentClickFramesList.push({
-          timestamp: finalClickTimes[i] + 1 / fps,
-          frame: frames[frameRangeStartIndex + 1],
-        });
         calibration_points.push({
           point: {
             x: circleCoordinates[i][0],
@@ -270,6 +266,7 @@ const DogCalibration = () => {
               data: calibrationDataString,
               headers: {
                 "Content-Type": "application/json",
+                
               },
             })
             .then((response) => { 
@@ -288,7 +285,7 @@ const DogCalibration = () => {
         }finally{
           setIsLoading(false); // Ensure spinner is hidden in case of errors
         }
-          
+        // setIsLoading(false);
       }
 
       processAndSendData()
