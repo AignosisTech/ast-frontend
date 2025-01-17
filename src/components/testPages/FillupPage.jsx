@@ -225,8 +225,7 @@ export const FillupPage = () => {
                 <DatePicker
                   selected={dob}
                   onChange={handleDateChange}
-                  placeholderText="Patient DOB"
-                  showYearDropdown
+                  placeholder="Patient DOB"
                   // style={backgroundColor: "transparent",}
                   className="bg-[#1A0C25] text-white px-4 py-2.5 w-25 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
@@ -257,7 +256,7 @@ export const FillupPage = () => {
                   readOnly
                   className="bg-[#1A0C25] text-white px-4 py-2.5 rounded-lg w-full placeholder-gray-500 border-[#B7407D4D] focus:outline-none focus:ring-2 focus:ring-pink-500"
                 /> */}
-
+                
                 {/* Data Collection Mode Section */}
                 <div className="text-white">
                   <h3 className="font-semibold mb-2 text-sm">
@@ -292,7 +291,7 @@ export const FillupPage = () => {
                       />
                       <span style={{marginLeft:'-47%',}}>ISAA</span>
                     </label>
-                    <label className="flex items-center space-x-2 " style={{marginLeft:'-62%',}}>
+                    <label className="flex items-center space-x-2 " style={{marginLeft:'-63%',}}>
                       <input
                         type="checkbox"
                         value="CARS"
@@ -308,7 +307,9 @@ export const FillupPage = () => {
                     </label>
                   </div>
                 </div>
-
+                <h3 className="font-semibold mb-2 text-sm text-white">
+                    Fill Google Form Instead? <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_dXebCWKaocA7KpAxWJAyHGfEwsqiDvAgXk0tj4ZQa0bYhg/viewform">click here</a>
+                  </h3>      
                 <div className="flex justify-center items-center gap-2 max-sm:flex-col">
                   <Link
                     to="/prices"
