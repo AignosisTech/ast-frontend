@@ -20,6 +20,7 @@ const PatientHistoryForm4 = () => {
 
   const handleNext = (e) => {
     e.preventDefault();
+    console.log("testData: ", testData);
     try {
       // Add any validation or data processing here before navigation
       // For example, you could collect form data here and validate it
@@ -87,7 +88,12 @@ const PatientHistoryForm4 = () => {
       {/* Form Section */}
       <div style={styles.formContainer}>
         <h2 style={styles.formTitle}>Patient Service Checklist</h2>
-
+        <center>
+        <h3 className="font-semibold mb-2 text-sm text-white">
+          Fill Google Form Instead? <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_dXebCWKaocA7KpAxWJAyHGfEwsqiDvAgXk0tj4ZQa0bYhg/viewform">click here</a>
+        </h3> 
+        <br />
+        </center>
         {/* Checklist Table */}
         <table style={styles.table}>
           <thead>
