@@ -28,6 +28,7 @@ const PatientHistoryForm2 = ({ onNext }) => {
     try {
       // Save form data to testData
       console.log(formData);
+      console.log("testData:", testData);
       setTestData({
         ...testData,
         patienthistoryform2data: formData,
@@ -65,7 +66,7 @@ const PatientHistoryForm2 = ({ onNext }) => {
           </div>
         </div>
       </div>
-
+      
       {/* Form Section */}
       <div style={styles.formContainer}>
         <h2 style={styles.formTitle}>Patient History</h2>
@@ -75,7 +76,12 @@ const PatientHistoryForm2 = ({ onNext }) => {
           diagnoses.
         </p>
         <button style={styles.languageButton}>Choose language</button>
-
+        <center>
+        <h3 className="font-semibold mb-2 text-sm text-white">
+          Fill Google Form Instead? <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_dXebCWKaocA7KpAxWJAyHGfEwsqiDvAgXk0tj4ZQa0bYhg/viewform">click here</a>
+        </h3> 
+        <br />
+        </center>
         {/* Form Fields */}
         <form style={styles.form} onSubmit={handleNext}>
           {/* Question 9 */}
