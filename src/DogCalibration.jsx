@@ -280,6 +280,10 @@ const DogCalibration = () => {
               else{
                 navigate("/Error Page");
               }
+            }).catch((error) => {
+              console.error("Processing error:", error);
+              navigate("/Error");
+              console.log(error);    
             });
         } catch (error) {
           console.error("Processing error:", error);
