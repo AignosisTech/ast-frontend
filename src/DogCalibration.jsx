@@ -12,8 +12,8 @@ import {
   encryptPassword,
 } from "./components/utils/EncryptionUtils";
 import { v4 as uuidv4 } from "uuid";
-import { useContext } from 'react';
-import { AppContext } from './AppContext.js';
+import { useContext } from "react";
+import { AppContext } from "./AppContext.js";
 
 const DogCalibration = () => {
   const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
@@ -37,7 +37,7 @@ const DogCalibration = () => {
   const [clickTimes, setClickTimes] = useState([]);
   const parentRef = useRef(null);
 
-  const {testData, setTestData} = useContext(AppContext);
+  const { testData, setTestData } = useContext(AppContext);
 
   const navigate = useNavigate(); // Initialize navigate from useNavigate
 
@@ -52,18 +52,17 @@ const DogCalibration = () => {
     [window.innerWidth / 2, 50], // mid top
     [window.innerWidth / 2, window.innerHeight - 100], // mid bottom
   ];
- 
+
   const audio = new Audio(`/dog_bark.wav?timestamp=${Date.now()}`);
   useEffect(() => {
-    // const audio = new Audio("/dog_bark.wav");  
+    // const audio = new Audio("/dog_bark.wav");
     // Initialize and play the audio in a loop
-
 
     const handleAudioPlay = () => {
       audio.loop = true; // Enable looping
       audio.play().catch((error) => console.error("Audio play error:", error));
     };
-  
+
     // Wait for the audio to be fully loaded
     audio.addEventListener("canplaythrough", handleAudioPlay);
     // save patient uid and tid in context
@@ -71,9 +70,9 @@ const DogCalibration = () => {
       ...testData,
       PATIENT_UID: uuidv4(),
       TRANSACTION_ID: uuidv4(),
-    })
+    });
 
-    console.log('DOG CALIBRATION TEST DATA', testData);
+    console.log("DOG CALIBRATION TEST DATA", testData);
     // Get the webcam stream and metadata on mount
     if (parentRef.current) {
       const { clientWidth, clientHeight } = parentRef.current;
@@ -113,13 +112,12 @@ const DogCalibration = () => {
   const handleNextButtonClick = () => {
     // audio.pause();
     // audio.currentTime = 0; // Reset audio
-    audio.loop=false;
+    audio.loop = false;
     audio.pause();
     audio.currentTime = 0; // Reset audio
     navigate("/video"); // Navigate to the video page
   };
 
-  
   const captureFrame = () => {
     if (canvasRef.current && videoRef.current) {
       const canvas = canvasRef.current;
@@ -135,8 +133,8 @@ const DogCalibration = () => {
     } else {
       console.warn("Frame capture failed: canvasRef or videoRef is null");
       // TODO: send back to take assignment page, with alert saying some error occurred
-    }
-  };
+    }
+  };
 
   const handleCircleClick = async () => {
     // const audio = new Audio("/dog_bark.mp3"); // Path to your audio file
@@ -266,34 +264,29 @@ const DogCalibration = () => {
               data: calibrationDataString,
               headers: {
                 "Content-Type": "application/json",
-                
               },
             })
-            .then((response) => { 
+            .then((response) => {
               console.log(response);
-              if (response.status !== 200) {
-                setIsLoading(false); // Hide spinner
-
-              navigate("/Error Page"); // Navigate to Error Page if status code is not 200
-            }});
+              setIsLoading(false);
+              if (response.status === 200) {
+                // pass
+              }
+              else{
+                navigate("/Error Page");
+              }
+            });
         } catch (error) {
           console.error("Processing error:", error);
           navigate("/Error");
-          // throw error;
-          console.log(error); 
-          
-        }finally{
-          setIsLoading(false); // Ensure spinner is hidden in case of errors
+          console.log(error);
         }
-        // setIsLoading(false);
       }
 
       processAndSendData()
         .then((response) => {
           clearInterval(frameCaptureInterval);
           console.log("Frame capturing stopped");
-          console.log(response);
-          
         })
         .catch((err) => {
           clearInterval(frameCaptureInterval);
@@ -340,20 +333,26 @@ const DogCalibration = () => {
           >
             <BeatLoader color="#ffffff" size={15} />
             <br />
-            <p className="mt-4"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "rgba(138, 0, 194, 0.6)",
-              color: "white",
-              padding: "12px 24px",
-              borderRadius: "25px",
-              border: "none",
-              fontSize: "32px",
-              fontWeight: "bold",
-              cursor: "pointer",}}> Calibrating</p>
+            <p
+              className="mt-4"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "rgba(138, 0, 194, 0.6)",
+                color: "white",
+                padding: "12px 24px",
+                borderRadius: "25px",
+                border: "none",
+                fontSize: "32px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              {" "}
+              Calibrating
+            </p>
           </div>
         ) : (
           <button
