@@ -23,8 +23,8 @@ const VideoPlayback = () => {
 
   const {testData, setTestData} = useContext(AppContext);
 
-  // const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
-  const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
+  // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
   useEffect(() => {
     // Push the current location to history to override back behavior
     window.history.pushState(null, null, window.location.href);
@@ -120,11 +120,7 @@ const VideoPlayback = () => {
     try {
       setIsUploading(true);
 
-      // Encrypt the video before uploading
-      const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-      const encryptedBlob = await encryptVideo(blob, aesKey);
+      const encryptedBlob = await encryptVideo(blob, testData.encrypted_key);
 
       // Make sure that we are getting the JWK format return in this fetch call
       const jwk = await fetch(
@@ -143,17 +139,18 @@ const VideoPlayback = () => {
         ["encrypt"]
       );
 
-      const encryptedKey = await window.crypto.subtle.encrypt(
-        {
-          name: "RSA-OAEP",
-        },
-        publicKey,
-        new TextEncoder().encode(aesKey)
-      );
+      //  using aes key set in dog calibration
+      // const encryptedKey = await window.crypto.subtle.encrypt(
+      //   {
+      //     name: "RSA-OAEP",
+      //   },
+      //   publicKey,
+      //   new TextEncoder().encode(aesKey)
+      // );
 
       const formData = new FormData();
       formData.append("video", encryptedBlob, "encrypted-test.bin");
-      formData.append("encrypted_aes_key", new Blob([encryptedKey], { type: 'application/octet-stream' }));
+      formData.append("encrypted_aes_key", testData.encrypted_key);
       formData.append("patient_uid", testData.PATIENT_UID);
       formData.append("transaction_id", testData.TRANSACTION_ID);
 
@@ -293,9 +290,9 @@ const VideoPlayback = () => {
         // src="https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
         src={
           testData.videolanguage === "English"
-           ? "https://prod-aignosis-terraform-state.s3.ap-south-1.amazonaws.com/Test_Videos/Aignosis_Test_vid_Eng_V5.mp4"
+           ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
             : testData.videolanguage === "Hindi"
-            ? "https://prod-aignosis-terraform-state.s3.ap-south-1.amazonaws.com/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
+            ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
             : ""
         }
         controls

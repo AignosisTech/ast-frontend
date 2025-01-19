@@ -24,6 +24,7 @@ export const AppProvider = ({ children }) => {
     carsscore:'',
     isaascore:'',
     inclenscore:'',
+    currentSessionAESKey: ''
   });
 
   // Pass the state and updater function to the provider
