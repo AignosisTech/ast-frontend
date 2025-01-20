@@ -21,7 +21,7 @@ const VideoPlayback = () => {
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
-  const {testData, setTestData} = useContext(AppContext);
+  const { testData, setTestData } = useContext(AppContext);
 
   // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
   const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
@@ -29,22 +29,22 @@ const VideoPlayback = () => {
     // Push the current location to history to override back behavior
     window.history.pushState(null, null, window.location.href);
     console.log(testData);
-  
+
     const handleBackButton = () => {
       navigate("/calibrationpage"); // Redirect to calibration page
     };
-  
+
     // Listen for the popstate event
     window.addEventListener("popstate", handleBackButton);
-  
+
     return () => {
       window.removeEventListener("popstate", handleBackButton);
     };
   }, [navigate]);
 
-  useEffect(()=>{
-    console.log('VIDEO PLAYBACK TEST DATA', testData);
-  }, [])
+  useEffect(() => {
+    console.log("VIDEO PLAYBACK TEST DATA", testData);
+  }, []);
 
   const cleanupMediaStream = () => {
     console.log("Starting cleanup");
@@ -88,7 +88,7 @@ const VideoPlayback = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false
+        audio: false,
       });
 
       videoStreamRef.current = stream;
@@ -109,8 +109,10 @@ const VideoPlayback = () => {
       setIsRecording(true);
       console.log("Webcam Recording");
     } catch (error) {
-      console.error('Error accessing webcam:', error);
-      alert('Error accessing webcam. Please ensure you have granted camera permissions.');
+      console.error("Error accessing webcam:", error);
+      alert(
+        "Error accessing webcam. Please ensure you have granted camera permissions."
+      );
 
       //TODO: redirect to "take assessment page"
     }
@@ -120,7 +122,13 @@ const VideoPlayback = () => {
     try {
       setIsUploading(true);
 
-      const encryptedBlob = await encryptVideo(blob, testData.encrypted_key);
+      // Encrypt the video before uploading
+      const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+      console.log("AES KEY FOR VIDE", aesKey);
+      const encryptedBlob = await encryptVideo(blob, aesKey);
 
       // Make sure that we are getting the JWK format return in this fetch call
       const jwk = await fetch(
@@ -139,26 +147,31 @@ const VideoPlayback = () => {
         ["encrypt"]
       );
 
-      //  using aes key set in dog calibration
-      // const encryptedKey = await window.crypto.subtle.encrypt(
-      //   {
-      //     name: "RSA-OAEP",
-      //   },
-      //   publicKey,
-      //   new TextEncoder().encode(aesKey)
-      // );
+      const encryptedKey = await window.crypto.subtle.encrypt(
+        {
+          name: "RSA-OAEP",
+        },
+        publicKey,
+        new TextEncoder().encode(aesKey)
+      );
 
       const formData = new FormData();
       formData.append("video", encryptedBlob, "encrypted-test.bin");
-      formData.append("encrypted_aes_key", testData.encrypted_key);
+      formData.append(
+        "encrypted_aes_key",
+        new Blob([encryptedKey], { type: "application/octet-stream" }),
+        "encrypted_aes_key.bin"
+      );
       formData.append("patient_uid", testData.PATIENT_UID);
       formData.append("transaction_id", testData.TRANSACTION_ID);
+
+      console.log(formData);
 
       const formDataString = Array.from(formData.entries())
         .map(([key, value]) => `${key}=${value}`)
         .join("&");
 
-      console.log('form data string is', formDataString);
+      console.log("form data string is", formDataString);
 
       const response = await fetch(
         SERVER_MIDDLEWARE_ENDPOINT + "/rest/test/video_data/",
@@ -228,7 +241,6 @@ const VideoPlayback = () => {
 
         console.log("Uploading Video");
         uploadRecording(blob);
-        
       };
     }
   };
@@ -278,7 +290,7 @@ const VideoPlayback = () => {
     setIsVideoEnded(true);
     stopRecording();
 
-    navigate('/catcalibration')
+    navigate("/catcalibration");
   };
 
   return (
@@ -290,10 +302,10 @@ const VideoPlayback = () => {
         // src="https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
         src={
           testData.videolanguage === "English"
-           ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
+            ? "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Eng_V5.mp4"
             : testData.videolanguage === "Hindi"
-            ? "https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Aignosis_Test_Vid_2.mp4?alt=media&token=d1444252-00c9-463a-a5f8-ee4129f2b211"
-            : ""
+            ? "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
+            : "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
         }
         controls
         autoPlay={false}
@@ -337,7 +349,6 @@ const VideoPlayback = () => {
       </div>
     </div>
   );
-  
 };
 
 export default VideoPlayback;
