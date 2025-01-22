@@ -23,8 +23,8 @@ const VideoPlayback = () => {
 
   const { testData, setTestData } = useContext(AppContext);
 
-  // const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
-  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+  // const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
+  const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
   useEffect(() => {
     // Push the current location to history to override back behavior
     window.history.pushState(null, null, window.location.href);
@@ -179,10 +179,17 @@ const VideoPlayback = () => {
           method: "POST",
           body: formData,
         }
-      ).catch((err) => {
-        console.log("Failed to upload video: " + err);
-        // TODO: redirect to take assessment page
-      });
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        }).then(response=>console.log(response))
+        .catch((err) => {
+          console.log("Failed to upload video: " + err);
+          // TODO: redirect to take assessment page
+        });
 
       if (!response.ok) {
         throw new Error("Failed to upload video");
@@ -192,13 +199,13 @@ const VideoPlayback = () => {
       cleanupMediaStream();
       setIsUploading(false);
 
-      // window.location.replace('/catcalibration');
-      navigate("/catcalibration");
+      // window.location.replace('/test/fillup');
+      navigate("/test/fillup");
     } catch (error) {
       console.error("Error uploading video:", error);
       cleanupMediaStream();
       setIsUploading(false);
-      window.location.replace("/catcalibration");
+      window.location.replace("/test/fillup");
       alert("Failed to upload video. Please try again.");
 
       console.log("Failed to Upload Video");
@@ -290,7 +297,7 @@ const VideoPlayback = () => {
     setIsVideoEnded(true);
     stopRecording();
 
-    navigate("/catcalibration");
+    navigate("/test/fillup");
   };
 
   return (
@@ -409,7 +416,7 @@ export default VideoPlayback;
 //         {isVideoEnded ? (
 //           <button
 //             onClick={() => {
-//               window.location.replace('/catcalibration');
+//               window.location.replace('/test/fillup');
 //             }}
 //             className="px-6 py-3 bg-[#9C00AD] text-white rounded-full font-semibold hover:bg-[#F0A1FF] transition-colors"
 //           >
