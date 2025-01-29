@@ -23,7 +23,7 @@ const VideoPlayback = () => {
 
   const { testData, setTestData } = useContext(AppContext);
 
-  const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
+  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
 
   useEffect(() => {
     window.history.pushState(null, null, window.location.href);
@@ -154,7 +154,7 @@ const VideoPlayback = () => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
           } else {
-            navigate('/test/fillup');
+            navigate('/download');
           }
           return response.json();
         })

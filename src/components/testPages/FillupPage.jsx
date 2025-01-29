@@ -361,6 +361,7 @@ import { differenceInYears, differenceInMonths } from "date-fns";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { data } from "autoprefixer";
+import {format} from 'date-fns'
 
 export const FillupPage = () => {
   const [isBackInfoVisible, setIsBackInfoVisible] = useState(false);
@@ -388,6 +389,12 @@ export const FillupPage = () => {
     // document.getElementById("patient-uid-input").value = testData.PATIENT_UID;
   }, []);
 
+  const handleDateChange = (date) => {
+    const formattedDate = date ? format(date, "ddMMyyyy") : "";
+    setDob(formattedDate);
+    console.log("Formatted DOB:", );
+  };
+
   useEffect(() => {
     if (dob) {
       const years = differenceInYears(new Date(), dob);
@@ -409,6 +416,8 @@ export const FillupPage = () => {
       navigate("/calibrationpage"); // Redirect to CalibrationPage on back press
     };
   
+
+    
     // Listen for the popstate event
     window.addEventListener("popstate", handleBackButton);
   
@@ -431,16 +440,15 @@ export const FillupPage = () => {
       if (document.getElementById("patient-name-input").value == "" || !dob) {
         alert("Please enter all fields");
       } else {
+        console.log('patient dob in useState is ', dob)
         setTestData({
           ...testData,
           patientName: document.getElementById("patient-name-input").value,
           patientDOB:dob,
-          // PATIENT_UID:'SAMPLEUID',
-          // TRANSACTION_ID:'SAMPLETID',
         });
 
-        console.log("going to  data collection", testData.dataCollectionMode);
-        navigate("/download");
+        // console.log("going to  data collection", testData.dataCollectionMode);
+        navigate("/calibrationpage");
       }
     } catch (error) {
       console.error("Permission denied for webcam and microphone:", error);
@@ -449,17 +457,17 @@ export const FillupPage = () => {
   };
 
   // Function to calculate age based on DOB
-  const handleDateChange = (date) => {
-    setDob(date);
+  // const handleDateChange = (date) => {
+  //   setDob(date);
 
-    const years = differenceInYears(new Date(), date);
-    const months = differenceInMonths(new Date(), date) % 12;
-    const fullYear = date.getFullYear();
+  //   const years = differenceInYears(new Date(), date);
+  //   const months = differenceInMonths(new Date(), date) % 12;
+  //   const fullYear = date.getFullYear();
 
-    setAgeYears(years);
-    setAgeMonths(months);
-    setAgeFullYear(fullYear);
-  };
+  //   setAgeYears(years);
+  //   setAgeMonths(months);
+  //   setAgeFullYear(fullYear);
+  // };
 
   // // Function to handle checkbox change
   // const handleCheckboxChange = (event) => {
