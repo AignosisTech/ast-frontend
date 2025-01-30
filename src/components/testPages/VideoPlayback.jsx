@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { useContext } from "react";
+import BeatLoader from "react-spinners/BeatLoader"; // Ensure you import the BeatLoader component
 
 const VideoPlayback = () => {
   const location = useLocation();
@@ -15,6 +16,8 @@ const VideoPlayback = () => {
   const [hasStartedOnce, setHasStartedOnce] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
+  
   const webcamRef = useRef(null);
   const calibrationVideoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -40,8 +43,11 @@ const VideoPlayback = () => {
   }, [navigate]);
 
   useEffect(() => {
+    if (isLoading) {
+      console.log("Loader should be visible now!");
+    }
     console.log("VIDEO PLAYBACK TEST DATA", testData);
-  }, []);
+  }, [isLoading]);
 
   const cleanupMediaStream = () => {
     if (webcamRef.current && webcamRef.current.srcObject) {
@@ -101,7 +107,10 @@ const VideoPlayback = () => {
   };
 
   const uploadRecording = async (blob) => {
+    setIsLoading(true); // Show spinner
+
     try {
+      setIsLoading(true); // Show spinner
       setIsUploading(true);
 
       const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
@@ -151,9 +160,11 @@ const VideoPlayback = () => {
         }
       )
         .then((response) => {
-          if (!response.ok) {
+          setIsLoading(false);
+          if (!response.ok) { 
             throw new Error("Network response was not ok");
           } else {
+            setIsLoading(false); // Show spinner
             navigate('/download');
           }
           return response.json();
@@ -169,7 +180,7 @@ const VideoPlayback = () => {
 
       cleanupMediaStream();
       setIsUploading(false);
-
+      setIsLoading(false); // Show spinner
       navigate("/Error");
     }
   };
@@ -280,11 +291,42 @@ const VideoPlayback = () => {
           className={`w-3 h-3 rounded-full ${
             isRecording ? "bg-red-500" : "bg-gray-500"
           }`}
-        ></div>
+        >
+
+        </div>
         <span className="text-white text-sm">
           {isRecording ? "Recording" : "Not Recording"}
         </span>
       </div>
+      {isLoading && (
+        <div
+          className="absolute inset-0 flex flex-col justify-center items-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            zIndex: 50,
+          }}
+        >
+          <BeatLoader color="#ffffff" size={15} />
+          <p
+            className="mt-4"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "rgba(138, 0, 194, 0.6)",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "25px",
+              fontSize: "32px",
+              fontWeight: "bold",
+            }}
+          >
+            Loading
+          </p>
+        </div>
+      )}
+
       <div className="absolute bottom-10">
         {isVideoEnded ? (
           <button

@@ -504,7 +504,7 @@ export const FillupPage = () => {
   
   return (
     <>
-      <div className="bg-[#1A0C25] flex flex-col justify-center items-center min-h-screen">
+      <div className="bg-[#1A0C25] flex flex-col justify-center items-center h-[110vh]">
         {/* <StepProgress /> */}
         {!isBackInfoVisible ? (
           <div className="flex flex-row  max-sm:flex-col max-sm:justify-center items-center justify-between mt-[10px] max-sm:mt-0 max-sm:mb-[50px]">

@@ -217,22 +217,22 @@ const DownloadPage = () => {
         </p>
       </div>
       {/* Scores and Severity Display */}
-      <div className="mt-10 text-[#F6E8FB] text-lg font-montserrat font-medium">
+      {/* <div className="mt-10 text-[#F6E8FB] text-lg font-montserrat font-medium">
         <div>INCLEN Score: {testData.inclenFullScore || "N/A"}</div>
         <div>ISAA Score: {isaascore || "N/A"}</div>
         <div>M-CHAT Score: {mchatScore || "N/A"}</div>
         <div>CARS Score: {carsscore || "N/A"}</div>
-      </div>
+      </div> */}
       {/* Download Button */}
       {/* <div className="mt-10">
         <a href='https://firebasestorage.googleapis.com/v0/b/wedmonkey-d6e0e.appspot.com/o/Reports.pdf?alt=media&token=4b491bc6-5c98-490c-bd2c-a5909ed69d04' target='_blank' className=" text-[#F6E8FB] text-lg font-montserrat font-medium py-3 px-6 rounded-full shadow-lg transition-transform transform hover:scale-105 border border-[#9C00AD]">
           Download your report
         </a>
       </div> */}
-      <div className="mt-10 text-[#F6E8FB] text-lg font-montserrat font-medium">
-        <h1>Download Page</h1>
+      {/* <div className="mt-10 text-[#F6E8FB] text-lg font-montserrat font-medium">
+        <h1>Download Page</h1> */}
         {/* Add your existing DownloadPage content here */}
-      </div>
+      {/* </div> */}
     </div>
   );
 };
