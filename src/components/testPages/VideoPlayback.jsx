@@ -27,8 +27,17 @@ const VideoPlayback = () => {
   const { testData, setTestData } = useContext(AppContext);
 
   const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
+  const iframeRef = useRef(null); // Ref for the iframe element
 
   useEffect(() => {
+    if (iframeRef.current) {
+      iframeRef.current.src = iframeRef.current.src; // Trigger the first reload
+      setTimeout(() => {
+        iframeRef.current.src = iframeRef.current.src; // Trigger the second reload after a slight delay
+      }, 1000); // Adjust the delay if needed
+    }
+
+
     window.history.pushState(null, null, window.location.href);
 
     const handleBackButton = () => {
@@ -287,6 +296,7 @@ const VideoPlayback = () => {
         style={{ position: "fixed", top: 0, left: 0, zIndex: 10 }}
       /> */}
       <iframe
+              ref={iframeRef}
         src="/videocomponent"
         className="w-full h-full absolute top-0 left-0"
         style={{ position: "fixed", zIndex: 10, border: "none" }}
