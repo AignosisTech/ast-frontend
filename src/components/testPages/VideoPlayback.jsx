@@ -268,7 +268,7 @@ const VideoPlayback = () => {
   return (
     <div className="bg-[#1A0C25] min-h-screen flex flex-col justify-center items-center">
       <video ref={webcamRef} autoPlay playsInline muted className="hidden" />
-      <video
+      {/* <video
         ref={videoRef}
         src={
           testData.videolanguage === "English"
@@ -285,7 +285,14 @@ const VideoPlayback = () => {
         onPause={handleVideoPause}
         onEnded={handleVideoEnd}
         style={{ position: "fixed", top: 0, left: 0, zIndex: 10 }}
-      />
+      /> */}
+      <iframe
+        src="/videocomponent"
+        className="w-full h-full absolute top-0 left-0"
+        style={{ position: "fixed", zIndex: 10, border: "none" }}
+      >
+
+      </iframe>
       <div className="absolute top-4 right-4 z-20 flex items-center space-x-2 bg-black bg-opacity-50 px-4 py-2 rounded-full">
         <div
           className={`w-3 h-3 rounded-full ${

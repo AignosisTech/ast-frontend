@@ -352,7 +352,6 @@ import BackgroundInformationForm from "./BackgroundInformationForm";
 // import { DatePicker } from 'rsuite';
 import DatePicker from 'rsuite/DatePicker';
 
-
 // (Optional) Import component styles. If you are using Less, import the `index.less` file. 
 import 'rsuite/DatePicker/styles/index.css';
 
@@ -363,7 +362,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { data } from "autoprefixer";
 import {format} from 'date-fns'
-import { Helmet } from "react-helmet";
 
 export const FillupPage = () => {
   const [isBackInfoVisible, setIsBackInfoVisible] = useState(false);
@@ -506,21 +504,10 @@ export const FillupPage = () => {
   
   return (
     <>
-    <Helmet>
-            <link 
-              rel="preload" 
-              as="video" 
-              href="https://d228sadnexesrp.cloudfront.net/Test_Videos/video_english_v6.mp4" 
-              type="video/mp4"
-            />
-          </Helmet>
-
-      <div className="bg-[#1A0C25] flex flex-col justify-center items-center h-[120vh]">
-        
+      <div className="bg-[#1A0C25] flex flex-col justify-center items-center h-[110vh]">
         {/* <StepProgress /> */}
         {!isBackInfoVisible ? (
           <div className="flex flex-row  max-sm:flex-col max-sm:justify-center items-center justify-between mt-[10px] max-sm:mt-0 max-sm:mb-[50px]">
-            
             {/* Left side content */}
             <div className="flex flex-col items-start space-y-[80px] px-8  max-sm:mt-[50px]">
               {/* Logo with Gradient Background */}

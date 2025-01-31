@@ -32,6 +32,7 @@ import ISAA from './components/patient-history-form/ISAA';
 import INCLEN from './components/patient-history-form/INCLEN';
 import Error from './Error';
 import DataCollectionPage from './DataCollectionPage';
+import VideoComponent from './components/testPages/videoComponent';
 
 const App = () => {
   return (
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/INCLEN" element={<INCLEN />} />
         <Route path="/Error" element={<Error />} />
         <Route path="/dataCollection" element={<DataCollectionPage />} />
+        <Route path="/videocomponent" element={<VideoComponent />} />
 
         {/* Add route for DogCalibration */}
         <Route path="/dogcalibration" element={<DogCalibration />} />
