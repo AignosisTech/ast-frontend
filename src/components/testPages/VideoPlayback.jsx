@@ -27,14 +27,38 @@ const VideoPlayback = () => {
   const { testData, setTestData } = useContext(AppContext);
 
   const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
-  const iframeRef = useRef(null); // Ref for the iframe element
 
   useEffect(() => {
-    if (iframeRef.current) {
-      iframeRef.current.src = iframeRef.current.src; // Trigger the first reload
-      setTimeout(() => {
-        iframeRef.current.src = iframeRef.current.src; // Trigger the second reload after a slight delay
-      }, 1000); // Adjust the delay if needed
+
+
+
+
+
+    if (!sessionStorage.getItem("reloaded")) {
+      sessionStorage.setItem("reloaded", "true");
+      window.location.reload();
+    }
+
+
+
+    const params = new URLSearchParams(location.search);
+    const patient_uid = params.get("patient_uid");
+    const transaction_id = params.get("transaction_id");
+    const encrypted_key = params.get("encrypted_key");
+    const video_language = params.get("video_language");
+    const patientDOB = params.get("patientDOB");
+    const patientName = params.get("patientName");
+  
+    if (patient_uid && transaction_id && encrypted_key && video_language) {
+      setTestData((prevData) => ({
+        ...prevData,
+        PATIENT_UID: patient_uid,
+        TRANSACTION_ID: transaction_id,
+        encrypted_key: encrypted_key,
+        videolanguage: video_language,
+        patientDOB: patientDOB,
+        patientName: patientName,
+      }));
     }
 
 
@@ -49,7 +73,7 @@ const VideoPlayback = () => {
     return () => {
       window.removeEventListener("popstate", handleBackButton);
     };
-  }, [navigate]);
+  }, [location.search, setTestData, navigate]);
 
   useEffect(() => {
     if (isLoading) {
@@ -277,7 +301,7 @@ const VideoPlayback = () => {
   return (
     <div className="bg-[#1A0C25] min-h-screen flex flex-col justify-center items-center">
       <video ref={webcamRef} autoPlay playsInline muted className="hidden" />
-      {/* <video
+      <video
         ref={videoRef}
         src={
           testData.videolanguage === "English"
@@ -294,15 +318,7 @@ const VideoPlayback = () => {
         onPause={handleVideoPause}
         onEnded={handleVideoEnd}
         style={{ position: "fixed", top: 0, left: 0, zIndex: 10 }}
-      /> */}
-      <iframe
-              ref={iframeRef}
-        src="/videocomponent"
-        className="w-full h-full absolute top-0 left-0"
-        style={{ position: "fixed", zIndex: 10, border: "none" }}
-      >
-
-      </iframe>
+      />
       <div className="absolute top-4 right-4 z-20 flex items-center space-x-2 bg-black bg-opacity-50 px-4 py-2 rounded-full">
         <div
           className={`w-3 h-3 rounded-full ${

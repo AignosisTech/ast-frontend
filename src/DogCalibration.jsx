@@ -110,8 +110,29 @@ const DogCalibration = () => {
     };
   }, []);
   const handleNextButtonClick = () => {
-    
-    navigate("/video"); // Navigate to the video page
+
+    let { PATIENT_UID, TRANSACTION_ID, encrypted_key, videolanguage, patientDOB, patientName } = testData;
+    // patientDob=patientDob.toString();
+    console.log(patientDOB);
+    if (PATIENT_UID && TRANSACTION_ID && encrypted_key && videolanguage) {
+      const queryParams = new URLSearchParams({
+        patient_uid: PATIENT_UID,
+        transaction_id: TRANSACTION_ID,
+        encrypted_key: encrypted_key,
+        video_language: videolanguage,
+        patientDOB: patientDOB,
+        patientName: patientName,
+      }).toString();
+  
+      navigate(`/video?${queryParams}`);
+    } else {
+      console.error("Missing required query parameters");
+    }
+
+
+
+
+    // navigate("/video"); // Navigate to the video page
   };
 
   const captureFrame = () => {
