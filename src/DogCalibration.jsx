@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { AppContext } from "./AppContext.js";
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
+  const SERVER_MIDDLEWARE_URL = "http://localhost:8000/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
   // const [TRANSACTION_ID, ] = useState(uuidv4());
@@ -110,29 +110,7 @@ const DogCalibration = () => {
     };
   }, []);
   const handleNextButtonClick = () => {
-
-    let { PATIENT_UID, TRANSACTION_ID, encrypted_key, videolanguage, patientDOB, patientName } = testData;
-    // patientDob=patientDob.toString();
-    console.log(patientDOB);
-    if (PATIENT_UID && TRANSACTION_ID && encrypted_key && videolanguage) {
-      const queryParams = new URLSearchParams({
-        patient_uid: PATIENT_UID,
-        transaction_id: TRANSACTION_ID,
-        encrypted_key: encrypted_key,
-        video_language: videolanguage,
-        patientDOB: patientDOB,
-        patientName: patientName,
-      }).toString();
-  
-      navigate(`/video?${queryParams}`);
-    } else {
-      console.error("Missing required query parameters");
-    }
-
-
-
-
-    // navigate("/video"); // Navigate to the video page
+    navigate("/video"); // Navigate to the video page
   };
 
   const captureFrame = () => {
@@ -182,16 +160,14 @@ const DogCalibration = () => {
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else {
       // THIS IS THE LAST CLICK ON THE DOG / CAT
-      try{
-        console.log('stopping audio')
+      try {
+        console.log("stopping audio");
         audio.loop = false;
         audio.pause();
         audio.currentTime = 0; // Reset audio
+      } catch (err) {
+        console.log("error stopping audio", err);
       }
-      catch(err){
-        console.log('error stopping audio', err)
-      }
-      
 
       setClickTimes((clicktimes) => [
         ...clicktimes,
@@ -204,22 +180,6 @@ const DogCalibration = () => {
       let fps = parseInt(
         (frames.length / parseInt(timeElapsed.toString())).toString()
       );
-
-      const calibrationData = {
-        patient_uid: testData.PATIENT_UID,
-        transaction_id: testData.TRANSACTION_ID,
-        patient_name: testData.patientName,
-        patient_dob: testData.patientDOB,
-        camera_resolution: {
-          width: videoResolution[0],
-          height: videoResolution[1],
-        },
-        screen_resolution: {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        },
-        debug: true,
-      };
 
       var calibration_points = [];
       for (let i = 0; i < finalClickTimes.length; i++) {
@@ -245,75 +205,53 @@ const DogCalibration = () => {
         });
       }
 
-      console.log(
-        `FINAL CALIBRATION DATA BEFORE ENCRYPTION: ${JSON.stringify(
-          calibrationData
-        )}`
-      ); // Fixed template literal
-
       // ENCRYPTION STARTS HERE
 
       async function processAndSendData() {
         setIsLoading(true); // Show spinner
 
         try {
-          const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+          const calibrationAesKey = Array.from(
+            crypto.getRandomValues(new Uint8Array(32))
+          )
             .map((b) => b.toString(16).padStart(2, "0"))
             .join("");
 
           const encryptedCalibrationPoints = await encryptCalibrationData(
             calibration_points,
-            aesKey
+            calibrationAesKey
           ).catch((error) => {
             console.error("Failed to encrypt calibration points:", error);
             throw error;
           });
 
-          const encryptedKey = await encryptPassword(aesKey).catch((error) => {
+          const encryptedCalibrationAesKey = await encryptPassword(
+            calibrationAesKey
+          ).catch((error) => {
             console.error("Failed to encrypt password:", error);
             throw error;
           });
 
-          // Create final data object
-          const finalCalibrationData = {
-            ...calibrationData,
-            encrypted_calibration_points: encryptedCalibrationPoints,
-            encrypted_Key: encryptedKey,
+          const calibrationData = {
+            patient_uid: testData.PATIENT_UID,
+            transaction_id: testData.TRANSACTION_ID,
+            camera_resolution: {
+              width: videoResolution[0],
+              height: videoResolution[1],
+            },
+            screen_resolution: {
+              width: window.innerWidth,
+              height: window.innerHeight,
+            },
+            debug: true,
           };
 
-          // setting the encrypted aes key for the transaction
           setTestData({
             ...testData,
-            encrypted_key: encryptedKey,
-          })
-
-          // Convert to string and send
-          const calibrationDataString = JSON.stringify(finalCalibrationData);
-          console.log(`FINAL CALIBRATION DATA: ${calibrationDataString}`); // Fixed template literal
-
-          return axios
-            .request({
-              method: "POST",
-              url: SERVER_MIDDLEWARE_URL,
-              data: calibrationDataString,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-            .then((response) => {
-              console.log(response);
-              setIsLoading(false);
-              if (response.status === 200) {
-                // pass
-              }
-              else{
-                navigate("/Error Page");
-              }
-            }).catch((error) => {
-              console.error("Processing error:", error);
-              navigate("/Error");
-              console.log(error);    
-            });
+            calibration_data: calibrationData,
+            encrypted_calibration_points: encryptedCalibrationPoints.toString(),
+            calibration_encrypted_key: encryptedCalibrationAesKey,
+          });
         } catch (error) {
           console.error("Processing error:", error);
           navigate("/Error");
@@ -322,14 +260,13 @@ const DogCalibration = () => {
       }
 
       processAndSendData()
-        .then((response) => {
+        .then((_) => {
           clearInterval(frameCaptureInterval);
-          console.log("Frame capturing stopped");
+          setIsLoading(false);
         })
         .catch((err) => {
-          clearInterval(frameCaptureInterval);
-          console.log("Frame capturing stopped");
-          console.log(err);
+          console.log("error:", err);
+          navigate("/Error");
         });
     }
   };
