@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { AppContext } from "./AppContext.js";
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = "http://localhost:8000/rest/calibration/data/";
+  const SERVER_MIDDLEWARE_URL = "https://35.207.211.80/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
   // const [TRANSACTION_ID, ] = useState(uuidv4());
@@ -110,33 +110,29 @@ const DogCalibration = () => {
     };
   }, []);
   const handleNextButtonClick = () => {
-    let {
-      PATIENT_UID,
-      TRANSACTION_ID,
-      calibration_encrypted_aes_key,
-      videolanguage,
-      patientDOB,
-      patientName,
-    } = testData;
-    if (
-      PATIENT_UID &&
-      TRANSACTION_ID &&
-      calibration_encrypted_aes_key &&
-      videolanguage
-    ) {
-      // const queryParams = new URLSearchParams({
-      //   patient_uid: PATIENT_UID,
-      //   transaction_id: TRANSACTION_ID,
-      //   calibration_encrypted_aes_key: calibration_encrypted_aes_key,
-      //   video_language: videolanguage,
-      //   patientDOB: patientDOB,
-      //   patientName: patientName,
-      // }).toString();
 
-      navigate(`/video`);
+    let { PATIENT_UID, TRANSACTION_ID, encrypted_key, videolanguage, patientDOB, patientName } = testData;
+    // patientDob=patientDob.toString();
+    console.log(patientDOB);
+    if (PATIENT_UID && TRANSACTION_ID && encrypted_key && videolanguage) {
+      const queryParams = new URLSearchParams({
+        patient_uid: PATIENT_UID,
+        transaction_id: TRANSACTION_ID,
+        encrypted_key: encrypted_key,
+        video_language: videolanguage,
+        patientDOB: patientDOB,
+        patientName: patientName,
+      }).toString();
+  
+      navigate(`/video?${queryParams}`);
     } else {
       console.error("Missing required query parameters");
     }
+
+
+
+
+    // navigate("/video"); // Navigate to the video page
   };
 
   const captureFrame = () => {
@@ -186,14 +182,16 @@ const DogCalibration = () => {
       setCurrentCircleIndex(currentCircleIndex + 1);
     } else {
       // THIS IS THE LAST CLICK ON THE DOG / CAT
-      try {
-        console.log("stopping audio");
+      try{
+        console.log('stopping audio')
         audio.loop = false;
         audio.pause();
         audio.currentTime = 0; // Reset audio
-      } catch (err) {
-        console.log("error stopping audio", err);
       }
+      catch(err){
+        console.log('error stopping audio', err)
+      }
+      
 
       setClickTimes((clicktimes) => [
         ...clicktimes,
@@ -271,9 +269,7 @@ const DogCalibration = () => {
             throw error;
           });
 
-          const calibration_encrypted_aes_key = await encryptPassword(
-            aesKey
-          ).catch((error) => {
+          const encryptedKey = await encryptPassword(aesKey).catch((error) => {
             console.error("Failed to encrypt password:", error);
             throw error;
           });
@@ -282,13 +278,14 @@ const DogCalibration = () => {
           const finalCalibrationData = {
             ...calibrationData,
             encrypted_calibration_points: encryptedCalibrationPoints,
-            calibration_encrypted_aes_key: calibration_encrypted_aes_key,
+            encrypted_Key: encryptedKey,
           };
 
+          // setting the encrypted aes key for the transaction
           setTestData({
             ...testData,
-            calibration_encrypted_aes_key: calibration_encrypted_aes_key,
-          });
+            encrypted_key: encryptedKey,
+          })
 
           // Convert to string and send
           const calibrationDataString = JSON.stringify(finalCalibrationData);
@@ -308,14 +305,14 @@ const DogCalibration = () => {
               setIsLoading(false);
               if (response.status === 200) {
                 // pass
-              } else {
+              }
+              else{
                 navigate("/Error Page");
               }
-            })
-            .catch((error) => {
+            }).catch((error) => {
               console.error("Processing error:", error);
               navigate("/Error");
-              console.log(error);
+              console.log(error);    
             });
         } catch (error) {
           console.error("Processing error:", error);

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { encryptVideo } from "../EncryptionUtils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { useContext } from "react";
@@ -11,36 +11,56 @@ const VideoPlayback = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [, setIsVideoPlaying] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [hasStartedOnce, setHasStartedOnce] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
-
+  
   const webcamRef = useRef(null);
-  // const calibrationVideoRef = useRef(null);
+  const calibrationVideoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
 
   const { testData, setTestData } = useContext(AppContext);
 
-  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+  const SERVER_MIDDLEWARE_ENDPOINT = "https://35.207.211.80";
 
   useEffect(() => {
+
+
+
+
+
     if (!sessionStorage.getItem("reloaded")) {
       sessionStorage.setItem("reloaded", "true");
       window.location.reload();
     }
 
-    // const params = new URLSearchParams(location.search);
-    // const patient_uid = params.get("patient_uid");
-    // const transaction_id = params.get("transaction_id");
-    // const encrypted_key = params.get("encrypted_key");
-    // const video_language = params.get("video_language");
-    // const patientDOB = params.get("patientDOB");
-    // const patientName = params.get("patientName");
+
+
+    const params = new URLSearchParams(location.search);
+    const patient_uid = params.get("patient_uid");
+    const transaction_id = params.get("transaction_id");
+    const encrypted_key = params.get("encrypted_key");
+    const video_language = params.get("video_language");
+    const patientDOB = params.get("patientDOB");
+    const patientName = params.get("patientName");
+  
+    if (patient_uid && transaction_id && encrypted_key && video_language) {
+      setTestData((prevData) => ({
+        ...prevData,
+        PATIENT_UID: patient_uid,
+        TRANSACTION_ID: transaction_id,
+        encrypted_key: encrypted_key,
+        videolanguage: video_language,
+        patientDOB: patientDOB,
+        patientName: patientName,
+      }));
+    }
+
 
     window.history.pushState(null, null, window.location.href);
 
@@ -126,11 +146,11 @@ const VideoPlayback = () => {
       setIsLoading(true); // Show spinner
       setIsUploading(true);
 
-      const videoAesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+      const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
         .map((b) => b.toString(16).padStart(2, "0"))
         .join("");
 
-      const videoEncryptedBlob = await encryptVideo(blob, videoAesKey);
+      const encryptedBlob = await encryptVideo(blob, aesKey);
 
       const jwk = await fetch(
         SERVER_MIDDLEWARE_ENDPOINT + "/rest/return_rsa_public_key/"
@@ -147,35 +167,38 @@ const VideoPlayback = () => {
         ["encrypt"]
       );
 
-      const videoEncryptedAesKey = await window.crypto.subtle.encrypt(
+      const encryptedKey = await window.crypto.subtle.encrypt(
         {
           name: "RSA-OAEP",
         },
         publicKey,
-        new TextEncoder().encode(videoAesKey)
+        new TextEncoder().encode(aesKey)
       );
 
       const formData = new FormData();
-      formData.append("video", videoEncryptedBlob, "encrypted-test.bin");
+      formData.append("video", encryptedBlob, "encrypted-test.bin");
       formData.append(
-        "video_encrypted_aes_key",
-        new Blob([videoEncryptedAesKey], { type: "application/octet-stream" }),
+        "encrypted_aes_key",
+        new Blob([encryptedKey], { type: "application/octet-stream" }),
         "encrypted_aes_key.bin"
       );
       formData.append("patient_uid", testData.PATIENT_UID);
       formData.append("transaction_id", testData.TRANSACTION_ID);
 
-      await fetch(SERVER_MIDDLEWARE_ENDPOINT + "/rest/test/video_data/", {
-        method: "POST",
-        body: formData,
-      })
+      const response = await fetch(
+        SERVER_MIDDLEWARE_ENDPOINT + "/rest/test/video_data/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      )
         .then((response) => {
           setIsLoading(false);
-          if (!response.ok) {
+          if (!response.ok) { 
             throw new Error("Network response was not ok");
           } else {
             setIsLoading(false); // Show spinner
-            navigate("/download");
+            navigate('/download');
           }
           return response.json();
         })
@@ -281,9 +304,9 @@ const VideoPlayback = () => {
       <video
         ref={videoRef}
         src={
-          testData.videoLanguage === "English"
+          testData.videolanguage === "English"
             ? "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Eng_V5.mp4"
-            : testData.videoLanguage === "Hindi"
+            : testData.videolanguage === "Hindi"
             ? "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
             : "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
         }
@@ -301,7 +324,9 @@ const VideoPlayback = () => {
           className={`w-3 h-3 rounded-full ${
             isRecording ? "bg-red-500" : "bg-gray-500"
           }`}
-        ></div>
+        >
+
+        </div>
         <span className="text-white text-sm">
           {isRecording ? "Recording" : "Not Recording"}
         </span>
