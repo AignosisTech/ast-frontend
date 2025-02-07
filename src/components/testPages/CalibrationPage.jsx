@@ -163,7 +163,7 @@ export default CalibrationPage;
 //   const videoStreamRef = useRef(null);
 
 //   const patientIUID = 'jdifjio2u4u248tu9q8ghg98439'
-//   const LOCAL_MIDDLEWARE_ENDPOINT = 'https://35.207.211.80/rest/'
+//   const LOCAL_MIDDLEWARE_ENDPOINT = 'http://localhost:8000/rest/'
 //   const SERVER_MIDDLEWARE_ENDPOINT = 'http://35.207.211.80:5001/rest/'
 //   const IN_USE_URL = LOCAL_MIDDLEWARE_ENDPOINT + 'test/video_data'
 

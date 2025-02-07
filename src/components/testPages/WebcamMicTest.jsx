@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import CalibrationPage from './CalibrationPage';
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import CalibrationPage from "./CalibrationPage";
 
 const WebcamMicTest = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [volume, setVolume] = useState(0);
   const [snapshotTaken, setSnapshotTaken] = useState(false); // Track if snapshot is taken
   const [snapshot, setSnapshot] = useState(null); // Store snapshot image data
@@ -19,7 +19,7 @@ const WebcamMicTest = () => {
   // Handle the "Next" button click
   const handleNextClick = async () => {
     // Navigate to DogCalibration page
-    navigate('/dogcalibration'); 
+    navigate("/dogcalibration");
   };
   const [permissionsGranted, setPermissionsGranted] = useState(false); // Track permissions
 
@@ -45,14 +45,16 @@ const WebcamMicTest = () => {
           // Check if video is already playing before calling play()
           if (videoRef.current.paused && !videoRef.current.ended) {
             videoRef.current.play().catch((error) => {
-              console.error('Error while trying to play video:', error);
+              console.error("Error while trying to play video:", error);
             });
           }
         }
 
         // Create audio context and analyser for audio input
-        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-        const audioSource = audioContextRef.current.createMediaStreamSource(stream);
+        audioContextRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const audioSource =
+          audioContextRef.current.createMediaStreamSource(stream);
         analyserRef.current = audioContextRef.current.createAnalyser();
         audioSource.connect(analyserRef.current);
 
@@ -62,7 +64,9 @@ const WebcamMicTest = () => {
 
         const getVolume = () => {
           analyserRef.current.getByteFrequencyData(dataArrayRef.current);
-          const average = dataArrayRef.current.reduce((sum, value) => sum + value, 0) / bufferLength;
+          const average =
+            dataArrayRef.current.reduce((sum, value) => sum + value, 0) /
+            bufferLength;
           setVolume(average);
           if (!snapshotTaken) {
             requestAnimationFrame(getVolume);
@@ -72,25 +76,28 @@ const WebcamMicTest = () => {
         getVolume(); // Start monitoring volume
       })
       .catch((err) => {
-        console.error('Error accessing webcam/microphone:', err);
-        setError('Error: please allow access to your webcam and microphone');
+        console.error("Error accessing webcam/microphone:", err);
+        setError("Error: please allow access to your webcam and microphone");
       });
-      async function checkPermissions() {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-          if (stream) {
-            setPermissionsGranted(true);
-            // Release the stream immediately to avoid holding the devices
-            stream.getTracks().forEach((track) => track.stop());
-          }
-        } catch (err) {
-          navigate("/Error");
-          console.error('Permissions not granted:', err);
-          setPermissionsGranted(false);
-          setError('Error: please allow access to your webcam and microphone');
+    async function checkPermissions() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        if (stream) {
+          setPermissionsGranted(true);
+          // Release the stream immediately to avoid holding the devices
+          stream.getTracks().forEach((track) => track.stop());
         }
+      } catch (err) {
+        navigate("/Error");
+        console.error("Permissions not granted:", err);
+        setPermissionsGranted(false);
+        setError("Error: please allow access to your webcam and microphone");
       }
-      checkPermissions();
+    }
+    checkPermissions();
   }, [snapshotTaken]);
 
   const handleSnapshot = () => {
@@ -101,13 +108,19 @@ const WebcamMicTest = () => {
         audioContextRef.current.suspend();
       }
 
-      const context = canvasRef.current.getContext('2d');
+      const context = canvasRef.current.getContext("2d");
       canvasRef.current.width = videoRef.current.videoWidth;
       canvasRef.current.height = videoRef.current.videoHeight;
-      context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+      context.drawImage(
+        videoRef.current,
+        0,
+        0,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
 
       // Convert canvas to a data URL (base64 string)
-      const imageData = canvasRef.current.toDataURL('image/png');
+      const imageData = canvasRef.current.toDataURL("image/png");
       setSnapshot(imageData); // Save snapshot data
       setSnapshotTaken(true); // Mark that the snapshot is taken
     }
@@ -116,7 +129,7 @@ const WebcamMicTest = () => {
   return (
     <>
       {!isCalVisible ? (
-        <div className='bg-[#1A0C25] min-h-screen flex flex-col justify-center items-center'>
+        <div className="bg-[#1A0C25] min-h-screen flex flex-col justify-center items-center">
           <div className="w-[900px] max-sm:w-[90vw] h-[600px] mt-[6px] bg-[#FDF9FF] rounded-3xl shadow-lg flex flex-col items-center p-8 space-y-6 relative border border-[#5F1B73]">
             {/* Ai.gnosis Branding */}
             <div className="text-4xl font-bold text-[#1A0C25] relative mb-2">
@@ -127,44 +140,60 @@ const WebcamMicTest = () => {
             </div>
 
             {/* Webcam & Microphone Test Section */}
-            <h2 className="text-2xl font-semibold text-[#292738] font-manrope max-sm:text-xl">Webcam & Microphone test</h2>
+            <h2 className="text-2xl font-semibold text-[#292738] font-manrope max-sm:text-xl">
+              Webcam & Microphone test
+            </h2>
 
             {/* Webcam Preview or Snapshot Display */}
             <div className="w-[500px] max-sm:w-[85vw] h-[300px] bg-[#D9D9D9] rounded-lg flex items-center justify-center overflow-hidden">
               {snapshotTaken ? (
-                <img src={snapshot} alt="Snapshot" className="w-full h-full object-cover" />
+                <img
+                  src={snapshot}
+                  alt="Snapshot"
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <video ref={videoRef} className="w-full h-full object-cover" muted style={{ maxWidth: '500px', maxHeight: '300px' }} ></video>
+                <video
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  muted
+                  style={{ maxWidth: "500px", maxHeight: "300px" }}
+                ></video>
               )}
             </div>
 
             {/* Canvas for snapshot */}
-            <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+            <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
             {/* Buttons */}
             {!snapshotTaken ? (
               <button
                 onClick={handleSnapshot}
-
                 disabled={!permissionsGranted} // Disable if permissions are not granted
-              className={`mt-4 px-6 py-2 border-2 border-[#9C00AD] text-[#292738] rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors font-montserrat ${
-                !permissionsGranted ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-                >
+                className={`mt-4 px-6 py-2 border-2 border-[#9C00AD] text-[#292738] rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors font-montserrat ${
+                  !permissionsGranted ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
                 Take snapshot
               </button>
             ) : (
               <button
                 onClick={handleNextClick}
-                className="mt-4 px-6 py-2 border-2 border-[#9C00AD] text-[#292738] rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors font-montserrat">
+                className="mt-4 px-6 py-2 border-2 border-[#9C00AD] text-[#292738] rounded-full font-semibold hover:bg-[#F0A1FF] hover:text-white transition-colors font-montserrat"
+              >
                 Next
               </button>
             )}
 
             {/* Microphone Test Section */}
             <div className="text-center mt-4">
-              <h3 className="text-lg font-medium text-[#292738] font-montserrat">Microphone test</h3>
-              <p className="text-[#292738] font-raleway">Speak into the microphone and volume level will be displayed below:</p>
+              <h3 className="text-lg font-medium text-[#292738] font-montserrat">
+                Microphone test
+              </h3>
+              <p className="text-[#292738] font-raleway">
+                Speak into the microphone and volume level will be displayed
+                below:
+              </p>
 
               {/* Volume Level Indicator */}
               <div className="w-full h-4 bg-gray-300 rounded-full mt-2">
@@ -176,9 +205,7 @@ const WebcamMicTest = () => {
 
               {/* Error Message */}
               {error && (
-                <p className="text-[#D0161F] font-raleway mt-2">
-                  {error}
-                </p>
+                <p className="text-[#D0161F] font-raleway mt-2">{error}</p>
               )}
             </div>
           </div>

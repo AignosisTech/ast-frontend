@@ -49,7 +49,7 @@ const AutismTest = () => {
     {
       title: "Empowering Early Intervention",
       subtitle: "Step 4",
-      description: "Early detection is crucial in supporting your child’s growth. The Aignosis Autism Test empowers parents to take proactive steps.",
+      description: "Early detection is crucial in supporting your child's growth. The Aignosis Autism Test empowers parents to take proactive steps.",
       bgColor: "#1A0C25",
       header: "Step 4",
       ScreenNumber: 5,
