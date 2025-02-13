@@ -20,6 +20,7 @@ const VideoPlayback = () => {
   const videoStreamRef = useRef(null);
   const [fps, setFps] = useState(0);
   const frameTimes = useRef([]);
+
   const fpsIntervalRef = useRef(null);
   const { testData, setTestData } = useContext(AppContext);
   const SERVER_MIDDLEWARE_ENDPOINT = "https://34.93.183.99:6001";
@@ -81,7 +82,23 @@ const VideoPlayback = () => {
     mediaRecorderRef.current = null;
     recordedChunksRef.current = [];
   };
-
+  const calculateFps = () => {
+    const now = performance.now();
+    frameTimes.current.push(now);
+  
+    if (frameTimes.current.length > 10) {
+      frameTimes.current.shift();
+    }
+  
+    if (frameTimes.current.length > 1) {
+      const first = frameTimes.current[0];
+      const last = frameTimes.current[frameTimes.current.length - 1];
+      const fpsValue = (frameTimes.current.length - 1) / ((last - first) / 1000);
+      setFps(Math.round(fpsValue));
+    }
+  
+    requestAnimationFrame(calculateFps);
+  };
   const startWebcamRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -153,6 +170,7 @@ const VideoPlayback = () => {
       );
       formData.append("patient_uid", testData.PATIENT_UID);
       formData.append("transaction_id", testData.TRANSACTION_ID);
+
       formData.append(
         "calibration_config_data",
         JSON.stringify(testData.calibration_data)
@@ -165,6 +183,7 @@ const VideoPlayback = () => {
         "calibration_encrypted_key",
         testData.calibration_encrypted_key
       );
+
 
       console.log("Uploading with FPS:", fps);
       formData.append("fps", fps.toString()); // Convert fps to string
