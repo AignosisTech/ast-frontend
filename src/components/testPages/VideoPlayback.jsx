@@ -18,7 +18,8 @@ const VideoPlayback = () => {
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
-
+  const [fps, setFps] = useState(0);
+  const frameTimes = useRef([]);
   const { testData, setTestData } = useContext(AppContext);
   const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
 
@@ -49,7 +50,23 @@ const VideoPlayback = () => {
     mediaRecorderRef.current = null;
     recordedChunksRef.current = [];
   };
-
+  const calculateFps = () => {
+    const now = performance.now();
+    frameTimes.current.push(now);
+  
+    if (frameTimes.current.length > 10) {
+      frameTimes.current.shift();
+    }
+  
+    if (frameTimes.current.length > 1) {
+      const first = frameTimes.current[0];
+      const last = frameTimes.current[frameTimes.current.length - 1];
+      const fpsValue = (frameTimes.current.length - 1) / ((last - first) / 1000);
+      setFps(Math.round(fpsValue));
+    }
+  
+    requestAnimationFrame(calculateFps);
+  };
   const startWebcamRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -131,6 +148,7 @@ const VideoPlayback = () => {
         "calibration_encrypted_key",
         testData.calibration_encrypted_key
       );
+      formData.append("fps",fps);
 
       const response = await fetch(
         `${SERVER_MIDDLEWARE_ENDPOINT}/rest/test/video_data/`,
