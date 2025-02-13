@@ -23,11 +23,40 @@ const VideoPlayback = () => {
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
+  const fpsIntervalRef = useRef(null);
   const [fps, setFps] = useState(0);
   const frameTimes = useRef([]);
   const { testData, setTestData } = useContext(AppContext);
 
   const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+
+
+  // Start FPS calculation when recording starts
+  const startFpsCalculation = () => {
+    let lastTime = performance.now();
+    let frameCount = 0;
+    
+    fpsIntervalRef.current = setInterval(() => {
+      const currentTime = performance.now();
+      const elapsed = currentTime - lastTime;
+      
+      if (elapsed >= 1000) { // Calculate every second
+        const currentFps = Math.round((frameCount * 1000) / elapsed);
+        setFps(currentFps);
+        frameCount = 0;
+        lastTime = currentTime;
+      }
+      frameCount++;
+    }, 1000 / 60); // Run at 60Hz
+  };
+
+  // Stop FPS calculation
+  const stopFpsCalculation = () => {
+    if (fpsIntervalRef.current) {
+      clearInterval(fpsIntervalRef.current);
+      fpsIntervalRef.current = null;
+    }
+  };
 
   useEffect(() => {
     if (!sessionStorage.getItem("reloaded")) {
@@ -53,6 +82,7 @@ const VideoPlayback = () => {
 
     return () => {
       window.removeEventListener("popstate", handleBackButton);
+      stopFpsCalculation();
     };
   }, [location.search, setTestData, navigate]);
 
@@ -64,6 +94,7 @@ const VideoPlayback = () => {
   }, [isLoading]);
 
   const cleanupMediaStream = () => {
+    stopFpsCalculation();
     if (webcamRef.current && webcamRef.current.srcObject) {
       const tracks = webcamRef.current.srcObject.getTracks();
       tracks.forEach((track) => {
@@ -88,23 +119,23 @@ const VideoPlayback = () => {
       recordedChunksRef.current = [];
     }
   };
-  const calculateFps = () => {
-    const now = performance.now();
-    frameTimes.current.push(now);
+  // const calculateFps = () => {
+  //   const now = performance.now();
+  //   frameTimes.current.push(now);
   
-    if (frameTimes.current.length > 10) {
-      frameTimes.current.shift();
-    }
+  //   if (frameTimes.current.length > 10) {
+  //     frameTimes.current.shift();
+  //   }
   
-    if (frameTimes.current.length > 1) {
-      const first = frameTimes.current[0];
-      const last = frameTimes.current[frameTimes.current.length - 1];
-      const fpsValue = (frameTimes.current.length - 1) / ((last - first) / 1000);
-      setFps(Math.round(fpsValue));
-    }
+  //   if (frameTimes.current.length > 1) {
+  //     const first = frameTimes.current[0];
+  //     const last = frameTimes.current[frameTimes.current.length - 1];
+  //     const fpsValue = (frameTimes.current.length - 1) / ((last - first) / 1000);
+  //     setFps(Math.round(fpsValue));
+  //   }
   
-    requestAnimationFrame(calculateFps);
-  };
+  //   requestAnimationFrame(calculateFps);
+  // };
   const startWebcamRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -128,6 +159,7 @@ const VideoPlayback = () => {
 
       mediaRecorder.start(1000);
       setIsRecording(true);
+      startFpsCalculation(); // Start FPS calculation when recording begins
     } catch (error) {
       console.error("Error accessing webcam:", error);
       alert(
@@ -138,6 +170,7 @@ const VideoPlayback = () => {
 
   const uploadRecording = async (blob) => {
     setIsLoading(true); // Show spinner
+    stopFpsCalculation(); // Stop FPS calculation before upload
 
     try {
       setIsLoading(true); // Show spinner
@@ -181,7 +214,12 @@ const VideoPlayback = () => {
       );
       formData.append("patient_uid", testData.PATIENT_UID);
       formData.append("transaction_id", testData.TRANSACTION_ID);
-      formData.append("fps",fps);
+      console.log("Uploading with FPS:", fps);
+      formData.append("fps", fps.toString()); // Convert fps to string
+
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
 
       await fetch(SERVER_MIDDLEWARE_ENDPOINT + "/rest/test/video_data/", {
         method: "POST",
