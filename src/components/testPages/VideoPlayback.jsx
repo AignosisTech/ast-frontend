@@ -23,7 +23,7 @@ const VideoPlayback = () => {
 
   const fpsIntervalRef = useRef(null);
   const { testData, setTestData } = useContext(AppContext);
-  const SERVER_MIDDLEWARE_ENDPOINT = "https://34.93.183.99:6001";
+  const SERVER_MIDDLEWARE_ENDPOINT = "http://34.93.183.99:6001";
 
   // Start FPS calculation when recording starts
   const startFpsCalculation = () => {
