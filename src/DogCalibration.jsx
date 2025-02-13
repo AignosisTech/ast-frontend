@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { AppContext } from "./AppContext.js";
 
 const DogCalibration = () => {
-  const SERVER_MIDDLEWARE_URL = "http://localhost:8000/rest/calibration/data/";
+  const SERVER_MIDDLEWARE_URL = "https://34.93.183.99:6001/rest/calibration/data/";
   // const SERVER_MIDDLEWARE_URL = 'http://127.0.0.1:8000/rest/calibration/data/';
 
   // const [TRANSACTION_ID, ] = useState(uuidv4());
