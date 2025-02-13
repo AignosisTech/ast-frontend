@@ -1,92 +1,86 @@
 import React, { useEffect, useRef, useState } from "react";
 import { encryptVideo } from "../EncryptionUtils";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { useContext } from "react";
-import BeatLoader from "react-spinners/BeatLoader"; // Ensure you import the BeatLoader component
 
 const VideoPlayback = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [, setIsVideoPlaying] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [hasStartedOnce, setHasStartedOnce] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [, setIsUploading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // State for managing loading spinner
-
+  const [isUploading, setIsUploading] = useState(false);
   const webcamRef = useRef(null);
-  // const calibrationVideoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const videoStreamRef = useRef(null);
   const [fps, setFps] = useState(0);
   const frameTimes = useRef([]);
-  const { testData, setTestData } = useContext(AppContext);
 
-  const SERVER_MIDDLEWARE_ENDPOINT = "http://localhost:8000";
+  const fpsIntervalRef = useRef(null);
+  const { testData, setTestData } = useContext(AppContext);
+  const SERVER_MIDDLEWARE_ENDPOINT = "https://34.93.183.99:6001";
+
+  // Start FPS calculation when recording starts
+  const startFpsCalculation = () => {
+    let lastTime = performance.now();
+    let frameCount = 0;
+    
+    fpsIntervalRef.current = setInterval(() => {
+      const currentTime = performance.now();
+      const elapsed = currentTime - lastTime;
+      
+      if (elapsed >= 1000) { // Calculate every second
+        const currentFps = Math.round((frameCount * 1000) / elapsed);
+        setFps(currentFps);
+        frameCount = 0;
+        lastTime = currentTime;
+      }
+      frameCount++;
+    }, 1000 / 60); // Run at 60Hz
+  };
+
+  // Stop FPS calculation
+  const stopFpsCalculation = () => {
+    if (fpsIntervalRef.current) {
+      clearInterval(fpsIntervalRef.current);
+      fpsIntervalRef.current = null;
+    }
+  };
 
   useEffect(() => {
-    if (!sessionStorage.getItem("reloaded")) {
-      sessionStorage.setItem("reloaded", "true");
-      window.location.reload();
-    }
-
-    // const params = new URLSearchParams(location.search);
-    // const patient_uid = params.get("patient_uid");
-    // const transaction_id = params.get("transaction_id");
-    // const encrypted_key = params.get("encrypted_key");
-    // const video_language = params.get("video_language");
-    // const patientDOB = params.get("patientDOB");
-    // const patientName = params.get("patientName");
-
     window.history.pushState(null, null, window.location.href);
+    console.log("testData is", testData);
 
     const handleBackButton = () => {
       navigate("/calibrationpage");
     };
 
     window.addEventListener("popstate", handleBackButton);
-
     return () => {
       window.removeEventListener("popstate", handleBackButton);
+      stopFpsCalculation();
     };
-  }, [location.search, setTestData, navigate]);
-
-  useEffect(() => {
-    if (isLoading) {
-      console.log("Loader should be visible now!");
-    }
-    console.log("VIDEO PLAYBACK TEST DATA", testData);
-  }, [isLoading]);
+  }, [navigate]);
 
   const cleanupMediaStream = () => {
-    if (webcamRef.current && webcamRef.current.srcObject) {
-      const tracks = webcamRef.current.srcObject.getTracks();
-      tracks.forEach((track) => {
-        track.stop();
-      });
+    stopFpsCalculation();
+    if (webcamRef.current?.srcObject) {
+      webcamRef.current.srcObject.getTracks().forEach((track) => track.stop());
       webcamRef.current.srcObject = null;
     }
 
     if (videoStreamRef.current) {
-      const tracks = videoStreamRef.current.getTracks();
-      tracks.forEach((track) => {
-        track.stop();
-      });
+      videoStreamRef.current.getTracks().forEach((track) => track.stop());
       videoStreamRef.current = null;
     }
 
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current = null;
-    }
-
-    if (recordedChunksRef.current) {
-      recordedChunksRef.current = [];
-    }
+    mediaRecorderRef.current = null;
+    recordedChunksRef.current = [];
   };
   const calculateFps = () => {
     const now = performance.now();
@@ -116,7 +110,6 @@ const VideoPlayback = () => {
       webcamRef.current.srcObject = stream;
 
       const mediaRecorder = new MediaRecorder(stream);
-
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -128,6 +121,7 @@ const VideoPlayback = () => {
 
       mediaRecorder.start(1000);
       setIsRecording(true);
+      startFpsCalculation(); // Start FPS calculation when recording begins
     } catch (error) {
       console.error("Error accessing webcam:", error);
       alert(
@@ -137,20 +131,17 @@ const VideoPlayback = () => {
   };
 
   const uploadRecording = async (blob) => {
-    setIsLoading(true); // Show spinner
-
     try {
-      setIsLoading(true); // Show spinner
       setIsUploading(true);
+      stopFpsCalculation(); // Stop FPS calculation before upload
 
-      const videoAesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+      const aesKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
         .map((b) => b.toString(16).padStart(2, "0"))
         .join("");
 
-      const videoEncryptedBlob = await encryptVideo(blob, videoAesKey);
-
+      const encryptedBlob = await encryptVideo(blob, aesKey);
       const jwk = await fetch(
-        SERVER_MIDDLEWARE_ENDPOINT + "/rest/return_rsa_public_key/"
+        `${SERVER_MIDDLEWARE_ENDPOINT}/rest/return_rsa_public_key/`
       ).then((res) => res.json());
 
       const publicKey = await window.crypto.subtle.importKey(
@@ -164,70 +155,77 @@ const VideoPlayback = () => {
         ["encrypt"]
       );
 
-      const videoEncryptedAesKey = await window.crypto.subtle.encrypt(
-        {
-          name: "RSA-OAEP",
-        },
+      const encryptedKey = await window.crypto.subtle.encrypt(
+        { name: "RSA-OAEP" },
         publicKey,
-        new TextEncoder().encode(videoAesKey)
+        new TextEncoder().encode(aesKey)
       );
 
       const formData = new FormData();
-      formData.append("video", videoEncryptedBlob, "encrypted-test.bin");
+      formData.append("video", encryptedBlob, "encrypted-test.bin");
       formData.append(
-        "video_encrypted_aes_key",
-        new Blob([videoEncryptedAesKey], { type: "application/octet-stream" }),
+        "video_encrypted_key",
+        new Blob([encryptedKey], { type: "application/octet-stream" }),
         "encrypted_aes_key.bin"
       );
       formData.append("patient_uid", testData.PATIENT_UID);
       formData.append("transaction_id", testData.TRANSACTION_ID);
-      formData.append("fps",fps);
 
-      await fetch(SERVER_MIDDLEWARE_ENDPOINT + "/rest/test/video_data/", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => {
-          setIsLoading(false);
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          } else {
-            setIsLoading(false); // Show spinner
-            navigate("/download");
-          }
-          return response.json();
-        })
-        .catch((err) => {
-          throw new Error("Video save response was not ok" + err);
-        });
+      formData.append(
+        "calibration_config_data",
+        JSON.stringify(testData.calibration_data)
+      );
+      formData.append(
+        "encrypted_calibration_points",
+        testData.encrypted_calibration_points
+      );
+      formData.append(
+        "calibration_encrypted_key",
+        testData.calibration_encrypted_key
+      );
+
+
+      console.log("Uploading with FPS:", fps);
+      formData.append("fps", fps.toString()); // Convert fps to string
+
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+
+      const response = await fetch(
+        `${SERVER_MIDDLEWARE_ENDPOINT}/rest/test/video_data/`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (response.status === 200) {
+        navigate("/test/fillup");
+      } else {
+        navigate("/Error");
+      }
 
       cleanupMediaStream();
       setIsUploading(false);
     } catch (error) {
       console.error("Error uploading video:", error);
-
       cleanupMediaStream();
       setIsUploading(false);
-      setIsLoading(false); // Show spinner
-      navigate("/Error");
+      window.location.replace("/test/fillup");
+      alert("Failed to upload video. Please try again.");
     }
   };
 
   const pauseRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state === "recording"
-    ) {
+    if (mediaRecorderRef.current?.state === "recording") {
       mediaRecorderRef.current.pause();
       setIsRecording(false);
     }
   };
 
   const resumeRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state === "paused"
-    ) {
+    if (mediaRecorderRef.current?.state === "paused") {
       mediaRecorderRef.current.resume();
       setIsRecording(true);
     }
@@ -235,9 +233,8 @@ const VideoPlayback = () => {
 
   const stopRecording = () => {
     if (
-      mediaRecorderRef.current &&
-      (mediaRecorderRef.current.state === "recording" ||
-        mediaRecorderRef.current.state === "paused")
+      mediaRecorderRef.current?.state === "recording" ||
+      mediaRecorderRef.current?.state === "paused"
     ) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
@@ -246,7 +243,6 @@ const VideoPlayback = () => {
         const blob = new Blob(recordedChunksRef.current, {
           type: "video/webm",
         });
-
         uploadRecording(blob);
       };
     }
@@ -257,14 +253,8 @@ const VideoPlayback = () => {
     if (videoRef.current) {
       videoRef.current
         .play()
-        .then(() => {
-          videoRef.current.requestFullscreen().catch((err) => {
-            console.error("Failed to enter fullscreen mode:", err);
-          });
-        })
-        .catch((err) => {
-          console.error("Error playing video:", err);
-        });
+        .then(() => videoRef.current.requestFullscreen())
+        .catch((err) => console.error("Video playback error:", err));
     }
   };
 
@@ -288,9 +278,18 @@ const VideoPlayback = () => {
     setIsVideoPlaying(false);
   };
 
-  const handleVideoEnd = async () => {
+  const handleVideoEnd = () => {
     setIsVideoEnded(true);
     stopRecording();
+    navigate("/test/fillup");
+  };
+
+  const getVideoSource = () => {
+    const baseUrl = "https://d228sadnexesrp.cloudfront.net/Test_Videos/";
+    const version = "V5";
+    return testData.videolanguage === "English"
+      ? `${baseUrl}Aignosis_Test_vid_Eng_${version}.mp4`
+      : `${baseUrl}Aignosis_Test_vid_Hindi_${version}.mp4`;
   };
 
   return (
@@ -298,13 +297,7 @@ const VideoPlayback = () => {
       <video ref={webcamRef} autoPlay playsInline muted className="hidden" />
       <video
         ref={videoRef}
-        src={
-          testData.videoLanguage === "English"
-            ? "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Eng_V5.mp4"
-            : testData.videoLanguage === "Hindi"
-            ? "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
-            : "https://d228sadnexesrp.cloudfront.net/Test_Videos/Aignosis_Test_vid_Hindi_V5.mp4"
-        }
+        src={getVideoSource()}
         controls
         autoPlay={false}
         className="w-full h-full object-cover"
@@ -314,57 +307,34 @@ const VideoPlayback = () => {
         onEnded={handleVideoEnd}
         style={{ position: "fixed", top: 0, left: 0, zIndex: 10 }}
       />
+
       <div className="absolute top-4 right-4 z-20 flex items-center space-x-2 bg-black bg-opacity-50 px-4 py-2 rounded-full">
         <div
           className={`w-3 h-3 rounded-full ${
             isRecording ? "bg-red-500" : "bg-gray-500"
           }`}
-        ></div>
+        />
         <span className="text-white text-sm">
           {isRecording ? "Recording" : "Not Recording"}
         </span>
       </div>
-      {isLoading && (
-        <div
-          className="absolute inset-0 flex flex-col justify-center items-center"
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            zIndex: 50,
-          }}
-        >
-          <BeatLoader color="#ffffff" size={15} />
-          <p
-            className="mt-4"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "rgba(138, 0, 194, 0.6)",
-              color: "white",
-              padding: "12px 24px",
-              borderRadius: "25px",
-              fontSize: "32px",
-              fontWeight: "bold",
-            }}
-          >
-            Loading
-          </p>
-        </div>
-      )}
 
       <div className="absolute bottom-10">
         {isVideoEnded ? (
           <button
-            onClick={() => {
-              window.location.replace("/download");
-            }}
+            onClick={() => window.location.replace("/download")}
             className="px-6 py-3 bg-[#9C00AD] text-white rounded-full font-semibold hover:bg-[#F0A1FF] transition-colors"
           >
             Next
           </button>
         ) : (
-          <p className="text-white text-3xl">Please watch the video</p>
+          <p className="text-white">
+            {isVideoPlaying
+              ? "Playing..."
+              : isVideoLoaded
+              ? "Paused"
+              : "Loading video..."}
+          </p>
         )}
       </div>
     </div>
